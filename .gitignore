@@ -38,6 +38,7 @@ TestResults/
 #test/
 .vs/
 ~*.*
+packages/
 
 # CSharp temporary files
 *.cd
