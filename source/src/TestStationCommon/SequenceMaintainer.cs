@@ -622,11 +622,11 @@ namespace TestStation.Common
                     else
                     {
                         // 如果不存在计算该表达式的中间变量，则创建变量
-                        IVariable expResultVar = sequenceManager.CreateVarialbe();
+                        IVariable expResultVar = sequenceManager.CreateVariable();
                         expResultVar.ReportRecordLevel = RecordLevel.Trace;
                         parent.Variables.Add(expResultVar);
                         expResultVar.Initialize(parent);
-                        expResultVarName = $"{expResultVar.Name}_{parent.Index}";
+                        expResultVarName = GetValidVariableName(parent, expResultVar);
                         expResultVar.Name = expResultVarName;
                         localVarMapping.Add(parameterData.Value, expResultVarName);
                         // 缓存变量名称到表达式的映射
@@ -650,6 +650,17 @@ namespace TestStation.Common
                     step.SubSteps.Insert(i, expStep);
                 }
             }
+        }
+
+        private static string GetValidVariableName(ISequence parent, IVariable expResultVar)
+        {
+            int index = 0;
+            string varName;
+            do
+            {
+                varName = $"{expResultVar.Name}_{index++}_{parent.Index}";
+            } while (parent.Variables.Any(item => item.Name.Equals(varName)));
+            return varName;
         }
 
         private void AddSubSequenceSteps(ISequence parentSequence, ISequenceStepCollection parent, ISequence subSequence)

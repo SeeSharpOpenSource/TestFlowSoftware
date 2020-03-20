@@ -1190,6 +1190,10 @@ namespace TestStation
 
         private void AddVariable_Click(object sender, EventArgs e)
         {
+            if (null == TestflowDesigntimeSession)
+            {
+                return;
+            }
             IVariable variable = null;
             string VariableName;
 
@@ -1331,7 +1335,7 @@ namespace TestStation
 
             #region 添加行
 
-            int rowIndex = VaraibleTable.Rows.Add(variableName, isObject ? $"Object" : "", "");
+            int rowIndex = VaraibleTable.Rows.Add(variableName, isObject ? $"Object" : "Numeric", isObject? "" : "0");
             VaraibleTable.Rows[rowIndex].Tag = variableName;
 
             #endregion
@@ -1487,16 +1491,17 @@ namespace TestStation
         private void Dgv_Variable_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) { return; }
-            string name = VaraibleTable.Rows[e.RowIndex].Cells["VariableName"].Value.ToString();
-            string type = VaraibleTable.Rows[e.RowIndex].Cells["VariableType"].Value.ToString();
-            string value = VaraibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value.ToString();
+            DataGridView varaibleTable = VaraibleTable;
+            string name = varaibleTable.Rows[e.RowIndex].Cells["VariableName"].Value.ToString();
+            string type = varaibleTable.Rows[e.RowIndex].Cells["VariableType"].Value.ToString();
+            string value = varaibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value.ToString();
 
-            if (VaraibleTable.Columns[e.ColumnIndex].Name.Equals("VariableValue"))
+            if (varaibleTable.Columns[e.ColumnIndex].Name.Equals("VariableValue"))
             {
-                IVariable variable = TestflowDesigntimeSession.FindVariableInParent(name, VaraibleTable.Name.Equals("GlobalVariableList") ?
+                IVariable variable = TestflowDesigntimeSession.FindVariableInParent(name, varaibleTable.Name.Equals("GlobalVariableList") ?
                                                                                         (ISequenceFlowContainer)SequenceGroup : CurrentSeq);
                 ValueEditor editor = null;
-
+                ObjectEditor objEditor = null;
                 switch (type)
                 {
                     case "":
@@ -1511,18 +1516,28 @@ namespace TestStation
                         editor = new BooleanEditor(value);
                         break;
                     case "Object":
-                        return;
+                        if (!IsSystemVariable(variable.Name))
+                        {
+                            objEditor = new ObjectEditor(variable);
+                        }
+                        break;
                 }
-
-                editor.ShowDialog();       //显示用户编辑Numeric Form
-
-                if (editor._valueChanged)
+                if (null != editor)
                 {
-                    VaraibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value = editor._value;
-                    TestflowDesigntimeSession.SetVariableValue(variable, editor._value);
+                    //显示用户编辑Numeric Form
+                    editor.ShowDialog(this);
+                    if (editor._valueChanged)
+                    {
+                        varaibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value = editor._value;
+                        TestflowDesigntimeSession.SetVariableValue(variable, editor._value);
+                    }
+                    editor.Dispose();
                 }
-                editor.Dispose();
-
+                else
+                {
+                    objEditor?.ShowDialog(this);
+                    varaibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value = variable.Type?.Name ?? string.Empty;
+                }
             }
         }
         #endregion
@@ -1743,7 +1758,7 @@ namespace TestStation
             while (CurrentSeq.Steps.Any(item => item.Name.Equals(stepName)));
 
             // 添加新的行，记录新行的位置
-            int index = _stepTable.Rows.Add(GetImage(stepType), stepName, "", "", "", "", "");
+            int index = _stepTable.Rows.Add(GetImage(stepType), GetShowStepName(stepName), "", "", "", "", "");
             _stepTable.Rows[index].Selected = true;//选择新添加的行
             _stepTable.CurrentCell = _stepTable.Rows[index].Cells[0];//移动箭头
 
@@ -1979,7 +1994,7 @@ namespace TestStation
             while (CurrentSeq.Steps.Any(item => item.Name.Equals(stepName)));
 
             // 添加新的行，记录新行的位置
-            _stepTable.Rows.Insert(insertIndex, GetImage(stepType), stepName, "", "", "", "", "");
+            _stepTable.Rows.Insert(insertIndex, GetImage(stepType), GetShowStepName(stepName), "", "", "", "", "");
             _stepTable.Rows[insertIndex].Selected = true;//选择新添加的行
             _stepTable.CurrentCell = _stepTable.Rows[insertIndex].Cells[0];//移动箭头
 
@@ -2461,7 +2476,7 @@ namespace TestStation
                 return;
             }
             string showVariableName = Utility.GetShowVariableName(variableForm.IsGlobalVariable,
-                variableForm.VariableName);
+                variableForm.Value);
             textBox_conditionVar.Text = showVariableName;
         }
 
@@ -2767,21 +2782,22 @@ namespace TestStation
             }
             #endregion
 
-            string Name = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value.ToString();
-            string Value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString();
-            string Group = _paramTable.FindNodeGroup(e.RowIndex);
+            string name = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value.ToString();
+            string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString();
+            string group = _paramTable.FindNodeGroup(e.RowIndex);
 
             #region f(x) button
 
             int columnIndex = e.ColumnIndex;
             if (_paramTable.Columns[columnIndex].Name.Equals("Parameterfx"))
             {
-                VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, Group, Value);
+                VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, group, value,
+                    true);
                 variableForm.ShowDialog(this);
                 if (!variableForm.IsCancelled)
                 {
                     _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value =
-                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.VariableName);
+                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.Value);
                 }
                 variableForm.Dispose();
             }
@@ -2793,10 +2809,10 @@ namespace TestStation
                 ISequenceFlowContainer[] arr = new ISequenceFlowContainer[] { SequenceGroup, CurrentSeq };
 
                 #region Constructor
-                if (Group.Equals("Constructor"))
+                if (group.Equals("Constructor"))
                 {
                     #region 检查 Existing Object
-                    if (Name.Equals(ExistingObjParent))
+                    if (name.Equals(ExistingObjParent))
                     {
                         if (CurrentFunctionStep != null)
                         {
@@ -2804,9 +2820,9 @@ namespace TestStation
                         }
                         else
                         {
-                            if ((warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(CurrentSeq, Value, _currentClassDescription.ClassType, false)).WarnCode == 1025)
+                            if ((warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(CurrentSeq, value, _currentClassDescription.ClassType, false)).WarnCode == 1025)
                             {
-                                warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(SequenceGroup, Value, _currentClassDescription.ClassType, false);
+                                warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(SequenceGroup, value, _currentClassDescription.ClassType, false);
                             }
                         }
                     }
@@ -2817,7 +2833,7 @@ namespace TestStation
                     {
                         #region 空值
                         //todo 如果值为空表示，实例不为变量，在运行开始前再创造变量
-                        if (string.IsNullOrEmpty(Value) || !Name.Equals("Return Value")) { }
+                        if (string.IsNullOrEmpty(value) || !name.Equals("Return Value")) { }
                         #endregion
 
                         else
@@ -2834,7 +2850,7 @@ namespace TestStation
                 else
                 {
                     #region 检查返回值
-                    if (Name.Equals("Return Value"))
+                    if (name.Equals("Return Value"))
                     {
                         warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckReturn(CurrentFunctionStep, arr, false);
                     }
@@ -3460,7 +3476,7 @@ namespace TestStation
             if (columnName.Equals("Limitfx"))
             {
                 VariableForm variableForm = new VariableForm(SequenceGroup.Variables, currentSequence.Variables, "Method",
-                    dGV_Limit.Rows[e.RowIndex].Cells["LimitExpression"].Value?.ToString() ?? string.Empty);
+                    dGV_Limit.Rows[e.RowIndex].Cells["LimitExpression"].Value?.ToString() ?? string.Empty, true);
                 variableForm.ShowDialog(this);
                 if (!variableForm.IsCancelled)
                 {
@@ -3468,13 +3484,13 @@ namespace TestStation
                         ? SequenceGroup.Variables
                         : currentSequence.Variables;
                     IVariable variable =
-                        variableCollection.FirstOrDefault(item => item.Name.Equals(variableForm.VariableName));
+                        variableCollection.FirstOrDefault(item => item.Name.Equals(variableForm.Value));
                     if (null != variable)
                     {
                         variable.ReportRecordLevel = RecordLevel.Trace;
                     }
                     dGV_Limit.Rows[e.RowIndex].Cells["LimitExpression"].Value =
-                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.VariableName);
+                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.Value);
                 }
                 variableForm.Dispose();
             }
@@ -4081,9 +4097,14 @@ namespace TestStation
                     ISequenceStep limitStep = Utility.GetLimitStep(step);
                     unit = limitStep?.Function.Parameters[4].Value ?? "";
                 }
-                _stepTable.Rows.Add(GetImage(step.SubSteps[0].Name), step.Name, step.Description,
+                _stepTable.Rows.Add(GetImage(step.SubSteps[0].Name), GetShowStepName(step.Name), step.Description,
                     step.SubSteps[0].Description, unit, "", "");
             }
+        }
+
+        private static string GetShowStepName(string stepName)
+        {
+            return Regex.IsMatch(stepName, "^Step\\d+$") ? "Step" : stepName;
         }
 
         private void ShowReturnAndParameters(ISequenceStep step, IFunctionData functionData)
@@ -4423,7 +4444,7 @@ namespace TestStation
             #endregion
 
             string projectName = "Test Project " + _currentTestProjectId.ToString();
-            labelProject.Text = projectName;
+            labelProject.Text = projectName + Constants.ProjectNamePostfix;
 
             #region 清空_userSequences
 
@@ -4556,7 +4577,7 @@ namespace TestStation
 
             _testflowDesigntimeService.Unload();
             _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description, loadedSequenceGroup);
-            labelProject.Text = SequenceGroup.Name;
+            labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
 
             #region _userSequences清空并装填
 
@@ -4635,7 +4656,7 @@ namespace TestStation
             {
                 _globalInfo.TestflowEntity.SequenceManager.Serialize(SequenceGroup, SerializationTarget.File,
                     filePath);
-                labelProject.Text = SequenceGroup.Name;
+                labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
             }
             catch (ApplicationException ex)
             {
@@ -4663,7 +4684,7 @@ namespace TestStation
             {
                 _globalInfo.TestflowEntity.SequenceManager.Serialize(SequenceGroup, SerializationTarget.File,
                     fileName);
-                labelProject.Text = SequenceGroup.Name;
+                labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
             }
             catch (ApplicationException ex)
             {
@@ -4774,6 +4795,10 @@ namespace TestStation
             // 参数检查提醒后如果用户取消则停止执行
             if (!CheckParameter())
             {
+                if (_globalInfo.Session.HasAuthority(AuthorityDefinition.EditSequence))
+                {
+                    viewController_Main.State = RunState.EditIdle.ToString();
+                }
                 return;
             }
 
@@ -4932,7 +4957,7 @@ namespace TestStation
             VariableForm variableForm = new VariableForm(SequenceGroup.Variables, currentSequence.Variables,
                 string.Empty);
             variableForm.ShowDialog(this);
-            string variableName = variableForm.VariableName;
+            string variableName = variableForm.Value;
             if (variableForm.IsCancelled || string.IsNullOrWhiteSpace(variableName))
             {
                 return;

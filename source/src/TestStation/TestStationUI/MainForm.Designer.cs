@@ -34,9 +34,9 @@ namespace TestStation
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -467,14 +467,14 @@ namespace TestStation
             // configureToolStripMenuItem
             // 
             this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
-            this.configureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.configureToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.configureToolStripMenuItem.Text = "Configure";
             this.configureToolStripMenuItem.Click += new System.EventHandler(this.configureToolStripMenuItem_Click);
             // 
             // selectModelToolStripMenuItem
             // 
             this.selectModelToolStripMenuItem.Name = "selectModelToolStripMenuItem";
-            this.selectModelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectModelToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.selectModelToolStripMenuItem.Text = "Select Model";
             this.selectModelToolStripMenuItem.Click += new System.EventHandler(this.selectModelToolStripMenuItem_Click);
             // 
@@ -1216,7 +1216,7 @@ namespace TestStation
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(903, 362);
+            this.tabpage_Module.Size = new System.Drawing.Size(907, 364);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1330,7 +1330,7 @@ namespace TestStation
             this.tabpage_limit.Controls.Add(this.button_LimitAdd);
             this.tabpage_limit.Location = new System.Drawing.Point(4, 22);
             this.tabpage_limit.Name = "tabpage_limit";
-            this.tabpage_limit.Size = new System.Drawing.Size(903, 362);
+            this.tabpage_limit.Size = new System.Drawing.Size(907, 364);
             this.tabpage_limit.TabIndex = 2;
             this.tabpage_limit.Text = "Limit";
             this.tabpage_limit.UseVisualStyleBackColor = true;
@@ -1537,14 +1537,14 @@ namespace TestStation
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1559,8 +1559,8 @@ namespace TestStation
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle11;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1568,8 +1568,8 @@ namespace TestStation
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle12;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -2107,7 +2107,7 @@ namespace TestStation
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TestFlow";
+            this.Text = "Easy Test";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);

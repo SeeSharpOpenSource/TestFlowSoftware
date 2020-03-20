@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScanLoginForm));
             this.label_name = new System.Windows.Forms.Label();
             this.textBox_loginName = new System.Windows.Forms.TextBox();
             this.button_userPasswordLogin = new System.Windows.Forms.Button();
@@ -71,6 +72,7 @@
             this.Controls.Add(this.label_name);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ScanLoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -137,7 +137,10 @@ namespace TestStation.OperationPanel
 
         public void RefreshProductTestInformation(UutStatus uutStatus)
         {
-            label_sn1Value.Text = _dataCache.SerialNumber;
+            if (!Constants.NASerialNo.Equals(_dataCache.SerialNumber))
+            {
+                label_sn1Value.Text = _dataCache.SerialNumber;
+            }
             label_testtime.Text = _dataCache.ElapsedSeconds.ToString("F3");
             label_qualified.Text = _dataCache.QualifiedCount.ToString();
             label_unqualified.Text = _dataCache.UnqualifiedCount.ToString();

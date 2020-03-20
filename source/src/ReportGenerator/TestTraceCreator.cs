@@ -96,6 +96,11 @@ namespace TestStation.Report
                 Log.Print(LogLevel.ERROR, ex.Message);
                 printInfo.Invoke(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Log.Print(LogLevel.FATAL, ex.Message);
+                printInfo.Invoke(ex.Message);
+            }
             finally
             {
                 OnPrintOver();
@@ -200,8 +205,7 @@ namespace TestStation.Report
 
         private bool IsValidSerialNumber(string serialiNumber)
         {
-            return !string.IsNullOrWhiteSpace(serialiNumber) &&
-                   !Constants.NASerialNo.Equals(serialiNumber) && !Constants.NullValue.Equals(serialiNumber);
+            return null != serialiNumber && !Constants.NullValue.Equals(serialiNumber);
         }
 
         private void WriteProductTestOverData(ProductTestResult currentProduct, RuntimeStatusData runtimeStatus)

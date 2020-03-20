@@ -225,7 +225,7 @@ namespace TestStation.Report.ReportCreator
             if (_stepBuffer.Length > 0)
             {
                 FillStepBufferString("Result", GetCurrentStepResult());
-                FillStepBufferString("ExecutionSeconds", (_stepRunTicks / 1E7).ToString("F7"));
+                FillStepBufferString("ExecutionSeconds", (_stepRunTicks/1E7).ToString("F7"));
                 _stepRunTicks = 0;
                 _writeStream.WriteLine(_stepBuffer);
                 _stepBuffer.Clear();
@@ -245,52 +245,46 @@ namespace TestStation.Report.ReportCreator
             _writeStream.Flush();
             _writeStream.Close();
             // 如果串号非法，则说明当前测试无效，删除已写入的内容
-            if (_serialNumber.Equals(Constants.NASerialNo) || _serialNumber.Equals(NullValue))
+            if (string.IsNullOrWhiteSpace(_serialNumber) || _serialNumber.Equals(Constants.NASerialNo) ||
+                _serialNumber.Equals(NullValue))
             {
-                _writeStream?.Dispose();
-                if (!string.IsNullOrWhiteSpace(_currentReportPath) && File.Exists(_currentReportPath))
-                {
-                    File.Delete(_currentReportPath);
-                }
+                _serialNumber = Constants.EmptySn;
             }
-            else
-            {
-                string uutResult = GetUutResult();
-                string reportBody = File.ReadAllText(_currentReportPath);
-                InitItemBuffer(_headerTemplate);
-                FillTemplateString("Station", ReportInfo.StationId);
-                FillTemplateString("SocketIndex", ReportInfo.SocketIndex);
-                FillTemplateString("SerialNumber", _serialNumber);
-                FillTemplateString("Date", _startTime.ToString("yyyy-MM-dd"));
-                FillTemplateString("Time", _startTime.ToString("HH:mm:ss.fff"));
-                FillTemplateString("Operator", ReportInfo.Operator);
-                FillTemplateString("ExecutionTime", (_endTime - _startTime).TotalSeconds.ToString("F3"));
-                FillTemplateString("UUTResult", uutResult);
-                FillTemplateString("SequencePath", ReportInfo.SequencePath);
-                FillTemplateString("Model", ReportInfo.Model);
-                string errorCode = _uutError && null != _failedInfo ? _failedInfo.ErrorCode.ToString() : "";
-                FillTemplateString("ErrorCode", errorCode);
+            string uutResult = GetUutResult();
+            string reportBody = File.ReadAllText(_currentReportPath);
+            InitItemBuffer(_headerTemplate);
+            FillTemplateString("Station", ReportInfo.StationId);
+            FillTemplateString("SocketIndex", ReportInfo.SocketIndex);
+            FillTemplateString("SerialNumber", _serialNumber);
+            FillTemplateString("Date", _startTime.ToString("yyyy-MM-dd"));
+            FillTemplateString("Time", _startTime.ToString("HH:mm:ss.fff"));
+            FillTemplateString("Operator", ReportInfo.Operator);
+            FillTemplateString("ExecutionTime", (_endTime - _startTime).TotalSeconds.ToString("F3"));
+            FillTemplateString("UUTResult", uutResult);
+            FillTemplateString("SequencePath", ReportInfo.SequencePath);
+            FillTemplateString("Model", ReportInfo.Model);
+            string errorCode = _uutError && null != _failedInfo ? _failedInfo.ErrorCode.ToString() : "";
+            FillTemplateString("ErrorCode", errorCode);
 
-                _writeStream = new StreamWriter(_currentReportPath);
-                _writeStream.BaseStream.SetLength(0);
-                _writeStream.Flush();
-                _writeStream.WriteLine(_itemBuffer);
-                _writeStream.WriteLine(reportBody);
-                _writeStream.Close();
-                _writeStream.Dispose();
-                _writeStream = null;
-                ClearItemBuffer();
-                string reportName = GetReportName(uutResult);
-                int offset = 0;
-                string fullPath = ReportDir + reportName;
-                while (File.Exists(fullPath))
-                {
-                    fullPath = $"{ReportDir}{reportName}_{offset}";
-                }
-                File.Move(_currentReportPath, fullPath);
-                _currentReportPath = fullPath;
-                _currentReport = _currentReportPath;
+            _writeStream = new StreamWriter(_currentReportPath);
+            _writeStream.BaseStream.SetLength(0);
+            _writeStream.Flush();
+            _writeStream.WriteLine(_itemBuffer);
+            _writeStream.WriteLine(reportBody);
+            _writeStream.Close();
+            _writeStream.Dispose();
+            _writeStream = null;
+            ClearItemBuffer();
+            string reportName = GetReportName(uutResult);
+            int offset = 0;
+            string fullPath = ReportDir + reportName;
+            while (File.Exists(fullPath))
+            {
+                fullPath = $"{ReportDir}{reportName}_{offset}";
             }
+            File.Move(_currentReportPath, fullPath);
+            _currentReportPath = fullPath;
+            _currentReport = _currentReportPath;
             _lastSerialNumber = _serialNumber;
             _currentReportPath = string.Empty;
             ClearParams();

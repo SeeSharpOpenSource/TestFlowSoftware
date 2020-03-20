@@ -61,6 +61,14 @@ namespace TestStation.ParameterChecker
                     CheckMethod(rootStep, subStep, errorInfoCache);
                 }
             }
+            ISequenceStep methodStep;
+            if (null != rootStep.SubSteps &&
+                (null == (methodStep = rootStep.SubSteps.FirstOrDefault(item => item.Name.Equals(Constants.MethodStepName))) ||
+                null == methodStep.Function))
+            {
+                errorInfoCache.Add(
+                    $"Sequence <{_sequence.Name}> Step <{rootStep.Name}>: The method function is not configured.");
+            }
         }
 
         private void CheckActionStep(ISequenceStep rootStep, IList<string> errorInfoCache)
@@ -76,6 +84,14 @@ namespace TestStation.ParameterChecker
                 {
                     CheckMethod(rootStep, subStep, errorInfoCache);
                 }
+            }
+            ISequenceStep methodStep;
+            if (null != rootStep.SubSteps &&
+                (null == (methodStep = rootStep.SubSteps.FirstOrDefault(item => item.Name.Equals(Constants.MethodStepName))) ||
+                null == methodStep.Function))
+            {
+                errorInfoCache.Add(
+                    $"Sequence <{_sequence.Name}> Step <{rootStep.Name}>: The method function is not configured.");
             }
         }
 
@@ -114,9 +130,12 @@ namespace TestStation.ParameterChecker
                 errorInfoCache.Add($"Sequence <{_sequence.Name}> Step <{rootStep.Name}>: The constructor function has not configured.");
                 return;
             }
-            for (int i = 0; i < functionData.Parameters.Count; i++)
+            if (null != functionData.Parameters)
             {
-                CheckArgument(rootStep, functionData, i, errorInfoCache);
+                for (int i = 0; i < functionData.Parameters.Count; i++)
+                {
+                    CheckArgument(rootStep, functionData, i, errorInfoCache);
+                }
             }
         }
 
@@ -149,7 +168,7 @@ namespace TestStation.ParameterChecker
                 return;
             }
             // 如果实例变量未包含在变量定义中，则抛出错误
-            if (isInstanceFunc && !_sequence.Variables.Any(item => item.Name.Equals(instanceValue)) &&
+            if (isInstanceFunc && !string.IsNullOrWhiteSpace(instanceValue) && !_sequence.Variables.Any(item => item.Name.Equals(instanceValue)) &&
                 !_sequenceGroup.Variables.Any(item => item.Name.Equals(instanceValue)))
             {
                 errorInfoCache.Add($"Sequence <{_sequence.Name}> Step <{rootStep.Name}>: The instance variable does not exist.");

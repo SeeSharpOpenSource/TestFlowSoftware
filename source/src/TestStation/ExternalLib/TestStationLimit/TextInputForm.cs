@@ -10,6 +10,7 @@ namespace TestStationLimit
             InitializeComponent();
             this.Continue = false;
             this.TopMost = true;
+            textBox_barCode.Text = string.Empty;
         }
 
         public string BarCode { get; private set; }
@@ -17,7 +18,7 @@ namespace TestStationLimit
 
         private void button_confirm_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBox_barCode.Text))
+            if (null == textBox_barCode.Text)
             {
                 MessageBox.Show("Invalid Serial Number.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

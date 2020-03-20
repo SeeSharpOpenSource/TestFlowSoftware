@@ -14,8 +14,10 @@
         public const string UutIndexVar = "UutIndex";
         public const string NASerialNo = "N/A";
         public const string NAModelNo = "N/A";
+        public const string EmptySn = "EmptySN";
         public const string NullValue = "NULL";
         public const string DefaultWaitTime = "100";
+        public const string ProjectNamePostfix = ".tfseq";
 
         public const string StartTimingStepName = "Start Timing";
         public const string EndTimingStepName = "End Timing";

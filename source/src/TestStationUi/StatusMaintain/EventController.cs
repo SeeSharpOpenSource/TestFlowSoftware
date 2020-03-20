@@ -378,7 +378,7 @@ namespace TestStation.OperationPanel
 
         private bool IsValidSerialNumber()
         {
-            return !string.IsNullOrWhiteSpace(_dataCache.SerialNumber) &&
+            return null != _dataCache.SerialNumber &&
                    !Constants.NASerialNo.Equals(_dataCache.SerialNumber) &&
                    !Constants.NullValue.Equals(_dataCache.SerialNumber);
         }

@@ -17,7 +17,6 @@ namespace TestStation.ParameterChecker
             {
                 sequenceChecker.Check(errorInfos);
             }
-
             SequenceChecker teardownChecker = new SequenceChecker(sequenceGroup, sequenceGroup.TearDown);
             teardownChecker.Check(errorInfos);
             return errorInfos;
