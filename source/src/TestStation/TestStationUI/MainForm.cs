@@ -49,49 +49,9 @@ namespace TestStation
         #region Selected Current Objects
         private ISequenceGroup SequenceGroup => TestflowDesigntimeSession?.Context.SequenceGroup;
 
-        private ISequence CurrentSeq {
-            get
-            {
-                if (null == SequenceTable.CurrentRow)
-                {
-                    return null;
-                }
-                // DefaultSequenceList
-                if (SequenceTable.Name.Equals("DefaultSequenceList"))
-                {
-                    // 判断选择的Sequence
-                    switch (SequenceTable[0, SequenceTable.CurrentRow.Index].Value.ToString())
-                    {
-                        case "ProcessSetup":
-                            return TestflowDesigntimeSession.GetSequence(-1);
-                        case "ProcessCleanup":
-                            return TestflowDesigntimeSession.GetSequence(-2);
-                        case "PreUUT":
-                            return TestflowDesigntimeSession.GetSequence(0);
-                        case "MainSequence":
-                            return TestflowDesigntimeSession.GetSequence(1);
-                        case "PostUUT":
-                            return TestflowDesigntimeSession.GetSequence(2);
-                    }
-                }
-                // UserSequenceList
-                return TestflowDesigntimeSession.GetSequence(3 + SequenceTable.CurrentRow.Index);
-            }
-        }
+        private ISequence CurrentSeq { get; set; }
 
-        private ISequenceStep CurrentStep
-        {
-            get
-            {
-                ISequence currentSeq = CurrentSeq;
-                if (null == _stepTable.CurrentRow || null == currentSeq?.Steps)
-                {
-                    return null;
-                }
-                int index = _stepTable.CurrentRow.Index;
-                return currentSeq.Steps.Count > index ?currentSeq.Steps[index] : null;
-            }
-        }
+        private ISequenceStep CurrentStep { get; set; }
 
         #endregion
 
@@ -103,10 +63,6 @@ namespace TestStation
         #endregion
 
         #region 其他字段
-
-        //HashSet<ISequence> _defaultSequences;
-
-        BindingList<string> _userSequences;
 
         private bool stepSelection = false; //step选择
         string _filePath = string.Empty;
@@ -199,27 +155,6 @@ namespace TestStation
         private ISequenceStep CurrentFunctionStep
             => CurrentStep.SubSteps.FirstOrDefault(item => item.Description.Equals("Method"));
 
-        private ISequenceStep CurrentLimitStep
-        {
-            get
-            {
-                if (null == dGV_Limit.CurrentRow || dGV_Limit.CurrentRow.Index < 0 || null == dGV_Limit.CurrentRow ||
-                    dGV_Limit.CurrentRow.Index < 0)
-                {
-                    return null;
-                }
-                int limitIndex = dGV_Limit.CurrentRow.Index;
-                ISequenceStep limitStep =
-                    CurrentStep.SubSteps.FirstOrDefault(item => item.Name.StartsWith(Constants.LimitStepPrefix));
-                if (null == limitStep || CurrentStep.SubSteps.Count <= limitStep.Index + limitIndex ||
-                    !CurrentStep.SubSteps[limitStep.Index + limitIndex].Name.StartsWith(Constants.LimitStepPrefix))
-                {
-                    return null;
-                }
-                return CurrentStep.SubSteps[limitStep.Index + limitIndex];
-            }
-        } 
-
         private string _oldVariableType;
         private string _oldVariableValue;
         private IComInterfaceDescription _currentComDescription;
@@ -261,7 +196,6 @@ namespace TestStation
 
             InitializeComponent();
             this.TsfFilePath = sequencePath;
-            _userSequences = new BindingList<string>();
 
             InitControls();
 
@@ -285,138 +219,11 @@ namespace TestStation
 
         private void InitControls()
         {
-            // dgv_Seq初始化
-            //注：顺序比较重要这里，因为默认初始的tabpage是DefaultSequences
-            //所以最后的DGVSequece应该是DefaultSequenceList
-            CreateDGVSeq(1);
-            CreateDGVSeq(0);
-            // 主序列的名称不能修改
-            ((DataGridView) tabPage_mainSequence.Controls[0]).ReadOnly = true;
-
             // tdgv_Parameter初始化
             CreateTDGVParameter();
 
             // dgv_GlobalVariable初始化
             CreateDGVVariable(0);
-
-            // SequenceComboBox初始化
-            comboBox_SequenceCall.DataSource = _userSequences;
-
-            //tabCon_Seq.SelectedIndexChanged += tabCon_Seq_SelectedIndexChanged;
-            _stepTable = CreateStepDataTable();
-
-            tabCon_Step.Controls.Remove(tabPage_stepData);
-        }
-
-        private DataGridView CreateStepDataTable()
-        {
-            if (tabCon_Step.TabPages.Count == 1)
-            {
-                tabCon_Step.TabPages.Insert(0, tabPage_stepData);
-            }
-
-            DataGridView dgv_step = new DataGridView();
-
-            #region TabPage[0]添加
-
-            tabCon_Step.TabPages[0].Controls.Clear();
-            tabCon_Step.TabPages[0].Controls.Add(dgv_step);
-            // 该页面在未加载序列时不显示
-            tabCon_Step.SelectedIndex = 0;
-
-            #endregion
-
-            #region 属性
-            dgv_step.Location = new Point(0, 0);
-            //DGVstep.Width = 800;
-            // DGVstep.Height = 450;
-
-
-            // Columns配置
-            //图片
-            DataGridViewImageColumn dgvImage = new DataGridViewImageColumn();
-            dgvImage.HeaderText = "";
-            dgvImage.Image = GetImage(string.Empty);
-            dgvImage.Width = 30;
-
-            dgv_step.Columns.Add(dgvImage);
-            dgv_step.Columns.Add("StepName", "Step");
-            dgv_step.Columns.Add("StepDescription", "Description");
-            dgv_step.Columns.Add("StepSetting", "Setting");
-            dgv_step.Columns.Add("StepUnit", "Unit");
-            dgv_step.Columns.Add("StepData", "Data");
-            dgv_step.Columns.Add("StepResult", "Result");
-
-            dgv_step.Columns[0].ReadOnly = true;
-            dgv_step.Columns[1].ReadOnly = false;
-            dgv_step.Columns[2].ReadOnly = true;
-            dgv_step.Columns[3].ReadOnly = true;
-            dgv_step.Columns[4].ReadOnly = true;
-            dgv_step.Columns[5].ReadOnly = true;
-            dgv_step.Columns[6].ReadOnly = true;
-
-            dgv_step.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing; //固定表头         
-
-            dgv_step.Columns[1].Width = 140;
-            dgv_step.Columns[2].Width = 450;
-            dgv_step.Columns[3].Width = 450;
-            dgv_step.Columns[4].Width = 60;
-            dgv_step.Columns[5].Width = 80;
-            dgv_step.Columns[6].Width = 80;
-
-            dgv_step.Columns[0].Visible = true;
-            dgv_step.Columns[1].Visible = true;
-            dgv_step.Columns[2].Visible = true;
-            dgv_step.Columns[3].Visible = true;
-            dgv_step.Columns[4].Visible = false;
-            dgv_step.Columns[5].Visible = false;
-            dgv_step.Columns[6].Visible = false;
-
-            dgv_step.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgv_step.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgv_step.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgv_step.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dgv_step.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dgv_step.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-
-            dgv_step.Columns[StepTableDescCol].DefaultCellStyle.ForeColor = Color.DimGray;
-            dgv_step.Columns[StepTableSettingCol].DefaultCellStyle.ForeColor = Color.DimGray;
-
-            foreach (DataGridViewColumn column in dgv_step.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
-
-            dgv_step.Dock = DockStyle.Fill;
-            //DGVstep.RowHeadersVisible = false;//hid first columns
-            dgv_step.BackgroundColor = Color.White;
-            dgv_step.AllowUserToResizeRows = false; //固定行间距
-            dgv_step.AllowUserToAddRows = false; //删除最后一行空白行
-            dgv_step.SelectionMode = DataGridViewSelectionMode.FullRowSelect; //选中整行
-            dgv_step.MultiSelect = false;
-            dgv_step.CellBorderStyle = DataGridViewCellBorderStyle.Raised; //格子风格
-            //int index_Step = DGVstep.Rows.Add();
-            //DGVstep.Rows[0].Cells[0].Value = "<Insert Steps Here>";
-            //不能排序
-            if (_start)
-            {
-                dgv_step.DefaultCellStyle.BackColor = Color.White;
-                dgv_step.DefaultCellStyle.ForeColor = Color.Black;
-                dgv_step.DefaultCellStyle.SelectionBackColor = Color.Transparent;
-                dgv_step.DefaultCellStyle.SelectionForeColor = Color.Black;
-            }
-
-            #endregion
-
-            dgv_step.ContextMenuStrip = this.cMS_DgvStep;
-
-            #region 事件
-
-            dgv_step.MouseDown += Dgv_Step_MouseDown;
-            dgv_step.CellValueChanged += Dgv_Step_CellValueChanged;
-            dgv_step.SelectionChanged += Dgv_Step_SelectionChanged;
-
-            return dgv_step;
         }
 
         private void CreateDGVVariable(int tabNumber)
@@ -496,65 +303,6 @@ namespace TestStation
             tabCon_Variable.SelectedIndex = tabNumber;
         }
 
-        private void CreateDGVSeq(int tabNumber)
-        {
-            //tabcon_seq中添加一个dgv_seq表格控件
-            DataGridView dgv_sequence = new DataGridView();
-            dgv_sequence.ReadOnly = false;
-
-            #region 属性
-            dgv_sequence.Location = new Point();
-            dgv_sequence.Dock = DockStyle.Fill;
-
-            #region Column
-            dgv_sequence.Columns.Add("Sequence", "Sequence");
-            dgv_sequence.Columns[0].Width = 150;
-            #endregion
-
-            dgv_sequence.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;//固定表头
-            dgv_sequence.RowHeadersVisible = false;//hide first columns
-            dgv_sequence.BackgroundColor = Color.White;
-            dgv_sequence.AllowUserToResizeRows = false;//固定行间距
-            dgv_sequence.AllowUserToAddRows = false;//删除最后一行空白行
-            dgv_sequence.SelectionMode = DataGridViewSelectionMode.FullRowSelect;//选中整行
-            dgv_sequence.MultiSelect = false;
-            dgv_sequence.CellBorderStyle = DataGridViewCellBorderStyle.None;
-
-            foreach (DataGridViewColumn column in dgv_sequence.Columns)
-            {
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; //自动伸缩
-                column.SortMode = DataGridViewColumnSortMode.NotSortable; //不能排序
-            }
-            #endregion
-
-            #region Default Sequences 
-            if (tabNumber == 0)
-            {
-                dgv_sequence.Name = "DefaultSequenceList";
-                tabPage_mainSequence.Controls.Clear();
-                tabPage_mainSequence.Controls.Add(dgv_sequence);
-            }
-            #endregion
-
-            #region User Sequences
-            else //tabNumber == 1
-            {
-                dgv_sequence.Name = "UserSequenceList";
-                tabPage_userSequence.Controls.Clear();
-                tabPage_userSequence.Controls.Add(dgv_sequence);
-
-                #region 事件
-                dgv_sequence.MouseClick += Dgv_Seq_MouseClick;
-                #endregion
-            }
-            #endregion
-
-            #region 事件
-            dgv_sequence.CurrentCellChanged += Dgv_Seq_CurrentCellChanged;
-            dgv_sequence.CellValueChanged += Dgv_Seq_CellValueChanged;
-            #endregion
-        }
-
         private void CreateTDGVParameter()
         {
             #region 属性
@@ -628,8 +376,6 @@ namespace TestStation
             _paramTable.CellContentClick += TdgvParamCellContentClick;
             _paramTable.CellBeginEdit += TdgvParamCellEnterEdit;
         }
-
-        #endregion
 
         #endregion
 
@@ -822,8 +568,19 @@ namespace TestStation
 
         private void addSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tabCon_Seq.SelectedTab = tabPage_userSequence;
-            AddSubSequence();
+            if (null == CurrentSeq)
+            {
+                return;
+            }
+            string sequenceName;
+            int index = 1;
+            do
+            {
+                sequenceName = $"Sequence{index++}";
+            } while (SequenceGroup.Sequences.Any(item => item.Name.Equals(sequenceName)));
+            TestflowDesigntimeSession.AddSequence(sequenceName, "", SequenceGroup.Sequences.Count);
+            TreeNode currentNode = FindTreeNode(CurrentSeq);
+            currentNode.Parent.Nodes.Add(sequenceName);
         }
 
         private void actionToolStripMenuItem2_Click(object sender, EventArgs e)
@@ -1260,13 +1017,6 @@ namespace TestStation
             }
         }
 
-        private void timerStatus_Tick(object sender, EventArgs e)
-        {
-            DateTime time = DateTime.Now;
-            StatusDate.Text = time.ToString("yyyy-MM-dd");
-            StatusTime.Text = time.ToString("HH:mm:ss");
-        }
-
         #region Variable相关事件
 
         private void Dgv_Variable_MouseClick(object sender, MouseEventArgs e)
@@ -1657,7 +1407,7 @@ namespace TestStation
             {
                 _stepTable.CurrentCell = null;
             }
-            CreateDGVVariable(1);
+            
         }
 
         private void Dgv_Seq_MouseClick(object sender, MouseEventArgs e)
@@ -2163,32 +1913,6 @@ namespace TestStation
             }
         }
 
-        private void gotoSubSequenceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ISequenceStep step = CurrentStep;
-            if (null == step || !step.SubSteps[0].Name.Contains(Constants.SeqCallType))
-            {
-                return;
-            }
-            string[] nameElems = step.SubSteps[0].Name.Split(':');
-            if (nameElems.Length != 2)
-            {
-                return;
-            }
-            tabCon_Seq.SelectTab(tabPage_userSequence);
-            string callSeqName = nameElems[1];
-            DataGridView usrSeqList = (DataGridView)tabPage_userSequence.Controls[0];
-            foreach (DataGridViewRow row in usrSeqList.Rows)
-            {
-                if (row.Cells[0].Value.Equals(callSeqName))
-                {
-                    row.Selected = true;
-                    usrSeqList.CurrentCell = row.Cells[0];
-                    break;
-                }
-            }
-        }
-
         private void ToolStripMenuItem_insertStep_Click(object sender, EventArgs e)
         {
 
@@ -2206,7 +1930,7 @@ namespace TestStation
         private void StepTypecomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string stepType = GetCurrentStepType();
-            string newStepType = comboBox_StepType.SelectedItem.ToString();
+            string newStepType = comboBox_runType.SelectedItem.ToString();
             if (stepType.Equals(newStepType))
             {
                 return;
@@ -2261,7 +1985,7 @@ namespace TestStation
             {
                 return;
             }
-            bool recordResult = checkBox_RecordResult.Checked;
+            bool recordResult = checkBox_RecordStatus.Checked;
             bool breakIfFailed = checkBox_breakIfFailed.Checked;
             bool skipStep = checkBox_skipStep.Checked;
             ModifyStepExecutionProperties(CurrentStep, recordResult, breakIfFailed, skipStep);
@@ -2273,7 +1997,7 @@ namespace TestStation
             {
                 return;
             }
-            bool recordResult = checkBox_RecordResult.Checked;
+            bool recordResult = checkBox_RecordStatus.Checked;
             bool breakIfFailed = checkBox_breakIfFailed.Checked;
             bool skipStep = checkBox_skipStep.Checked;
             ModifyStepExecutionProperties(CurrentStep, recordResult, breakIfFailed, skipStep);
@@ -2464,7 +2188,7 @@ namespace TestStation
                 ShowMessage($"{variableName} is not a valid variable.", "Condition", MessageBoxIcon.Warning);
                 return;
             }
-            conditionStep.Description = Utility.GetConditionStepDescription(comboBox_conditionType.Text, variableName);
+            conditionStep.Description = Utility.GetConditionStepDescription(comboBox_asserFailedAction.Text, variableName);
         }
 
         private void button_conditionVarSelect_Click(object sender, EventArgs e)
@@ -2487,7 +2211,7 @@ namespace TestStation
                 return;
             }
             ISequenceStep currentStep = CurrentStep;
-            bool conditionEnabled = comboBox_conditionType.SelectedIndex != 0;
+            bool conditionEnabled = comboBox_asserFailedAction.SelectedIndex != 0;
             button_conditionVarSelect.Enabled = conditionEnabled;
             textBox_conditionVar.Enabled = conditionEnabled;
             if (_internalOperation || null == currentStep)
@@ -2499,7 +2223,7 @@ namespace TestStation
 
             if (conditionEnabled)
             {
-                string description = Utility.GetConditionStepDescription(comboBox_conditionType.Text, textBox_conditionVar.Text);
+                string description = Utility.GetConditionStepDescription(comboBox_asserFailedAction.Text, textBox_conditionVar.Text);
                 if (null == conditionStep)
                 {
                     TestflowDesigntimeSession.AddSequenceStep(currentStep, Constants.ConditionStepName, description,
@@ -3682,89 +3406,6 @@ namespace TestStation
             _internalOperation = false;
         }
 
-        private void UpdateProperties()
-        {
-            // LoopType
-            //todo passfail 判断
-            ISequenceStep currentStep = CurrentStep;
-            if (currentStep.LoopCounter != null && currentStep.LoopCounter.MaxValue > 1)
-            {
-                LoopTypecomboBox.SelectedItem = "FixedTimes";
-                LoopTimesnumericUpDown.Value = currentStep.LoopCounter.MaxValue;
-            }
-            else if (currentStep.RetryCounter != null)
-            {
-                LoopTypecomboBox.SelectedItem = "PassTimes";
-                numericUpDown_retryTime.Value = currentStep.RetryCounter.MaxRetryTimes;
-                numericUpDown_passTimes.Value = currentStep.RetryCounter.PassTimes;
-            }
-            else
-            {
-                LoopTypecomboBox.SelectedItem = "None";
-            }
-            // TestType
-            string stepType = GetCurrentStepType();
-            comboBox_StepType.SelectedItem = stepType;
-
-            _internalOperation = true;
-            // Record Status和BreakIfFailed
-            checkBox_RecordResult.Checked = currentStep.RecordStatus;
-            checkBox_breakIfFailed.Checked = currentStep.BreakIfFailed;
-            checkBox_skipStep.Checked = currentStep.Behavior == RunBehavior.Skip;
-            _internalOperation = false;
-
-            // Sequence Call
-            if (stepType.Equals(Constants.SeqCallType))
-            {
-                ISequenceStep currentTypeStep = CurrentTypeStep;
-                string[] str = currentTypeStep.Name.Split(':');
-                if (str.Length > 1)
-                {
-                    // Sequence已经不存在
-                    if (!_userSequences.Contains(str[1]))
-                    {
-                        MessageBox.Show($"Sequence Call to sequence \"{str[1]}\" has been cleared since Sequence \"{str[1]}\" does not exist anymore.");
-                        currentTypeStep.Name = "Sequence Call";
-                    }
-                    else
-                    {
-                        comboBox_SequenceCall.SelectedItem = str[1];
-                    }
-                }
-            }
-
-            // Condition display
-            ISequenceStep conditionStep =
-                currentStep.SubSteps.FirstOrDefault(item => item.Name.Equals(Constants.ConditionStepName));
-            _internalOperation = true;
-            if (null != conditionStep)
-            {
-                string assertType, variable;
-                Utility.GetConditionProperty(conditionStep.Description, out assertType, out variable);
-                switch (assertType)
-                {
-                    case Constants.ConditionTrue:
-                        comboBox_conditionType.SelectedIndex = 1;
-                        textBox_conditionVar.Text = Utility.GetShowVariableName(variable, conditionStep);
-                        break;
-                    case Constants.ConditionFalse:
-                        comboBox_conditionType.SelectedIndex = 2;
-                        textBox_conditionVar.Text = Utility.GetShowVariableName(variable, conditionStep);
-                        break;
-                    default:
-                        comboBox_conditionType.SelectedIndex = 0;
-                        textBox_conditionVar.Text = string.Empty;
-                        break;
-                }
-            }
-            else
-            {
-                comboBox_conditionType.SelectedIndex = 0;
-                textBox_conditionVar.Text = string.Empty;
-            }
-            _internalOperation = false;
-        }
-
         private string GetCurrentStepType()
         {
             if (null == CurrentTypeStep)
@@ -3774,75 +3415,15 @@ namespace TestStation
             return CurrentTypeStep.Name.Contains(Constants.SeqCallType) ? Constants.SeqCallType : CurrentTypeStep.Name;
         }
 
-        private void UpdateLimit()
-        {
-            // 内部无需其他事件联带处理
-            _internalOperation = true;
-            dGV_Limit.Rows.Clear();
-            int rowIndex = 0;
-            ISequenceStep currentStep = CurrentStep;
-            foreach (ISequenceStep step in currentStep.SubSteps)
-            {
-                if (!step.Name.Contains("Limit"))
-                {
-                    continue;
-                }
-                DataGridViewRow row = new DataGridViewRow();
-                row.CreateCells(dGV_Limit);
-
-                // 空LimitStep
-                if (step.Function == null)
-                {
-                    row.SetValues("", null, "", "", "", null, "");
-                    // 除了类型选择以外，其他的列都不可用
-                    for (int i = 2; i < row.Cells.Count; i++)
-                    {
-                        row.Cells[i].ReadOnly = true;
-                    }
-                }
-                else
-                {
-                    // 除了类型选择以外，其他的列都不可用
-                    for (int i = 0; i < row.Cells.Count; i++)
-                    {
-                        row.Cells[i].ReadOnly = false;
-                    }
-                    string limitType = step.Function.MethodName.Substring(6);
-                    string limitName = step.Description;
-                    // LimitComparisonType DataSource
-                    DataGridViewComboBoxCell conditionBox =
-                        ((DataGridViewComboBoxCell) row.Cells[LimitTableCompTypeCol]);
-                    conditionBox.DataSource = Limit.GetCompareTypes(limitType);
-                    // SetRowValues
-                    IParameterDataCollection parameterData = step.Function.Parameters;
-                    if (limitType.Equals(Constants.BoolLimit))
-                    {
-                        DataGridViewComboBoxCell limitLowColumn = new DataGridViewComboBoxCell();
-                        row.Cells[LimitTableLowCol] = limitLowColumn;
-                        limitLowColumn.DataSource = new string[] {"True", "False"};
-                    }
-                    string compareType = parameterData[2].Value;
-                    bool highAvailable, unitAvailable;
-                    Limit.GetHighLowAndUnitEnable(limitType, compareType, out highAvailable, out unitAvailable);
-                    row.Cells[LimitTableHighCol].ReadOnly = !highAvailable;
-                    row.Cells[LimitTableUnitCol].ReadOnly = !unitAvailable;
-
-                    //LimitType, low, high, unit, comparisonType, expression
-                    string lowValue = parameterData[0].Value;
-                    string highValue = parameterData[1].Value;
-                    string unit = parameterData[4].Value;
-                    string expression = Utility.GetShowVariableName(parameterData[3].Value, currentStep);
-                    row.SetValues(limitName, limitType, lowValue, highValue, unit, compareType, expression);
-                }
-
-                dGV_Limit.Rows.Add(row);
-                rowIndex++;
-            }
-            _internalOperation = false;
-        }
-
         private void UpdateSettings()
         {
+            ISequenceStep step = FindSelectedStep(treeView_stepView.SelectedNode);
+            if (null == step)
+            {
+                tabControl_settings.Enabled = false;
+                tabControl_settings.SelectedIndex = 0;
+                return;
+            }
             TabPage currentTab = tabControl_settings.SelectedTab;
             if (currentTab != tabPage_runtimeInfo && null != CurrentStep)
             {
@@ -3850,15 +3431,11 @@ namespace TestStation
 
                 if (currentTab == tabpage_Properties)
                 {
-                    UpdateProperties();
+                    ShowStepInfo(step);
                 }
                 else if (currentTab == tabpage_Module)
                 {
                     UpdateModule();
-                }
-                else if (currentTab == tabpage_limit)
-                {
-                    UpdateLimit();
                 }
             }
             if (null != SequenceGroup && !tabControl_settings.Visible)
@@ -3873,7 +3450,6 @@ namespace TestStation
             // 清空Properties
             //注：StepTypeComboBox与LoopTypeComboBox没有空值，也就是不用把SelectedIndex变成-1.
             LoopTimesnumericUpDown.Value = 2;
-            comboBox_SequenceCall.SelectedIndex = -1;
 
             // 清空module
             comboBox_assembly.Text = "";
@@ -3884,9 +3460,6 @@ namespace TestStation
             comboBox_Constructor.DataSource = null;
             comboBox_Method.Text = "";
             _paramTable.Clear();
-
-            // 清空limit
-            dGV_Limit.Rows.Clear();
 
             _internalOperation = false;
         }
@@ -5286,5 +4859,267 @@ namespace TestStation
             aboutForm.ShowDialog(this);
         }
 
+        private void addSequenceToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ISequenceGroup sequenceGroup = SequenceGroup;
+            ISequence sequence = TestflowDesigntimeSession.AddSequence("", "", sequenceGroup.Sequences.Count);
+            TreeNode parentNode = FindTreeNode(sequenceGroup);
+            TreeNode newSeqNode = new TreeNode(sequence.Name);
+            parentNode.Nodes.Add(newSeqNode);
+            treeView_sequenceTree.SelectedNode = newSeqNode;
+        }
+
+        private void insertSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selectedNode = treeView_sequenceTree.SelectedNode;
+            ISequence selectedSequence = FindSelectedSequence(selectedNode);
+            if (selectedSequence.Index == CommonConst.SetupIndex || selectedSequence.Index == CommonConst.TeardownIndex)
+            {
+                return;
+            }
+            SequenceGroup.Sequences.Remove(selectedSequence);
+            selectedNode.Parent.Nodes.Remove(selectedNode);
+        }
+
+        private void deleteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selectedNode = treeView_sequenceTree.SelectedNode;
+            ISequence selectedSequence = FindSelectedSequence(selectedNode);
+            if (selectedSequence.Index == CommonConst.SetupIndex || selectedSequence.Index == CommonConst.TeardownIndex)
+            {
+                return;
+            }
+            SequenceGroup.Sequences.Remove(selectedSequence);
+            selectedNode.Parent.Nodes.Remove(selectedNode);
+        }
+
+        private TreeNode FindTreeNode(ISequenceGroup sequenceGroup)
+        {
+            return treeView_sequenceTree.Nodes[0].Nodes[0];
+        }
+
+        private TreeNode FindTreeNode(ISequence sequence)
+        {
+            TreeNode parentNode = treeView_sequenceTree.Nodes[0].Nodes[0];
+            TreeNode seqNode;
+            if (sequence.Index == CommonConst.SetupIndex)
+            {
+                seqNode = parentNode.Nodes[0];
+            }
+            else if (sequence.Index == CommonConst.TeardownIndex)
+            {
+                seqNode = parentNode.Nodes[1];
+            }
+            else
+            {
+                seqNode = parentNode.Nodes[sequence.Index + 2];
+            }
+            return seqNode;
+        }
+
+        private ISequence FindSelectedSequence(TreeNode node)
+        {
+            if (null == node)
+            {
+                return null;
+            }
+            int nodeIndex = node.Index;
+            if (node.Level == 1)
+            {
+                if (nodeIndex == 0)
+                {
+                    // TestProject SetUp
+                    return null;
+                }
+                else if (nodeIndex == 1)
+                {
+                    // TestProject TearDown
+                    return null;
+                }
+            }
+            else if (node.Level != 2)
+            {
+                return null;
+            }
+            ISequenceGroup sequenceGroup = SequenceGroup;
+            if (nodeIndex == 0)
+            {
+                return sequenceGroup.SetUp;
+            }
+            if (nodeIndex == 1)
+            {
+                return sequenceGroup.TearDown;
+            }
+            return sequenceGroup.Sequences[nodeIndex - 2];
+        }
+
+        private ISequenceStep FindSelectedStep(TreeNode node)
+        {
+            if (null == node)
+            {
+                return null;
+            }
+            Stack<TreeNode> nodeStack = new Stack<TreeNode>(5);
+            do
+            {
+                nodeStack.Push(node);
+                node = node.Parent;
+            } while (null != node);
+            ISequence currentSeq = CurrentSeq;
+            ISequenceStep step = currentSeq.Steps[nodeStack.Pop().Index];
+            for (int i = nodeStack.Count - 1; i >= 0; i--)
+            {
+                step = step.SubSteps[nodeStack.Pop().Index];
+            }
+            return step;
+        }
+
+        private void treeView_sequenceTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            ISequence selectedSequence = FindSelectedSequence(e.Node);
+            if (selectedSequence != CurrentSeq)
+            {
+                CurrentSeq = selectedSequence;
+                treeView_stepView.SelectedNode = null;
+            }
+            CurrentSeq = selectedSequence;
+            if (null != CurrentSeq)
+            {
+                ShowSteps(CurrentSeq);
+            }
+            CreateDGVVariable(1);
+        }
+
+        private void ShowSequences(ISequenceGroup sequenceGroup)
+        {
+            treeView_sequenceTree.Nodes.Clear();
+            if (null == sequenceGroup)
+            {
+                return;
+            }
+            TreeNode projectNode = treeView_sequenceTree.Nodes.Add("TestProject");
+            TreeNode seqGroupNode = projectNode.Nodes.Add(sequenceGroup.Name);
+            seqGroupNode.Nodes.Add(sequenceGroup.SetUp.Name);
+            seqGroupNode.Nodes.Add(sequenceGroup.TearDown.Name);
+            foreach (ISequence sequence in sequenceGroup.Sequences)
+            {
+                seqGroupNode.Nodes.Add(sequence.Name);
+            }
+            treeView_sequenceTree.ExpandAll();
+        }
+
+        private void ShowSteps(ISequence sequence)
+        {
+            treeView_stepView.Nodes.Clear();
+            if (null == sequence)
+            {
+                return;
+            }
+            TreeNode treeNode = treeView_stepView.Nodes.Add(sequence.Name);
+            AddStepToParent(sequence.Steps, treeNode);
+            treeView_stepView.ExpandAll();
+        }
+
+        private void AddStepToParent(ISequenceStepCollection steps, TreeNode parentNode)
+        {
+            foreach (ISequenceStep sequenceStep in steps)
+            {
+                TreeNode stepNode = parentNode.Nodes.Add(sequenceStep.Name);
+                if (sequenceStep.HasSubSteps)
+                {
+                    AddStepToParent(sequenceStep.SubSteps, stepNode);
+                }
+            }
+        }
+
+        private void ShowStepInfo(ISequenceStep step)
+        {
+            comboBox_asserFailedAction.Text = step.AssertFailedAction.ToString();
+            comboBox_invokeFailedAction.Text = step.InvokeErrorAction.ToString();
+            comboBox_runType.Text = step.Behavior.ToString();
+            if (null != step.LoopCounter)
+            {
+                LoopTypecomboBox.SelectedIndex = 1;
+                LoopTimesnumericUpDown.Value = step.LoopCounter.MaxValue;
+                LoopTimesnumericUpDown.Enabled = true;
+                numericUpDown_retryTime.Enabled = false;
+                numericUpDown_retryTime.Enabled = false;
+            }
+            else if (null != step.RetryCounter)
+            {
+                LoopTypecomboBox.SelectedIndex = 2;
+                numericUpDown_retryTime.Value = step.RetryCounter.MaxRetryTimes;
+                numericUpDown_passTimes.Value = step.RetryCounter.PassTimes;
+                LoopTimesnumericUpDown.Enabled = false;
+                numericUpDown_retryTime.Enabled = true;
+                numericUpDown_retryTime.Enabled = true;
+            }
+        }
+
+        private void treeView_stepView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            ISequenceStep selectedStep = FindSelectedStep(e.Node);
+            CurrentStep = selectedStep;
+            if (null != selectedStep)
+            {
+                ShowStepInfo(selectedStep);
+                tabControl_settings.Enabled = true;
+            }
+            else
+            {
+                tabControl_settings.Enabled = false;
+                tabControl_settings.SelectedIndex = 0;
+            }
+            UpdateSettings();
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            ISequenceStep selectedStep = FindSelectedStep(treeView_stepView.SelectedNode);
+            if (null == selectedStep)
+            {
+                return;
+            }
+            RenameForm renameForm = new RenameForm(selectedStep);
+            renameForm.ShowDialog(this);
+            if (renameForm.Name.Equals(selectedStep.Name))
+            {
+                return;
+            }
+            int index = 1;
+            ISequenceStepCollection sameLevelSteps = selectedStep.Parent is ISequence
+                ? ((ISequence) selectedStep.Parent).Steps
+                : ((ISequenceStep) selectedStep.Parent).SubSteps;
+            string newName = renameForm.Name;
+            while(sameLevelSteps.Any(item => item.Name.Equals(newName)))
+            {
+                newName = $"{renameForm.Name}{index++}";
+            }
+            selectedStep.Name = newName;
+            treeView_stepView.SelectedNode.Text = newName;
+        }
+
+        private void renameSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ISequence selectedSeq = FindSelectedSequence(treeView_sequenceTree.SelectedNode);
+            if (null == selectedSeq)
+            {
+                return;
+            }
+            RenameForm renameForm = new RenameForm(selectedSeq);
+            renameForm.ShowDialog(this);
+            if (renameForm.Name.Equals(selectedSeq.Name))
+            {
+                return;
+            }
+            int index = 1;
+            string newName = renameForm.Name;
+            while (SequenceGroup.Sequences.Any(item => item.Name.Equals(newName)))
+            {
+                newName = $"{renameForm.Name}{index++}";
+            }
+            selectedSeq.Name = newName;
+            treeView_sequenceTree.SelectedNode.Text = newName;
+        }
     }
 }
