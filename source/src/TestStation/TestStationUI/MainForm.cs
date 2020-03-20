@@ -607,18 +607,15 @@ namespace TestStation
 
         private void startTimingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddTimingStep(Constants.ActionType, Constants.StartTimeVar, Constants.StartTimingStepName);
         }
 
 
         private void endTimingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddTimingStep(Constants.ActionType, Constants.EndTimeVar, Constants.EndTimingStepName);
         }
 
         private void waitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddWaitStep(Constants.ActionType, Constants.WaitStepName);
         }
 
         private void loadLibraryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -804,125 +801,61 @@ namespace TestStation
 
         private void AddAction_Click(object sender, EventArgs e)
         {
-            AddStep(Constants.ActionType);
         }
 
         private void AddSequenceCall_Click(object sender, EventArgs e)
         {
-            AddStep(Constants.SeqCallType);
         }
 
         private void stringValueTestToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            AddStep(Constants.TestType, Constants.StringLimit);
         }
 
         private void numericLimitTestToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            AddStep(Constants.TestType, Constants.NumericLimit);
         }
 
         private void booleanTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddStep(Constants.TestType, Constants.BoolLimit);
         }
 
         private void ToolStripMenuItem_commonTest_Click(object sender, EventArgs e)
         {
-            AddStep("Test");
         }
 
         private void booleanTestToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertStep(Constants.TestType, insertIndex, Constants.BoolLimit);
         }
 
         private void numericLimitTestToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertStep(Constants.TestType, insertIndex, Constants.NumericLimit);
         }
 
         private void stringValueTestToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertStep(Constants.TestType, insertIndex, Constants.StringLimit);
-        }
-
-        private void commonTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertStep(Constants.TestType, insertIndex);
         }
 
         private void actionToolStripMenuItem3_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertStep(Constants.ActionType, insertIndex);
         }
 
         private void sequenceCallToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertStep(Constants.SeqCallType, insertIndex);
         }
 
 
         private void startTimingToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertTimingStep(Constants.ActionType, insertIndex, Constants.StartTimeVar, Constants.StartTimingStepName);
         }
 
 
         private void endTimingToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertTimingStep(Constants.ActionType, insertIndex, Constants.EndTimeVar, Constants.EndTimingStepName);
         }
 
 
         private void waitToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (null == CurrentStep)
-            {
-                return;
-            }
-            int insertIndex = CurrentStep.Index;
-            InsertWaitStep(Constants.ActionType, insertIndex, Constants.WaitStepName);
         }
 
         #endregion
@@ -1295,86 +1228,9 @@ namespace TestStation
         // Sequence
         private void tabCon_Seq_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // 判断空dgv
-            if (SequenceTable.Rows.Count == 0)
-            {
-                if (tabCon_Variable.TabPages.Count > 1)
-                {
-                    tabCon_Variable.TabPages.RemoveAt(1);
-                }
-                if (tabCon_Step.TabPages.Count > 0)
-                {
-                    tabCon_Step.TabPages.RemoveAt(0);
-                }
-                tabControl_settings.Visible = false;
-            }
-            else
-            {
-                // Show step
-                ShowSteps();
-
-                // CreateDGVvariable
-                CreateDGVVariable(1);
-            }
         }
 
         #region Sequence表格事件
-
-        //sequence改名字
-        private void Dgv_Seq_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            // 如果不是名称的列变更，则返回
-            if (e.ColumnIndex != SeqTableNameCol)
-            {
-                return;
-            }
-            string newName = SequenceTable[e.ColumnIndex, e.RowIndex].Value.ToString();
-            string lastSeqName = CurrentSeq.Name;
-            if (!IsValidSequenceName(newName))
-            {
-                ShowMessage("Invalid sequence name", "Rename", MessageBoxIcon.Error);
-                SequenceTable[e.ColumnIndex, e.RowIndex].Value = lastSeqName;
-                return;
-            }
-
-            // 如果TabPages里面有此sequence的键名，替换成新的键名
-            tabPage_stepData.Name = newName;
-            tabPage_stepData.Text = "Steps:" + newName;
-
-            string lastSeqCallName = $"{Constants.SeqCallType}:{lastSeqName}";
-            string newSeqCallName = $"{Constants.SeqCallType}:{newName}";
-            ModifySequenceCallName(SequenceGroup.SetUp, lastSeqCallName, newSeqCallName);
-            ModifySequenceCallName(SequenceGroup.TearDown, lastSeqCallName, newSeqCallName);
-            foreach (ISequence sequence in SequenceGroup.Sequences)
-            {
-                ModifySequenceCallName(sequence, lastSeqCallName, newSeqCallName);
-            }
-            CurrentSeq.Name = newName;
-            UpdateSequenceCallList();
-            ISequenceStep currentStep = CurrentStep;
-            if (null != currentStep && Utility.IsSequenceCall(currentStep))
-            {
-                comboBox_SequenceCall.Text = Utility.GetSequenceCallName(currentStep.SubSteps[0].Name);
-            }
-        }
-
-        private void ModifySequenceCallName(ISequence sequence, string lastSeqCallName, string newSeqCallName)
-        {
-            foreach (ISequenceStep step in sequence.Steps)
-            {
-                if (null != step.SubSteps && step.SubSteps.Count > 0 && step.SubSteps[0].Name.Equals(lastSeqCallName))
-                {
-                    step.SubSteps[0].Name = newSeqCallName;
-                    // 连带修改Description
-                    StepInfoCreator.SetStepDescriptionInfo(step, Constants.SeqCallType);
-                }
-            }
-        }
-
-        private bool IsValidSequenceName(string name)
-        {
-            return !string.IsNullOrWhiteSpace(name) && !SequenceGroup.Sequences.Any(item => item.Name.Equals(name));
-        }
 
         private bool IsValidVariableName(string name, IVariableCollection variables)
         {
@@ -1389,535 +1245,6 @@ namespace TestStation
                    name.Equals(Constants.SerialNoVarName) || name.Equals(Constants.DutIndexVarName) ||
                    name.Equals(Constants.UutIndexVar);
         }
-
-        //sequence列表选择改变
-        private void Dgv_Seq_CurrentCellChanged(object sender, EventArgs e)
-        {
-            // 删除Sequence以后CurrentRow为null
-            if (SequenceTable.CurrentRow == null)
-            {
-                return;
-            }
-            ShowSteps();
-            if (_stepTable.RowCount > 0)
-            {
-                _stepTable.CurrentCell = _stepTable.Rows[0].Cells[StepTableNameCol];
-            }
-            else
-            {
-                _stepTable.CurrentCell = null;
-            }
-            
-        }
-
-        private void Dgv_Seq_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                SequenceTable.ContextMenuStrip = this.cMS_DgvSeq;
-            }
-        }
-
-        #endregion
-
-        #region Step表格关联事件
-
-        private bool _stepRowChange = false;
-
-        private void Dgv_Step_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right || tabCon_Step.TabCount < 2)
-            {
-                return;
-            }
-            DataGridView stepTable = _stepTable;
-            int selectedIndex = -1;
-            for (int i = 0; i < stepTable.RowCount; i++)
-            {
-                Rectangle displayRectangle = stepTable.GetRowDisplayRectangle(i, true);
-                if (displayRectangle.Top <= e.Y && displayRectangle.Bottom >= e.Y)
-                {
-                    selectedIndex = i;
-                    break;
-                }
-            }
-            if (selectedIndex == -1)
-            {
-                if (stepTable.RowCount == 0)
-                {
-                    return;
-                }
-                selectedIndex = stepTable.RowCount - 1;
-            }
-            stepTable.CurrentCell = stepTable.Rows[selectedIndex].Cells[StepTableNameCol];
-        }
-        
-        private void Dgv_Step_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            
-            //改name
-            if (_stepTable.Columns[e.ColumnIndex].Name.Equals("StepName"))
-            {
-                CurrentSeq.Steps[e.RowIndex].Name = _stepTable.Rows[e.RowIndex].Cells["StepName"].Value.ToString();
-            }
-            //改description
-            else if (_stepTable.Columns[e.ColumnIndex].Name.Equals("StepDescription"))
-            {
-                CurrentStep.Description = _stepTable.Rows[e.RowIndex].Cells["StepDescription"].Value.ToString();
-            }
-        }
-
-        private void cMS_DgvStep_Opening(object sender, CancelEventArgs e)
-        {
-            ISequenceStep step = CurrentStep;
-            bool isSequenceCall = (null != step && step.SubSteps[0].Name.Contains(Constants.SeqCallType));
-            ToolStripMenuItem_gotoSubSequence.Visible = isSequenceCall;
-            ToolStripMenuItem_gotoSubSequence.Enabled = isSequenceCall;
-        }
-
-        //step行改变
-        private void Dgv_Step_SelectionChanged(object sender, EventArgs e)
-        {
-            if (_stepTable.CurrentRow == null || _stepTable.CurrentRow.Index < 0 || _internalOperation)
-            {
-                return;
-            }
-            ShowValidSettingPages(GetCurrentStepType());
-            _stepRowChange = true;
-            UpdateSettings();
-            _stepRowChange = false;
-        }
-        
-        //添加步骤
-        private void AddStep(string stepType, string limitType = null)
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            _internalOperation = true;
-
-            string stepName;
-            // 获取可用的step名称
-            do
-            {
-                _currentStepId ++;
-                stepName = "Step" + _currentStepId;
-            }
-            while (CurrentSeq.Steps.Any(item => item.Name.Equals(stepName)));
-
-            // 添加新的行，记录新行的位置
-            int index = _stepTable.Rows.Add(GetImage(stepType), GetShowStepName(stepName), "", "", "", "", "");
-            _stepTable.Rows[index].Selected = true;//选择新添加的行
-            _stepTable.CurrentCell = _stepTable.Rows[index].Cells[0];//移动箭头
-
-            // Testflow: 添加step
-            ISequenceStep currentStep = TestflowDesigntimeSession.AddSequenceStep(CurrentSeq, stepName, "", index);
-            currentStep.RecordStatus = true;
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, stepType, "", 0);
-            SetStepProperty(currentStep, stepType);
-
-            // 清空_currentDescriptions
-            _currentComDescription = null;
-            _currentClassDescription = null;
-
-            // 展示空的settings
-            ShowValidSettingPages(GetCurrentStepType());
-            UpdateSettings();
-
-            _internalOperation = false;
-
-            if (null != limitType)
-            {
-                AddLimitFunction(currentStep, limitType);
-            }
-
-            currentStep.AssertFailedAction = FailedAction.Continue;
-            currentStep.InvokeErrorAction = FailedAction.BreakLoop;
-        }
-
-        private void SetStepProperty(ISequenceStep step, string stepType)
-        {
-            bool breakIfFailed = false;
-            bool recordStatus = false;
-            switch (stepType)
-            {
-                case Constants.ActionType:
-                    breakIfFailed = _globalInfo.ConfigManager.GetConfig<bool>("ActionBreakIfFailed");
-                    recordStatus = _globalInfo.ConfigManager.GetConfig<bool>("ActionRecordStatus");
-                    break;
-                case Constants.TestType:
-                    breakIfFailed = _globalInfo.ConfigManager.GetConfig<bool>("TestBreakIfFailed");
-                    recordStatus = _globalInfo.ConfigManager.GetConfig<bool>("TestRecordStatus");
-                    break;
-                case Constants.SeqCallType:
-                    breakIfFailed = _globalInfo.ConfigManager.GetConfig<bool>("SeqCallBreakIfFailed");
-                    recordStatus = _globalInfo.ConfigManager.GetConfig<bool>("SeqCallRecordStatus");
-                    break;
-                default:
-                    break;
-            }
-            step.BreakIfFailed = breakIfFailed;
-            step.RecordStatus = recordStatus;
-            if (null != step.SubSteps)
-            {
-                foreach (ISequenceStep subStep in step.SubSteps)
-                {
-                    subStep.BreakIfFailed = breakIfFailed;
-                    subStep.RecordStatus = recordStatus;
-                }
-            }
-        }
-
-        //添加步骤
-        private void AddTimingStep(string stepType, string timingVariable, string defaultStepName)
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            _internalOperation = true;
-
-            // 获取可用的step名称
-            string stepName = defaultStepName;
-            while (CurrentSeq.Steps.Any(item => item.Name.Equals(stepName)))
-            {
-                stepName = defaultStepName + _currentStepId;
-                _currentStepId++;
-            }
-
-            // 添加新的行，记录新行的位置
-            int index = _stepTable.Rows.Add(GetImage(stepType), stepName, "", "", "", "", "");
-            _stepTable.Rows[index].Selected = true;//选择新添加的行
-            _stepTable.CurrentCell = _stepTable.Rows[index].Cells[0];//移动箭头
-
-            // Testflow: 添加step
-            ISequenceStep currentStep = TestflowDesigntimeSession.AddSequenceStep(CurrentSeq, stepName, "", index);
-            currentStep.RecordStatus = true;
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, stepType, "", 0);
-            IFunctionData timingFunction = GetStartTimingFunction();
-            ISequenceStep timingStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, timingFunction, Constants.MethodStepName, 
-                Constants.MethodStepName, 1);
-            TestflowDesigntimeSession.SetReturn(timingVariable, timingStep);
-            // 更新Settings和Description
-            StepInfoCreator.SetStepDescriptionInfo(currentStep, stepType);
-            StepInfoCreator.SetStepSettingInfo(currentStep, stepType);
-            _stepTable.Rows[index].Cells[StepTableDescCol].Value = currentStep.Description;
-            _stepTable.Rows[index].Cells[StepTableSettingCol].Value = currentStep.SubSteps[0].Description;
-
-            SetStepProperty(currentStep, stepType);
-
-            // 如果变量不存在则创建
-            CreateDefaultVariable();
-
-            // 清空_currentDescriptions
-            _currentComDescription = null;
-            _currentClassDescription = null;
-
-            // 展示空的settings
-            ShowValidSettingPages(GetCurrentStepType());
-            UpdateSettings();
-
-            _internalOperation = false;
-
-            // 默认断言失败后继续执行，调用出现异常，则进入下次loop
-            currentStep.AssertFailedAction = FailedAction.Continue;
-            currentStep.InvokeErrorAction = FailedAction.BreakLoop;
-        }
-
-        //添加等待步骤
-        private void AddWaitStep(string stepType, string defaultStepName)
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            _internalOperation = true;
-
-            // 获取可用的step名称
-            string stepName = defaultStepName;
-            ISequence parentSequence = CurrentSeq;
-            while (parentSequence.Steps.Any(item => item.Name.Equals(stepName)))
-            {
-                stepName = defaultStepName + _currentStepId;
-                _currentStepId++;
-            }
-
-            // 添加新的行，记录新行的位置
-            int index = _stepTable.Rows.Add(GetImage(stepType), stepName, "", "", "", "", "");
-            _stepTable.Rows[index].Selected = true;//选择新添加的行
-            _stepTable.CurrentCell = _stepTable.Rows[index].Cells[0];//移动箭头
-
-            // Testflow: 添加step
-            ISequenceStep currentStep = TestflowDesigntimeSession.AddSequenceStep(parentSequence, stepName, "", index);
-            currentStep.RecordStatus = true;
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, stepType, "", 0);
-            IFunctionData timingFunction = GetWaitFunction();
-            ISequenceStep timingStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, timingFunction, Constants.MethodStepName,
-                Constants.MethodStepName, 1);
-            timingStep.Function.Parameters[0].Value = Constants.DefaultWaitTime;
-            timingStep.Function.Parameters[0].ParameterType = ParameterType.Value;
-            // 更新Settings和Description
-            StepInfoCreator.SetStepDescriptionInfo(currentStep, stepType);
-            StepInfoCreator.SetStepSettingInfo(currentStep, stepType);
-            _stepTable.Rows[index].Cells[StepTableDescCol].Value = currentStep.Description;
-            _stepTable.Rows[index].Cells[StepTableSettingCol].Value = currentStep.SubSteps[0].Description;
-
-            SetStepProperty(currentStep, stepType);
-
-            // 清空_currentDescriptions
-            _currentComDescription = null;
-            _currentClassDescription = null;
-
-            // 展示空的settings
-            ShowValidSettingPages(GetCurrentStepType());
-            UpdateSettings();
-
-            _internalOperation = false;
-
-            // 默认断言失败后继续执行，调用出现异常，则进入下次loop
-            currentStep.AssertFailedAction = FailedAction.Continue;
-            currentStep.InvokeErrorAction = FailedAction.BreakLoop;
-        }
-
-        private void GetDefaultProperty(string stepType, out FailedAction failedAction, out bool recordStatus)
-        {
-            bool breakIfFailed = true;
-            if (stepType.Equals(Constants.ActionType))
-            {
-                breakIfFailed = _globalInfo.ConfigManager.GetConfig<bool>("ActionBreakIfFailed");
-                recordStatus = _globalInfo.ConfigManager.GetConfig<bool>("ActionRecordStatus");
-            }
-            else if (stepType.Equals(Constants.TestType))
-            {
-                breakIfFailed = _globalInfo.ConfigManager.GetConfig<bool>("TestBreakIfFailed");
-                recordStatus = _globalInfo.ConfigManager.GetConfig<bool>("TestRecordStatus");
-            }
-            else
-            {
-                breakIfFailed = _globalInfo.ConfigManager.GetConfig<bool>("SeqCallBreakIfFailed");
-                recordStatus = _globalInfo.ConfigManager.GetConfig<bool>("SeqCallRecordStatus");
-            }
-            failedAction = breakIfFailed ? FailedAction.NextLoop : FailedAction.Continue;
-        }
-
-        private IFunctionData GetStartTimingFunction()
-        {
-            IList<IFuncInterfaceDescription> funcList =
-                _testflowDesigntimeService.Components["TestStationLimit"].Classes.First(
-                    item => item.Name.Equals("Timing")).Functions;
-
-            return _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(
-                    funcList.FirstOrDefault(item => item.Name.Equals("StartTiming")));
-        }
-
-        private IFunctionData GetWaitFunction()
-        {
-            IList<IFuncInterfaceDescription> funcList =
-                _testflowDesigntimeService.Components["TestStationLimit"].Classes.First(
-                    item => item.Name.Equals("Timing")).Functions;
-
-            return _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(
-                    funcList.FirstOrDefault(item => item.Name.Equals("Sleep")));
-        }
-
-        //添加步骤
-        private void InsertStep(string stepType, int insertIndex, string limitType = null)
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            _internalOperation = true;
-
-            string stepName;
-            // 获取可用的step名称
-            do
-            {
-                _currentStepId++;
-                stepName = "Step" + _currentStepId;
-            }
-            while (CurrentSeq.Steps.Any(item => item.Name.Equals(stepName)));
-
-            // 添加新的行，记录新行的位置
-            _stepTable.Rows.Insert(insertIndex, GetImage(stepType), GetShowStepName(stepName), "", "", "", "", "");
-            _stepTable.Rows[insertIndex].Selected = true;//选择新添加的行
-            _stepTable.CurrentCell = _stepTable.Rows[insertIndex].Cells[0];//移动箭头
-
-            // Testflow: 添加step
-            ISequenceStep currentStep = TestflowDesigntimeSession.AddSequenceStep(CurrentSeq, stepName, "", insertIndex);
-            currentStep.RecordStatus = true;
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, stepType, "", 0);
-
-            SetStepProperty(currentStep, stepType);
-
-            // 清空_currentDescriptions
-            _currentComDescription = null;
-            _currentClassDescription = null;
-
-            // 展示空的settings
-            ShowValidSettingPages(GetCurrentStepType());
-            UpdateSettings();
-            _internalOperation = false;
-
-            if (null != limitType)
-            {
-                AddLimitFunction(currentStep, limitType);
-            }
-        }
-
-        //添加步骤
-        private void InsertTimingStep(string stepType, int insertIndex, string timingVariable, string defaultStepName)
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            _internalOperation = true;
-
-            // 获取可用的step名称
-            string stepName = defaultStepName;
-            while (CurrentSeq.Steps.Any(item => item.Name.Equals(stepName)))
-            {
-                stepName = defaultStepName + _currentStepId;
-                _currentStepId++;
-            }
-
-            // 添加新的行，记录新行的位置
-            _stepTable.Rows.Insert(insertIndex, GetImage(stepType), stepName, "", "", "", "", "");
-            _stepTable.Rows[insertIndex].Selected = true;//选择新添加的行
-            _stepTable.CurrentCell = _stepTable.Rows[insertIndex].Cells[0];//移动箭头
-
-            // Testflow: 添加step
-            ISequenceStep currentStep = TestflowDesigntimeSession.AddSequenceStep(CurrentSeq, stepName, "", insertIndex);
-            currentStep.RecordStatus = true;
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, stepType, "", 0);
-            IFunctionData timingFunction = GetStartTimingFunction();
-            ISequenceStep timingStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, timingFunction, Constants.MethodStepName,
-                Constants.MethodStepName, 1);
-            TestflowDesigntimeSession.SetReturn(timingVariable, timingStep);
-            // 更新Settings和Description
-            StepInfoCreator.SetStepDescriptionInfo(currentStep, stepType);
-            StepInfoCreator.SetStepSettingInfo(currentStep, stepType);
-            _stepTable.Rows[insertIndex].Cells[StepTableDescCol].Value = currentStep.Description;
-            _stepTable.Rows[insertIndex].Cells[StepTableSettingCol].Value = currentStep.SubSteps[0].Description;
-
-            SetStepProperty(currentStep, stepType);
-
-            // 如果变量不存在则创建
-            CreateDefaultVariable();
-
-            // 清空_currentDescriptions
-            _currentComDescription = null;
-            _currentClassDescription = null;
-
-            // 展示空的settings
-            ShowValidSettingPages(GetCurrentStepType());
-            UpdateSettings();
-
-            _internalOperation = false;
-
-            // 默认断言失败后继续执行，调用出现异常，则进入下次loop
-            currentStep.AssertFailedAction = FailedAction.Continue;
-            currentStep.InvokeErrorAction = FailedAction.BreakLoop;
-        }
-
-        //添加等待步骤
-        private void InsertWaitStep(string stepType, int insertIndex, string defaultStepName)
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            _internalOperation = true;
-
-            // 获取可用的step名称
-            string stepName = defaultStepName;
-            ISequence parentSequence = CurrentSeq;
-            while (parentSequence.Steps.Any(item => item.Name.Equals(stepName)))
-            {
-                stepName = defaultStepName + _currentStepId;
-                _currentStepId++;
-            }
-
-            // 添加新的行，记录新行的位置
-            _stepTable.Rows.Insert(insertIndex, GetImage(stepType), stepName, "", "", "", "", "");
-            _stepTable.Rows[insertIndex].Selected = true;//选择新添加的行
-            _stepTable.CurrentCell = _stepTable.Rows[insertIndex].Cells[0];//移动箭头
-
-            // Testflow: 添加step
-            ISequenceStep currentStep = TestflowDesigntimeSession.AddSequenceStep(parentSequence, stepName, "", insertIndex);
-            currentStep.RecordStatus = true;
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, stepType, "", 0);
-            IFunctionData timingFunction = GetWaitFunction();
-            ISequenceStep timingStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, timingFunction, Constants.MethodStepName,
-                Constants.MethodStepName, 1);
-            timingStep.Function.Parameters[0].Value = Constants.DefaultWaitTime;
-            timingStep.Function.Parameters[0].ParameterType = ParameterType.Value;
-            // 更新Settings和Description
-            StepInfoCreator.SetStepDescriptionInfo(currentStep, stepType);
-            StepInfoCreator.SetStepSettingInfo(currentStep, stepType);
-            _stepTable.Rows[insertIndex].Cells[StepTableDescCol].Value = currentStep.Description;
-            _stepTable.Rows[insertIndex].Cells[StepTableSettingCol].Value = currentStep.SubSteps[0].Description;
-
-            SetStepProperty(currentStep, stepType);
-
-            // 清空_currentDescriptions
-            _currentComDescription = null;
-            _currentClassDescription = null;
-
-            // 展示空的settings
-            ShowValidSettingPages(GetCurrentStepType());
-            UpdateSettings();
-
-            _internalOperation = false;
-
-            // 默认断言失败后继续执行，调用出现异常，则进入下次loop
-            currentStep.AssertFailedAction = FailedAction.Continue;
-            currentStep.InvokeErrorAction = FailedAction.BreakLoop;
-        }
-
-        private void AddLimitFunction(ISequenceStep currentStep, string limitType)
-        {
-            AddDefaultLimitSubStep(currentStep);
-            _internalOperation = true;
-            dGV_Limit.Rows[0].Cells[LimitTableTypeCol].Value = limitType;
-            dGV_Limit.Rows[0].Selected = true;
-            dGV_Limit.CurrentCell = dGV_Limit.Rows[0].Cells[LimitTableTypeCol];
-            _internalOperation = false;
-            ValidateLimitTableContent(0, LimitTableTypeCol);
-        }
-
-        //删除步骤
-        private void DeleteStep_Click(object sender, EventArgs e)
-        {
-            // 没有行
-            if (_stepTable.CurrentRow == null)
-            {
-                return;
-            }
-
-            int index = _stepTable.CurrentRow.Index;
-            TestflowDesigntimeSession.RemoveSequenceStep(CurrentSeq, index);
-            _stepTable.Rows.RemoveAt(index);
-
-            if (_stepTable.Rows.Count == 0)
-            {
-                tabControl_settings.Visible = false;
-            }
-        }
-
-        private void ToolStripMenuItem_insertStep_Click(object sender, EventArgs e)
-        {
-
-        }
-
         #endregion
 
         #region Step详情-Properties页面控件事件
@@ -4871,14 +4198,18 @@ namespace TestStation
 
         private void insertSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TreeNode selectedNode = treeView_sequenceTree.SelectedNode;
-            ISequence selectedSequence = FindSelectedSequence(selectedNode);
-            if (selectedSequence.Index == CommonConst.SetupIndex || selectedSequence.Index == CommonConst.TeardownIndex)
+            ISequenceGroup sequenceGroup = SequenceGroup;
+            ISequence selectedSequence = FindSelectedSequence(treeView_sequenceTree.SelectedNode);
+            if (null == selectedSequence || selectedSequence.Index == CommonConst.SetupIndex ||
+                selectedSequence.Index == CommonConst.TeardownIndex)
             {
                 return;
             }
-            SequenceGroup.Sequences.Remove(selectedSequence);
-            selectedNode.Parent.Nodes.Remove(selectedNode);
+            ISequence sequence = TestflowDesigntimeSession.AddSequence("", "", selectedSequence.Index);
+            TreeNode parentNode = FindTreeNode(sequenceGroup);
+            TreeNode newSeqNode = new TreeNode(sequence.Name);
+            parentNode.Nodes.Insert(selectedSequence.Index, newSeqNode);
+            treeView_sequenceTree.SelectedNode = newSeqNode;
         }
 
         private void deleteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5120,6 +4451,20 @@ namespace TestStation
             }
             selectedSeq.Name = newName;
             treeView_sequenceTree.SelectedNode.Text = newName;
+        }
+
+        private void SetStepProperties()
+        {
+            ISequenceStep selectedStep = FindSelectedStep(treeView_stepView.SelectedNode);
+            if (null == selectedStep)
+            {
+                return;
+            }
+            selectedStep.Behavior = (RunBehavior) Enum.Parse(typeof (RunBehavior), comboBox_runType.Text);
+            selectedStep.AssertFailedAction =
+                (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_asserFailedAction.Text);
+            selectedStep.InvokeErrorAction =
+                (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_invokeFailedAction.Text);
         }
     }
 }

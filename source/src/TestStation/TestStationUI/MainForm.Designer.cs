@@ -34,9 +34,9 @@ namespace TestStation
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,6 +45,21 @@ namespace TestStation
             this.SaveAsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passFailTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.numericLimitTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stringValueTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.actionToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.sequenceCallToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.timingToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.startTimingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.endTimingToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.waitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.editSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configureToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -187,21 +202,6 @@ namespace TestStation
             this.insertSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.passFailTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.numericLimitTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stringValueTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.actionToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.sequenceCallToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.timingToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.startTimingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.endTimingToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.waitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.editSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_ActionMenu.SuspendLayout();
             this.toolStrip_QuickMenu.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -318,6 +318,125 @@ namespace TestStation
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addSequenceToolStripMenuItem,
+            this.addStepToolStripMenuItem,
+            this.editSequenceToolStripMenuItem,
+            this.loadLibraryToolStripMenuItem});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(42, 21);
+            this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // addSequenceToolStripMenuItem
+            // 
+            this.addSequenceToolStripMenuItem.Name = "addSequenceToolStripMenuItem";
+            this.addSequenceToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.addSequenceToolStripMenuItem.Text = "Add Subsequence";
+            this.addSequenceToolStripMenuItem.Click += new System.EventHandler(this.addSequenceToolStripMenuItem_Click);
+            // 
+            // addStepToolStripMenuItem
+            // 
+            this.addStepToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.testToolStripMenuItem,
+            this.actionToolStripMenuItem2,
+            this.sequenceCallToolStripMenuItem1,
+            this.timingToolStripMenuItem2});
+            this.addStepToolStripMenuItem.Name = "addStepToolStripMenuItem";
+            this.addStepToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.addStepToolStripMenuItem.Text = "Add Step";
+            // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.passFailTestToolStripMenuItem,
+            this.numericLimitTestToolStripMenuItem,
+            this.stringValueTestToolStripMenuItem});
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.testToolStripMenuItem.Text = "Test";
+            // 
+            // passFailTestToolStripMenuItem
+            // 
+            this.passFailTestToolStripMenuItem.Name = "passFailTestToolStripMenuItem";
+            this.passFailTestToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.passFailTestToolStripMenuItem.Text = "Boolean Test";
+            this.passFailTestToolStripMenuItem.Click += new System.EventHandler(this.booleanTestToolStripMenuItem_Click);
+            // 
+            // numericLimitTestToolStripMenuItem
+            // 
+            this.numericLimitTestToolStripMenuItem.Name = "numericLimitTestToolStripMenuItem";
+            this.numericLimitTestToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.numericLimitTestToolStripMenuItem.Text = "Numeric Limit Test";
+            this.numericLimitTestToolStripMenuItem.Click += new System.EventHandler(this.numericLimitTestToolStripMenuItem1_Click);
+            // 
+            // stringValueTestToolStripMenuItem
+            // 
+            this.stringValueTestToolStripMenuItem.Name = "stringValueTestToolStripMenuItem";
+            this.stringValueTestToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.stringValueTestToolStripMenuItem.Text = "String Value Test";
+            this.stringValueTestToolStripMenuItem.Click += new System.EventHandler(this.stringValueTestToolStripMenuItem1_Click);
+            // 
+            // actionToolStripMenuItem2
+            // 
+            this.actionToolStripMenuItem2.Name = "actionToolStripMenuItem2";
+            this.actionToolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
+            this.actionToolStripMenuItem2.Text = "Action";
+            this.actionToolStripMenuItem2.Click += new System.EventHandler(this.actionToolStripMenuItem2_Click);
+            // 
+            // sequenceCallToolStripMenuItem1
+            // 
+            this.sequenceCallToolStripMenuItem1.Name = "sequenceCallToolStripMenuItem1";
+            this.sequenceCallToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+            this.sequenceCallToolStripMenuItem1.Text = "Sequence Call";
+            this.sequenceCallToolStripMenuItem1.Click += new System.EventHandler(this.sequenceCallToolStripMenuItem1_Click);
+            // 
+            // timingToolStripMenuItem2
+            // 
+            this.timingToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startTimingToolStripMenuItem,
+            this.endTimingToolStripMenuItem2,
+            this.waitToolStripMenuItem2});
+            this.timingToolStripMenuItem2.Name = "timingToolStripMenuItem2";
+            this.timingToolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
+            this.timingToolStripMenuItem2.Text = "Timing";
+            // 
+            // startTimingToolStripMenuItem
+            // 
+            this.startTimingToolStripMenuItem.Name = "startTimingToolStripMenuItem";
+            this.startTimingToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.startTimingToolStripMenuItem.Text = "Start Timing";
+            this.startTimingToolStripMenuItem.Click += new System.EventHandler(this.startTimingToolStripMenuItem_Click);
+            // 
+            // endTimingToolStripMenuItem2
+            // 
+            this.endTimingToolStripMenuItem2.Name = "endTimingToolStripMenuItem2";
+            this.endTimingToolStripMenuItem2.Size = new System.Drawing.Size(146, 22);
+            this.endTimingToolStripMenuItem2.Text = "End Timing";
+            this.endTimingToolStripMenuItem2.Click += new System.EventHandler(this.endTimingToolStripMenuItem_Click);
+            // 
+            // waitToolStripMenuItem2
+            // 
+            this.waitToolStripMenuItem2.Name = "waitToolStripMenuItem2";
+            this.waitToolStripMenuItem2.Size = new System.Drawing.Size(146, 22);
+            this.waitToolStripMenuItem2.Text = "Wait";
+            this.waitToolStripMenuItem2.Click += new System.EventHandler(this.waitToolStripMenuItem_Click);
+            // 
+            // editSequenceToolStripMenuItem
+            // 
+            this.editSequenceToolStripMenuItem.Name = "editSequenceToolStripMenuItem";
+            this.editSequenceToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.editSequenceToolStripMenuItem.Text = "Edit Sequence";
+            this.editSequenceToolStripMenuItem.Click += new System.EventHandler(this.editSequenceToolStripMenuItem_Click);
+            // 
+            // loadLibraryToolStripMenuItem
+            // 
+            this.loadLibraryToolStripMenuItem.Name = "loadLibraryToolStripMenuItem";
+            this.loadLibraryToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.loadLibraryToolStripMenuItem.Text = "Load Library";
+            this.loadLibraryToolStripMenuItem.Click += new System.EventHandler(this.loadLibraryToolStripMenuItem_Click);
             // 
             // configureToolStripMenuItem1
             // 
@@ -517,7 +636,6 @@ namespace TestStation
             this.toolStripMenuItem3});
             this.cMS_DgvStep.Name = "cMS_DgvStep";
             this.cMS_DgvStep.Size = new System.Drawing.Size(154, 92);
-            this.cMS_DgvStep.Opening += new System.ComponentModel.CancelEventHandler(this.cMS_DgvStep_Opening);
             // 
             // Menu_AddStep
             // 
@@ -616,7 +734,6 @@ namespace TestStation
             this.ToolStripMenuItem_insertStep.Name = "ToolStripMenuItem_insertStep";
             this.ToolStripMenuItem_insertStep.Size = new System.Drawing.Size(153, 22);
             this.ToolStripMenuItem_insertStep.Text = "Insert Step";
-            this.ToolStripMenuItem_insertStep.Click += new System.EventHandler(this.ToolStripMenuItem_insertStep_Click);
             // 
             // testToolStripMenuItem1
             // 
@@ -699,7 +816,6 @@ namespace TestStation
             this.Menu_DeleteStep.Name = "Menu_DeleteStep";
             this.Menu_DeleteStep.Size = new System.Drawing.Size(153, 22);
             this.Menu_DeleteStep.Text = "Delete Step";
-            this.Menu_DeleteStep.Click += new System.EventHandler(this.DeleteStep_Click);
             // 
             // toolStripMenuItem3
             // 
@@ -767,9 +883,9 @@ namespace TestStation
             this.label_invokeFailedLabel.AutoSize = true;
             this.label_invokeFailedLabel.Location = new System.Drawing.Point(201, 87);
             this.label_invokeFailedLabel.Name = "label_invokeFailedLabel";
-            this.label_invokeFailedLabel.Size = new System.Drawing.Size(131, 12);
+            this.label_invokeFailedLabel.Size = new System.Drawing.Size(125, 12);
             this.label_invokeFailedLabel.TabIndex = 7;
-            this.label_invokeFailedLabel.Text = "Invoke Failed Action:";
+            this.label_invokeFailedLabel.Text = "Invoke Error Action:";
             // 
             // label_runType
             // 
@@ -1170,14 +1286,14 @@ namespace TestStation
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1192,8 +1308,8 @@ namespace TestStation
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1201,8 +1317,8 @@ namespace TestStation
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -1791,125 +1907,6 @@ namespace TestStation
             this.renameSequenceToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.renameSequenceToolStripMenuItem.Text = "Rename Sequence";
             this.renameSequenceToolStripMenuItem.Click += new System.EventHandler(this.renameSequenceToolStripMenuItem_Click);
-            // 
-            // addSequenceToolStripMenuItem
-            // 
-            this.addSequenceToolStripMenuItem.Name = "addSequenceToolStripMenuItem";
-            this.addSequenceToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.addSequenceToolStripMenuItem.Text = "Add Subsequence";
-            this.addSequenceToolStripMenuItem.Click += new System.EventHandler(this.addSequenceToolStripMenuItem_Click);
-            // 
-            // addStepToolStripMenuItem
-            // 
-            this.addStepToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.testToolStripMenuItem,
-            this.actionToolStripMenuItem2,
-            this.sequenceCallToolStripMenuItem1,
-            this.timingToolStripMenuItem2});
-            this.addStepToolStripMenuItem.Name = "addStepToolStripMenuItem";
-            this.addStepToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.addStepToolStripMenuItem.Text = "Add Step";
-            // 
-            // testToolStripMenuItem
-            // 
-            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.passFailTestToolStripMenuItem,
-            this.numericLimitTestToolStripMenuItem,
-            this.stringValueTestToolStripMenuItem});
-            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.testToolStripMenuItem.Text = "Test";
-            // 
-            // passFailTestToolStripMenuItem
-            // 
-            this.passFailTestToolStripMenuItem.Name = "passFailTestToolStripMenuItem";
-            this.passFailTestToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.passFailTestToolStripMenuItem.Text = "Boolean Test";
-            this.passFailTestToolStripMenuItem.Click += new System.EventHandler(this.booleanTestToolStripMenuItem_Click);
-            // 
-            // numericLimitTestToolStripMenuItem
-            // 
-            this.numericLimitTestToolStripMenuItem.Name = "numericLimitTestToolStripMenuItem";
-            this.numericLimitTestToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.numericLimitTestToolStripMenuItem.Text = "Numeric Limit Test";
-            this.numericLimitTestToolStripMenuItem.Click += new System.EventHandler(this.numericLimitTestToolStripMenuItem1_Click);
-            // 
-            // stringValueTestToolStripMenuItem
-            // 
-            this.stringValueTestToolStripMenuItem.Name = "stringValueTestToolStripMenuItem";
-            this.stringValueTestToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.stringValueTestToolStripMenuItem.Text = "String Value Test";
-            this.stringValueTestToolStripMenuItem.Click += new System.EventHandler(this.stringValueTestToolStripMenuItem1_Click);
-            // 
-            // actionToolStripMenuItem2
-            // 
-            this.actionToolStripMenuItem2.Name = "actionToolStripMenuItem2";
-            this.actionToolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
-            this.actionToolStripMenuItem2.Text = "Action";
-            this.actionToolStripMenuItem2.Click += new System.EventHandler(this.actionToolStripMenuItem2_Click);
-            // 
-            // sequenceCallToolStripMenuItem1
-            // 
-            this.sequenceCallToolStripMenuItem1.Name = "sequenceCallToolStripMenuItem1";
-            this.sequenceCallToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
-            this.sequenceCallToolStripMenuItem1.Text = "Sequence Call";
-            this.sequenceCallToolStripMenuItem1.Click += new System.EventHandler(this.sequenceCallToolStripMenuItem1_Click);
-            // 
-            // timingToolStripMenuItem2
-            // 
-            this.timingToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startTimingToolStripMenuItem,
-            this.endTimingToolStripMenuItem2,
-            this.waitToolStripMenuItem2});
-            this.timingToolStripMenuItem2.Name = "timingToolStripMenuItem2";
-            this.timingToolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
-            this.timingToolStripMenuItem2.Text = "Timing";
-            // 
-            // startTimingToolStripMenuItem
-            // 
-            this.startTimingToolStripMenuItem.Name = "startTimingToolStripMenuItem";
-            this.startTimingToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.startTimingToolStripMenuItem.Text = "Start Timing";
-            this.startTimingToolStripMenuItem.Click += new System.EventHandler(this.startTimingToolStripMenuItem_Click);
-            // 
-            // endTimingToolStripMenuItem2
-            // 
-            this.endTimingToolStripMenuItem2.Name = "endTimingToolStripMenuItem2";
-            this.endTimingToolStripMenuItem2.Size = new System.Drawing.Size(146, 22);
-            this.endTimingToolStripMenuItem2.Text = "End Timing";
-            this.endTimingToolStripMenuItem2.Click += new System.EventHandler(this.endTimingToolStripMenuItem_Click);
-            // 
-            // waitToolStripMenuItem2
-            // 
-            this.waitToolStripMenuItem2.Name = "waitToolStripMenuItem2";
-            this.waitToolStripMenuItem2.Size = new System.Drawing.Size(146, 22);
-            this.waitToolStripMenuItem2.Text = "Wait";
-            this.waitToolStripMenuItem2.Click += new System.EventHandler(this.waitToolStripMenuItem_Click);
-            // 
-            // editSequenceToolStripMenuItem
-            // 
-            this.editSequenceToolStripMenuItem.Name = "editSequenceToolStripMenuItem";
-            this.editSequenceToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.editSequenceToolStripMenuItem.Text = "Edit Sequence";
-            this.editSequenceToolStripMenuItem.Click += new System.EventHandler(this.editSequenceToolStripMenuItem_Click);
-            // 
-            // loadLibraryToolStripMenuItem
-            // 
-            this.loadLibraryToolStripMenuItem.Name = "loadLibraryToolStripMenuItem";
-            this.loadLibraryToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.loadLibraryToolStripMenuItem.Text = "Load Library";
-            this.loadLibraryToolStripMenuItem.Click += new System.EventHandler(this.loadLibraryToolStripMenuItem_Click);
-            // 
-            // editToolStripMenuItem
-            // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addSequenceToolStripMenuItem,
-            this.addStepToolStripMenuItem,
-            this.editSequenceToolStripMenuItem,
-            this.loadLibraryToolStripMenuItem});
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(42, 21);
-            this.editToolStripMenuItem.Text = "Edit";
             // 
             // MainForm
             // 
