@@ -503,6 +503,7 @@ namespace TestStation
             this.userToolStripMenuItem.Name = "userToolStripMenuItem";
             this.userToolStripMenuItem.Size = new System.Drawing.Size(47, 21);
             this.userToolStripMenuItem.Text = "User";
+            this.userToolStripMenuItem.Visible = false;
             // 
             // managerToolStripMenuItem
             // 
@@ -1841,10 +1842,6 @@ namespace TestStation
             // 
             this.openFileDialog_assembly.FileName = "Open assembly file";
             this.openFileDialog_assembly.Filter = "dll library|*.dll";
-            // 
-            // mainFormBindingSource
-            // 
-            this.mainFormBindingSource.DataSource = typeof(TestStation.MainForm);
             // 
             // contextMenuStrip_sequence
             // 

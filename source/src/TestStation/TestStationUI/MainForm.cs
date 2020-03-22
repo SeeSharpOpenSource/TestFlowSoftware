@@ -402,7 +402,6 @@ namespace TestStation
                 try
                 {
                     LoadSequence(TsfFilePath);
-                    ShowValidSettingPages(GetCurrentStepType());
                 }
                 catch (ApplicationException ex)
                 {
@@ -459,23 +458,6 @@ namespace TestStation
 
         private void SessionChangedAction()
         {
-            AuthenticationSession session = _globalInfo.Session;
-            StatusUseValue.Text = session.UserName;
-            toolStripStatusLabel_userGroup.Text = session.UserGroup.ToString();
-            if (session.HasAuthority(AuthorityDefinition.CreateSequence) &&
-                session.HasAuthority(AuthorityDefinition.EditSequence))
-            {
-                viewController_Main.State = RunState.EditIdle.ToString();
-            }
-            else if (session.HasAuthority(AuthorityDefinition.RunSequence))
-            {
-                viewController_Main.State = RunState.RunIdle.ToString();
-            }
-            else
-            {
-                ShowMessage("Current session cannot operation sequence", "Authentication", MessageBoxIcon.Error);
-                this.Dispose();
-            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -508,7 +490,6 @@ namespace TestStation
             try
             {
                 LoadSequence(openFileDialog_sequence.FileName);
-                ShowValidSettingPages(GetCurrentStepType());
             }
             catch (Exception ex)
             {
@@ -524,7 +505,7 @@ namespace TestStation
             }
             try
             {
-                _globalInfo.Session.CheckAuthority(AuthorityDefinition.EditSequence);
+//                _globalInfo.Session.CheckAuthority(AuthorityDefinition.EditSequence);
                 SaveSequence(SequenceGroup.Info.SequenceGroupFile);
             }
             catch (ApplicationException ex)
@@ -687,26 +668,10 @@ namespace TestStation
 
         private void managerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AuthenticationSession session = AuthenticationManage.ShowUserManageForm(_globalInfo.Session, this);
-            if (null == session)
-            {
-                MessageBox.Show("已退出用户会话。", "用户", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close();
-            }
-            this._globalInfo.Session = session;
-            SessionChangedAction();
         }
 
         private void reloginToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AuthenticationSession session = _globalInfo.Session;
-            _globalInfo.Session = AuthenticationManage.Relogin(session);
-            if (null == _globalInfo.Session)
-            {
-                ShowMessage("Relogin failed.", "Login", MessageBoxIcon.Error);
-                this.Close();
-            }
-            SessionChangedAction();
         }
 
         #endregion
@@ -1256,54 +1221,8 @@ namespace TestStation
 
         private void StepTypecomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string stepType = GetCurrentStepType();
-            string newStepType = comboBox_runType.SelectedItem.ToString();
-            if (stepType.Equals(newStepType))
-            {
-                return;
-            }
-            ISequenceStep currentStep = CurrentStep;
-            //if (start) { return; }
-            
-            ShowValidSettingPages(newStepType);
-
-            // 修改step第一列的图标
-            DataGridView stepTable;
-            if (tabCon_Step.TabPages.Count >= 2 && null != (stepTable = tabCon_Step.TabPages[0].Controls[0] as DataGridView))
-            {
-                Image stepImage = GetImage(newStepType);
-                stepTable.Rows[currentStep.Index].Cells[StepTableIconCol].Value = stepImage;
-            }
-
-            if (_internalOperation || _stepRowChange) { return; }
-
-            #region 根据StepType修改_currentStep
-            
-            TestflowDesigntimeSession.RemoveSequenceStep(currentStep, 0);
-
-            #region Sequence Call 特殊处理
-            if (newStepType.Equals("Sequence Call"))
-            {
-                currentStep.SubSteps.Clear();
-            }
-            #endregion
-
-            #region Test 到 action 特殊处理
-            else
-            {
-                for (int n = 0; n < currentStep.SubSteps.Count; n++) if (currentStep.SubSteps[n].Name.Contains("Limit"))
-                    {
-                        TestflowDesigntimeSession.RemoveSequenceStep(currentStep, n);
-                        n--;
-                    }
-            }
-            #endregion
-
-            TestflowDesigntimeSession.AddSequenceStep(currentStep, newStepType, "", 0);
-            #endregion
-
-            RefreshCurrentStepInfo(currentStep);
-
+            if (_internalOperation) { return; }
+            SetStepProperties();
         }
 
         private void checkBox_RecordResult_CheckedChanged(object sender, EventArgs e)
@@ -1312,96 +1231,9 @@ namespace TestStation
             {
                 return;
             }
-            bool recordResult = checkBox_RecordStatus.Checked;
-            bool breakIfFailed = checkBox_breakIfFailed.Checked;
-            bool skipStep = checkBox_skipStep.Checked;
-            ModifyStepExecutionProperties(CurrentStep, recordResult, breakIfFailed, skipStep);
+            SetStepProperties();
         }
-
-        private void checkBox_breakIfFailed_CheckedChanged(object sender, EventArgs e)
-        {
-            if (null == CurrentStep || _internalOperation)
-            {
-                return;
-            }
-            bool recordResult = checkBox_RecordStatus.Checked;
-            bool breakIfFailed = checkBox_breakIfFailed.Checked;
-            bool skipStep = checkBox_skipStep.Checked;
-            ModifyStepExecutionProperties(CurrentStep, recordResult, breakIfFailed, skipStep);
-        }
-
-        private void ModifyStepExecutionProperties(ISequenceStep step, bool recodeStatus, bool breakIfFailed, bool skipStep)
-        {
-            step.RecordStatus = recodeStatus;
-            step.BreakIfFailed = breakIfFailed;
-            step.Behavior = skipStep ? RunBehavior.Skip : RunBehavior.Normal;
-            if (null != step.SubSteps)
-            {
-                foreach (ISequenceStep subStep in step.SubSteps)
-                {
-                    ModifyStepExecutionProperties(subStep, recodeStatus, breakIfFailed, skipStep);
-                }
-                RefreshCurrentStepInfo(CurrentStep);
-            }
-        }
-
-        private void ShowValidSettingPages(string stepType)
-        {
-            switch (stepType)
-            {
-                case Constants.TestType:
-                    // TODO 目前不支持序列参数，暂时封闭
-//                    if (tabControl_settings.TabPages.ContainsKey("SeqParametersTab"))
-//                    {
-//                        tabControl_settings.TabPages.Remove(tabpage_parameters);
-//                    }
-                    if (!tabControl_settings.TabPages.Contains(tabpage_Module))
-                    {
-                        tabControl_settings.TabPages.Insert(1, tabpage_Module);
-                    }
-                    if (!tabControl_settings.TabPages.Contains(tabpage_limit))
-                    {
-                        tabControl_settings.TabPages.Insert(2, tabpage_limit);
-                    }
-                    panel_SequenceCallControls.Visible = false;
-                    break;
-                case Constants.ActionType:
-                    // TODO 目前不支持序列参数，暂时封闭
-//                    if (tabControl_settings.TabPages.ContainsKey("SeqParametersTab"))
-//                    {
-//                        tabControl_settings.TabPages.Remove(tabpage_parameters);
-//                    }
-                    if (!tabControl_settings.TabPages.Contains(tabpage_Module))
-                    {
-                        tabControl_settings.TabPages.Insert(1, tabpage_Module);
-                    }
-                    if (tabControl_settings.TabPages.Contains(tabpage_limit))
-                    {
-                        tabControl_settings.TabPages.Remove(tabpage_limit);
-                    }
-                    panel_SequenceCallControls.Visible = false;
-                    break;
-                case Constants.SeqCallType:
-// TODO 目前不支持序列参数，暂时封闭
-//                    if (!tabControl_settings.TabPages.ContainsKey("SeqParametersTab"))
-//                    {
-//                        tabControl_settings.TabPages.Add(tabpage_parameters);
-//                    }
-                    if (tabControl_settings.TabPages.Contains(tabpage_Module))
-                    {
-                        tabControl_settings.TabPages.Remove(tabpage_Module);
-                    }
-                    if (tabControl_settings.TabPages.Contains(tabpage_limit))
-                    {
-                        tabControl_settings.TabPages.Remove(tabpage_limit);
-                    }
-                    panel_SequenceCallControls.Visible = true;
-                    break;
-                default:
-                    throw new Exception("Not supposed to get here.");
-            }
-        }
-
+        
         private void LoopTypecomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             _internalOperation = true;
@@ -1410,66 +1242,22 @@ namespace TestStation
             {
                 return;
             }
-            ISequenceManager sequenceManager = _globalInfo.TestflowEntity.SequenceManager;
-            switch (LoopTypecomboBox.Text)
-            {
-                case "None":
-                    currentStep.LoopCounter = null;
-                    LoopTimesnumericUpDown.Enabled = false;
-                    numericUpDown_passTimes.Enabled = false;
-                    numericUpDown_retryTime.Enabled = false;
-                    currentStep.RetryCounter = null;
-                    currentStep.LoopCounter = null;
-                    break;
-                case "FixedTimes":
-                    LoopTimesnumericUpDown.Enabled = true;
-                    numericUpDown_passTimes.Enabled = false;
-                    numericUpDown_retryTime.Enabled = false;
-                    if (!_stepRowChange)
-                    {
-                        currentStep.RetryCounter = null;
-                        if (currentStep.LoopCounter == null)
-                        {
-                            currentStep.LoopCounter = sequenceManager.CreateLoopCounter();
-                        }
-                        currentStep.LoopCounter.CounterEnabled = true;
-                        currentStep.LoopCounter.CounterEnabled = true;
-                        currentStep.LoopCounter.MaxValue = (int)LoopTimesnumericUpDown.Value;
-                    }
-                    break;
-                case "PassTimes":
-                    LoopTimesnumericUpDown.Enabled = false;
-                    numericUpDown_passTimes.Enabled = true;
-                    numericUpDown_retryTime.Enabled = true;
-                    if (!_stepRowChange)
-                    {
-                        currentStep.LoopCounter = null;
-                        if (currentStep.RetryCounter == null)
-                        {
-                            currentStep.RetryCounter = sequenceManager.CreateRetryCounter();
-                        }
-                        currentStep.RetryCounter.RetryEnabled = true;
-                        currentStep.RetryCounter.MaxRetryTimes = (int) numericUpDown_retryTime.Value;
-                        currentStep.RetryCounter.PassTimes = (int) numericUpDown_passTimes.Value;
-                    }
-                    break;
-            }
-            RefreshCurrentStepInfo(currentStep);
+            SetStepProperties();
             _internalOperation = false;
         }
 
         private void LoopTimesnumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (_internalOperation || _stepRowChange)
+            if (_internalOperation)
             {
                 return;
             }
-            CurrentStep.LoopCounter.MaxValue = Convert.ToInt32(LoopTimesnumericUpDown.Value);
+            SetStepProperties();
         }
         
         private void numericUpDown_retryTime_ValueChanged(object sender, EventArgs e)
         {
-            if (_internalOperation || _stepRowChange || null == CurrentStep?.RetryCounter)
+            if (_internalOperation)
             {
                 return;
             }
@@ -1478,57 +1266,11 @@ namespace TestStation
 
         private void numericUpDown_passTimes_ValueChanged(object sender, EventArgs e)
         {
-            if (_internalOperation || _stepRowChange || null == CurrentStep?.RetryCounter)
-            {
-                return;
-            }
-            CurrentStep.RetryCounter.PassTimes = Convert.ToInt32(numericUpDown_passTimes.Value);
-        }
-
-        private void SequencecomboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_internalOperation || _stepRowChange)
-            {
-                return;
-            }
-            CurrentTypeStep.Name = $"Sequence Call:{comboBox_SequenceCall.SelectedItem}";
-            RefreshCurrentStepInfo(CurrentStep);
-        }
-
-        private void textBox_conditionVar_TextChanged(object sender, EventArgs e)
-        {
             if (_internalOperation)
             {
                 return;
             }
-            ISequenceStep currentStep = CurrentStep;
-            ISequenceStep conditionStep =
-                currentStep.SubSteps.FirstOrDefault(item => item.Name.Equals(Constants.ConditionStepName));
-            if (null == conditionStep)
-            {
-                return;
-            }
-            bool isVariable;
-            string variableName = Utility.GetParamValue(textBox_conditionVar.Text, out isVariable);
-            if (!isVariable)
-            {
-                ShowMessage($"{variableName} is not a valid variable.", "Condition", MessageBoxIcon.Warning);
-                return;
-            }
-            conditionStep.Description = Utility.GetConditionStepDescription(comboBox_asserFailedAction.Text, variableName);
-        }
-
-        private void button_conditionVarSelect_Click(object sender, EventArgs e)
-        {
-            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, string.Empty);
-            variableForm.ShowDialog(this);
-            if (variableForm.IsCancelled)
-            {
-                return;
-            }
-            string showVariableName = Utility.GetShowVariableName(variableForm.IsGlobalVariable,
-                variableForm.Value);
-            textBox_conditionVar.Text = showVariableName;
+            CurrentStep.RetryCounter.PassTimes = Convert.ToInt32(numericUpDown_passTimes.Value);
         }
 
         private void comboBox_conditionType_SelectedIndexChanged(object sender, EventArgs e)
@@ -1537,37 +1279,7 @@ namespace TestStation
             {
                 return;
             }
-            ISequenceStep currentStep = CurrentStep;
-            bool conditionEnabled = comboBox_asserFailedAction.SelectedIndex != 0;
-            button_conditionVarSelect.Enabled = conditionEnabled;
-            textBox_conditionVar.Enabled = conditionEnabled;
-            if (_internalOperation || null == currentStep)
-            {
-                return;
-            }
-            ISequenceStep conditionStep =
-                currentStep.SubSteps.FirstOrDefault(item => item.Name.Equals(Constants.ConditionStepName));
-
-            if (conditionEnabled)
-            {
-                string description = Utility.GetConditionStepDescription(comboBox_asserFailedAction.Text, textBox_conditionVar.Text);
-                if (null == conditionStep)
-                {
-                    TestflowDesigntimeSession.AddSequenceStep(currentStep, Constants.ConditionStepName, description,
-                        currentStep.SubSteps.Count);
-                }
-                else
-                {
-                    conditionStep.Description = description;
-                }
-            }
-            else
-            {
-                if (null != conditionStep)
-                {
-                    currentStep.SubSteps.Remove(conditionStep);
-                }
-            }
+            SetStepProperties();
         }
 
         #endregion
@@ -1582,7 +1294,7 @@ namespace TestStation
                 return;
             }
 
-            if (_stepRowChange || openSign)
+            if (openSign)
             {
                 return;
             }
@@ -1629,7 +1341,7 @@ namespace TestStation
         //类选择改变：展示方法名
         private void comboBox_RootClass_Validated(object sender, EventArgs e)
         {
-            if (_stepRowChange || _internalOperation || stepSelection)
+            if (_internalOperation || stepSelection)
             {
                 return;
             }
@@ -1663,7 +1375,7 @@ namespace TestStation
 
         private void comboBox_Constructor_Validated(object sender, EventArgs e)
         {
-            if (_stepRowChange || _internalOperation || string.IsNullOrWhiteSpace(comboBox_Constructor.Text) ||
+            if (_internalOperation || string.IsNullOrWhiteSpace(comboBox_Constructor.Text) ||
                 !comboBox_Constructor.Enabled)
             {
                 return;
@@ -1721,7 +1433,7 @@ namespace TestStation
 
         private void comboBox_Method_Validated(object sender, EventArgs e)
         {
-            if (_stepRowChange || _internalOperation)
+            if (_internalOperation)
             {
                 return;
             }
@@ -2322,329 +2034,8 @@ namespace TestStation
             }
         }
 
-        #region Limit相关事件和处理
-
-        private void SetEmptyLimitStep(string testType)
-        {
-            IList<IFuncInterfaceDescription> funcList =
-                _testflowDesigntimeService.Components["TestStationLimit"].Classes.First(
-                    item => item.Name.Equals("Limit")).Functions;
-
-            IFunctionData function =
-                _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(
-                    funcList.FirstOrDefault(item => item.Name.Equals($"Assert{testType}")));
-
-            CurrentLimitStep.Function = function;
-        }
-
-        private void dGV_Limit_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (openSign || _internalOperation)
-            {
-                return;
-            }
-
-            int rowIndex = e.RowIndex;
-            int columnIndex = e.ColumnIndex;
-            if (rowIndex < 0)
-            {
-                return;
-            }
-            ValidateLimitTableContent(rowIndex, columnIndex);
-        }
-
-        // 根据变更的行号和列号，有效化对应行的数据信息
-        private void ValidateLimitTableContent(int rowIndex, int columnIndex)
-        {
-            string testType = dGV_Limit.Rows[rowIndex].Cells["LimitTestType"].Value.ToString();
-            string comparisonType = dGV_Limit.Rows[rowIndex].Cells["LimitComparisonType"].Value?.ToString();
-            string lowValue = dGV_Limit.Rows[rowIndex].Cells["LimitLow"].Value?.ToString();
-            string highValue = dGV_Limit.Rows[rowIndex].Cells["LimitHigh"].Value?.ToString();
-            string unit = dGV_Limit.Rows[rowIndex].Cells["LimitUnit"].Value?.ToString();
-            string expression = dGV_Limit.Rows[rowIndex].Cells["LimitExpression"].Value?.ToString();
-            string limitName = dGV_Limit.Rows[rowIndex].Cells["Column_limitName"].Value?.ToString();
-            ISequenceStep currentLimitStep = CurrentLimitStep;
-            switch (dGV_Limit.Columns[columnIndex].Name)
-            {
-                case "Column_limitName":
-                    if (null != currentLimitStep)
-                    {
-                        currentLimitStep.Description = limitName;
-                    }
-                    break;
-                case "LimitTestType":
-                    SetEmptyLimitStep(testType);
-                    string[] compareTypes = Limit.GetCompareTypes(testType);
-                    if (testType.Equals("Boolean"))
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitLow"] = new DataGridViewComboBoxCell();
-                        ((DataGridViewComboBoxCell)dGV_Limit.Rows[rowIndex].Cells["LimitLow"]).DataSource = new string
-                            []
-                        {"True", "False"};
-                    }
-                    else
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitLow"] = new DataGridViewTextBoxCell();
-                    }
-                    // ComparisonType
-                    ((DataGridViewComboBoxCell) dGV_Limit.Rows[rowIndex].Cells["LimitComparisonType"]).DataSource =
-                        compareTypes;
-                    dGV_Limit.Rows[rowIndex].Cells["LimitComparisonType"].Value = compareTypes[0];
-                        //触发cellvaluechanged事件改compareType
-                    dGV_Limit.Rows[rowIndex].Cells["LimitComparisonType"].ReadOnly = false;
-                    break;
-                case "LimitComparisonType":
-                    bool highAvailable, unitAvailable;
-                    Limit.GetHighLowAndUnitEnable(testType, comparisonType, out highAvailable, out unitAvailable);
-
-                    dGV_Limit.Rows[rowIndex].Cells["LimitLow"].ReadOnly = false;
-                    if (!Limit.IsValidValue(testType, lowValue))
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitLow"].Value = Limit.GetDefaultLowValue(testType);
-                    }
-
-                    dGV_Limit.Rows[rowIndex].Cells["LimitHigh"].ReadOnly = !highAvailable;
-                    if (highAvailable && !Limit.IsValidValue(testType, highValue))
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitHigh"].Value = Limit.GetDefaultHighValue(testType);
-                    }
-                    else if (!highAvailable)
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitHigh"].Value = Constants.UnavailableValue;
-                    }
-                    else
-                    {
-                        TestflowDesigntimeSession.SetParameterValue("high", highValue, ParameterType.Value,
-                        currentLimitStep);
-                    }
-
-                    dGV_Limit.Rows[rowIndex].Cells["LimitUnit"].ReadOnly = !unitAvailable;
-                    // 当前unit可用，并且原来unit的值是非法的，修改unit默认为空
-                    if (unitAvailable && Constants.UnavailableValue.Equals(unit))
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitUnit"].Value = string.Empty;
-                    }
-                    else if (!unitAvailable)
-                    {
-                        dGV_Limit.Rows[rowIndex].Cells["LimitUnit"].Value = Constants.UnavailableValue;
-                    }
-                    else
-                    {
-                        TestflowDesigntimeSession.SetParameterValue("unit", unit ?? "", ParameterType.Value,
-                        currentLimitStep);
-                    }
-
-                    TestflowDesigntimeSession.SetParameterValue("comparisonType", comparisonType, ParameterType.Value,
-                        currentLimitStep);
-                    break;
-
-                    #region 改low
-
-                case "LimitLow":
-                    // 非String比较时，如果Low配置为空则认为该参数未配置
-                    ParameterType parameterType = string.IsNullOrWhiteSpace(lowValue) && !testType.Equals("String")
-                        ? ParameterType.NotAvailable
-                        : ParameterType.Value;
-                    TestflowDesigntimeSession.SetParameterValue("low", lowValue, parameterType, currentLimitStep);
-                    break;
-
-                    #endregion
-
-                    #region 改high
-
-                case "LimitHigh":
-                    // 非String比较时，如果Low配置为空则认为该参数未配置
-                    ParameterType hignParamType = string.IsNullOrWhiteSpace(highValue) && !testType.Equals("String")
-                        ? ParameterType.NotAvailable
-                        : ParameterType.Value;
-                    TestflowDesigntimeSession.SetParameterValue("high", highValue, hignParamType,
-                        currentLimitStep);
-                    break;
-
-                    #endregion
-
-                    #region 改unit
-
-                case "LimitUnit":
-                    TestflowDesigntimeSession.SetParameterValue("unit", (unit == null) ? "" : unit, ParameterType.Value,
-                        currentLimitStep);
-                    break;
-
-                    #endregion
-
-                    #region  改expression
-
-                case "LimitExpression":
-                    if (string.IsNullOrWhiteSpace(expression))
-                    {
-                        TestflowDesigntimeSession.SetParameterValue("expression", string.Empty, ParameterType.Value,
-                            currentLimitStep);
-                    }
-                    else
-                    {
-                        bool isVariable;
-                        expression = Utility.GetParamValue(expression, out isVariable);
-                        // 如果不是变量，则弹出提醒，并配置expression为空
-                        if (!isVariable)
-                        {
-                            ShowMessage("Expression should be a variable name.", "Limit", MessageBoxIcon.Error);
-                            dGV_Limit.Rows[rowIndex].Cells["LimitExpression"].Value = string.Empty;
-                            return;
-                        }
-                        string variableName = expression;
-                        ParameterType paramType = ParameterType.Variable;
-                        if (_expRegex.IsMatch(expression))
-                        {
-                            paramType = ParameterType.Expression;
-                            variableName = _expRegex.Match(expression).Groups[1].Value;
-                        }
-                        // 检查变量是否存在
-                        try
-                        {
-                            GetAvailableVariable(currentLimitStep, variableName, null);
-                            TestflowDesigntimeSession.SetParameterValue("expression", expression, paramType,
-                                currentLimitStep);
-                        }
-                        catch (ApplicationException ex)
-                        {
-                            ShowMessage(ex.Message, "Limit", MessageBoxIcon.Error);
-                            dGV_Limit.Rows[rowIndex].Cells["LimitExpression"].Value = string.Empty;
-                        }
-                    }
-                    break;
-
-                    #endregion
-
-                default:
-                    throw new Exception("Should not get to this point.");
-            }
-        }
-
-        private void dGV_Limit_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            string columnName = dGV_Limit.Columns[e.ColumnIndex].Name;
-            ISequence currentSequence = CurrentSeq;
-            if (columnName.Equals("Limitfx"))
-            {
-                VariableForm variableForm = new VariableForm(SequenceGroup.Variables, currentSequence.Variables, "Method",
-                    dGV_Limit.Rows[e.RowIndex].Cells["LimitExpression"].Value?.ToString() ?? string.Empty, true);
-                variableForm.ShowDialog(this);
-                if (!variableForm.IsCancelled)
-                {
-                    IVariableCollection variableCollection = variableForm.IsGlobalVariable
-                        ? SequenceGroup.Variables
-                        : currentSequence.Variables;
-                    IVariable variable =
-                        variableCollection.FirstOrDefault(item => item.Name.Equals(variableForm.Value));
-                    if (null != variable)
-                    {
-                        variable.ReportRecordLevel = RecordLevel.Trace;
-                    }
-                    dGV_Limit.Rows[e.RowIndex].Cells["LimitExpression"].Value =
-                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.Value);
-                }
-                variableForm.Dispose();
-            }
-            else if (columnName.Equals("LimitCheck"))
-            {
-                IWarningInfo warningInfo = null;
-                ISequenceFlowContainer[] arr = new ISequenceFlowContainer[] {SequenceGroup, currentSequence};
-
-                warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckParameterData(
-                    CurrentLimitStep.Function, 3, arr, false);
-
-                // 报成功或错误信息
-
-                if (warningInfo != null)
-                {
-                    MessageBox.Show(warningInfo.Infomation);
-                }
-                else
-                {
-                    MessageBox.Show("Success");
-                }
-            }
-        }
-
-        private void AddLimit_Click(object sender, EventArgs e)
-        {
-            // method为空返回
-            if (CurrentFunctionStep == null)
-            {
-                MessageBox.Show("Please choose Method first.");
-                tabControl_settings.SelectedIndex = 1;
-                return;
-            }
-            AddDefaultLimitSubStep(CurrentStep);
-        }
-
-        private void AddDefaultLimitSubStep(ISequenceStep functionStep)
-        {
-            ISequenceStep limitStep = null;
-            string limitName;
-            // 获取当前Limit的名称
-            do
-            {
-                _currentLimitId++;
-                limitName = "Limit" + _currentLimitId;
-                limitStep = functionStep.SubSteps.FirstOrDefault(item => item.Name.Equals(limitName));
-            } while (limitStep != null);
-
-            //  testflow: 添加subStep
-            //  testflow: 添加subStep
-            limitStep = TestflowDesigntimeSession.AddSequenceStep(functionStep, limitName,
-                limitName, functionStep.SubSteps.Count);
-            // 同步修改LimitStep的步骤属性
-            limitStep.RecordStatus = functionStep.RecordStatus;
-            limitStep.BreakIfFailed = functionStep.BreakIfFailed;
-
-            dGV_Limit.Rows.Add(limitName, "", "", "", null, "", "", "");
-        }
-
-        private void DeleteLimit_Click(object sender, EventArgs e)
-        {
-            int limitIndex = (CurrentStep.SubSteps.Count - dGV_Limit.Rows.Count) + dGV_Limit.CurrentRow.Index;
-
-            #region testflow: RemoveLimitSubStep
-
-            TestflowDesigntimeSession.RemoveSequenceStep(CurrentStep, limitIndex);
-
-            #endregion
-
-            dGV_Limit.Rows.RemoveAt(dGV_Limit.CurrentRow.Index);
-        }
-
-        #endregion
 
         #region UI上展示数据 Show/Update
-
-        private void ShowSequences(int tabNumber)
-        {
-            if (tabNumber == 0)
-            {
-                DataGridView seqTable = (DataGridView)tabPage_mainSequence.Controls[0];
-                seqTable.Rows.Clear();
-                if (viewController_Main.StateValue <= (int) RunState.EditProcess)
-                {
-                    seqTable.Rows.Add(SequenceGroup.SetUp.Name);
-                    seqTable.Rows.Add(SequenceGroup.Sequences[0].Name);
-                }
-                
-                seqTable.Rows.Add(SequenceGroup.Sequences[1].Name);
-                if(viewController_Main.StateValue <= (int)RunState.EditProcess)
-                {
-                    seqTable.Rows.Add(SequenceGroup.Sequences[2].Name);
-                    seqTable.Rows.Add(SequenceGroup.TearDown.Name);
-                }
-            }
-            else  //tabNumber == 1
-            {
-                foreach (string sequence in _userSequences)
-                {
-                    ((DataGridView)tabPage_userSequence.Controls[0]).Rows.Add(sequence);
-                }
-            }
-        }
 
         private void ShowVariables(int tabNumber)
         {
@@ -2703,7 +2094,6 @@ namespace TestStation
 
         private void UpdateModule()
         {
-            
             if (CurrentFunctionStep == null && CurrentConstructorStep == null)
             {
                 return;
@@ -2731,15 +2121,6 @@ namespace TestStation
 
             UpdateTDGVParameter();
             _internalOperation = false;
-        }
-
-        private string GetCurrentStepType()
-        {
-            if (null == CurrentTypeStep)
-            {
-                return Constants.ActionType;
-            }
-            return CurrentTypeStep.Name.Contains(Constants.SeqCallType) ? Constants.SeqCallType : CurrentTypeStep.Name;
         }
 
         private void UpdateSettings()
@@ -3103,15 +2484,6 @@ namespace TestStation
             {
                 _paramTable.AddParent($"{comboBox_Method.SelectedValue}", "Method");
                 ShowReturnAndParameters(currentFunctionStep, currentFunctionStep.Function);
-            }
-        }
-
-        private void UpdateSequenceCallList()
-        {
-            _userSequences.Clear();
-            for (int i = 3; i < SequenceGroup.Sequences.Count; i++)
-            {
-                _userSequences.Add(SequenceGroup.Sequences[i].Name);
             }
         }
 
@@ -4465,6 +3837,45 @@ namespace TestStation
                 (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_asserFailedAction.Text);
             selectedStep.InvokeErrorAction =
                 (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_invokeFailedAction.Text);
+            selectedStep.RecordStatus = checkBox_RecordStatus.Checked;
+            ISequenceManager sequenceManager = _globalInfo.TestflowEntity.SequenceManager;
+            switch (LoopTypecomboBox.Text)
+            {
+                case "None":
+                    selectedStep.LoopCounter = null;
+                    LoopTimesnumericUpDown.Enabled = false;
+                    numericUpDown_passTimes.Enabled = false;
+                    numericUpDown_retryTime.Enabled = false;
+                    selectedStep.RetryCounter = null;
+                    selectedStep.LoopCounter = null;
+                    break;
+                case "FixedTimes":
+                    LoopTimesnumericUpDown.Enabled = true;
+                    numericUpDown_passTimes.Enabled = false;
+                    numericUpDown_retryTime.Enabled = false;
+                    selectedStep.RetryCounter = null;
+                    if (selectedStep.LoopCounter == null)
+                    {
+                        selectedStep.LoopCounter = sequenceManager.CreateLoopCounter();
+                    }
+                    selectedStep.LoopCounter.CounterEnabled = true;
+                    selectedStep.LoopCounter.CounterEnabled = true;
+                    selectedStep.LoopCounter.MaxValue = (int)LoopTimesnumericUpDown.Value;
+                    break;
+                case "PassTimes":
+                    LoopTimesnumericUpDown.Enabled = false;
+                    numericUpDown_passTimes.Enabled = true;
+                    numericUpDown_retryTime.Enabled = true;
+                    selectedStep.LoopCounter = null;
+                    if (selectedStep.RetryCounter == null)
+                    {
+                        selectedStep.RetryCounter = sequenceManager.CreateRetryCounter();
+                    }
+                    selectedStep.RetryCounter.RetryEnabled = true;
+                    selectedStep.RetryCounter.MaxRetryTimes = (int)numericUpDown_retryTime.Value;
+                    selectedStep.RetryCounter.PassTimes = (int)numericUpDown_passTimes.Value;
+                    break;
+            }
         }
     }
 }
