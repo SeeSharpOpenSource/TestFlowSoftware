@@ -748,20 +748,6 @@ namespace TestStation
 
         #region 右键菜单事件
 
-        #region 子序列列表右键菜单事件
-
-        private void AddSeq_Click(object sender, EventArgs e)
-        {
-            AddSubSequence();
-        }
-
-        private void DeleteSeq_Click(object sender, EventArgs e)
-        {
-            DeleteSubSequence();
-        }
-
-        #endregion
-
         #region 步骤列表右键菜单事件
 
         private void AddAction_Click(object sender, EventArgs e)
@@ -1452,8 +1438,7 @@ namespace TestStation
             }
             // 添加Parameter
             UpdateTDGVParameter();
-
-            RefreshCurrentStepInfo(CurrentStep);
+            ShowStepInfo(CurrentStep);
         }
 
         private void InitializeFunctionStep()
@@ -1510,23 +1495,6 @@ namespace TestStation
         {
             return null != function && function.Type != FunctionType.StaticFieldSetter &&
                    function.Type != FunctionType.StaticFunction && function.Type != FunctionType.StaticPropertySetter;
-        }
-
-        private void RefreshCurrentStepInfo(ISequenceStep currentStep)
-        {
-            int rowIndex = currentStep.Index;
-            // 运行时该方法不执行
-            if (viewController_Main.StateValue > 1 || _stepTable.Rows.Count <= rowIndex)
-            {
-                return;
-            }
-            _internalOperation = true;
-            string stepType = GetCurrentStepType();
-            StepInfoCreator.SetStepDescriptionInfo(currentStep, stepType);
-            _stepTable.Rows[rowIndex].Cells[StepTableDescCol].Value = currentStep.Description;
-            StepInfoCreator.SetStepSettingInfo(currentStep, stepType);
-            _stepTable.Rows[rowIndex].Cells[StepTableSettingCol].Value = currentStep.SubSteps[0].Description;
-            _internalOperation = false;
         }
 
         private void TdgvParamCellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -2365,12 +2333,6 @@ namespace TestStation
             // 输入steps
             foreach (ISequenceStep step in CurrentSeq.Steps)
             {
-                // 如果step的描述信息为空，则更新step的描述信息
-                if (string.IsNullOrWhiteSpace(step.Description) ||
-                    string.IsNullOrWhiteSpace(step.SubSteps[0].Description))
-                {
-                    RefreshCurrentStepInfo(step);
-                }
                 string stepType = Utility.GetStepType(step);
                 string unit = "";
                 if (stepType.Equals(Constants.TestType))
@@ -2594,8 +2556,7 @@ namespace TestStation
             // 隐藏运行时变量值窗体
             splitContainer_runtime.Panel1Collapsed = true;
             // step表格只读，且不响应值变更事件
-            _stepTable.CellValueChanged += Dgv_Step_CellValueChanged;
-            _stepTable.ReadOnly = false;
+            treeView_stepView.AfterSelect += treeView_stepView_AfterSelect;
             // 子序列名称可修改
             ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = false;
 
@@ -2614,7 +2575,7 @@ namespace TestStation
             _eventController?.UnRegisterEvent();
             if (null != SequenceGroup)
             {
-                ShowSequences(0);
+                ShowSequences(SequenceGroup);
             }
         }
 
@@ -2626,7 +2587,7 @@ namespace TestStation
             splitContainer_runtime.Panel1Collapsed = false;
             ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = true;
             // step表格只读，且不响应值变更事件
-            _stepTable.CellValueChanged -= Dgv_Step_CellValueChanged;
+            treeView_stepView.AfterSelect -= treeView_stepView_AfterSelect;
             _stepTable.ReadOnly = true;
             // 子序列名称只读
             ((DataGridView) tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = true;
@@ -2644,16 +2605,12 @@ namespace TestStation
             _stepTable.ContextMenuStrip = null;
             if (null != SequenceGroup)
             {
-                ShowSequences(0);
+                ShowSequences(SequenceGroup);
             }
         }
 
         private void ClearAll()
         {
-            // Sequence
-            ((DataGridView)tabPage_mainSequence.Controls[0]).Rows.Clear();
-            ((DataGridView)tabPage_userSequence.Controls[0]).Rows.Clear();
-
             // Step
             tabCon_Step.TabPages.Clear();
             tabCon_Step.TabPages.Add(ReportTab);
@@ -2673,7 +2630,8 @@ namespace TestStation
             comboBox_Method.Text = "";
             _paramTable?.Clear();
             // Limit
-            dGV_Limit.Rows.Clear();
+            treeView_stepView.Nodes.Clear();
+            treeView_sequenceTree.Nodes.Clear();
         }
 
         #endregion
@@ -2718,12 +2676,6 @@ namespace TestStation
             string projectName = "Test Project " + _currentTestProjectId.ToString();
             labelProject.Text = projectName + Constants.ProjectNamePostfix;
 
-            #region 清空_userSequences
-
-            _userSequences.Clear();
-
-            #endregion
-
             // Testflow: 创建新的TestProject => SequenceGroup => Setup/Cleanup, MainSequence
             _testflowDesigntimeService.Unload();
             _testflowDesigntimeService.Load("Test Project", "");
@@ -2762,8 +2714,7 @@ namespace TestStation
 
             // Sequence UI
             tabCon_Seq.SelectedIndex = 0;
-            ShowSequences(0);
-            ShowSequences(1);
+            ShowSequences(SequenceGroup);
 
             // 创建默认添加的变量
             CreateDefaultVariable();
@@ -2851,17 +2802,6 @@ namespace TestStation
             _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description, loadedSequenceGroup);
             labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
 
-            #region _userSequences清空并装填
-
-            _userSequences.Clear();
-
-            for (int n = 3; n < SequenceGroup.Sequences.Count; n++)
-            {
-                _userSequences.Add(loadedSequenceGroup.Sequences[n].Name);
-            }
-
-            #endregion
-
             #region 清空UI
 
             ClearAll();
@@ -2875,9 +2815,8 @@ namespace TestStation
             #endregion
 
             ResetPathComboBox();
-            // Sequence UI
-            ShowSequences(1);
-            ShowSequences(0);
+            // Sequence UId
+            ShowSequences(loadedSequenceGroup);
             tabCon_Seq.SelectedIndex = 0;
             UpdateSettings();
             EnableAllEditControl();
@@ -2969,77 +2908,6 @@ namespace TestStation
         #endregion
 
         #region 序列编辑
-
-
-        private void AddSubSequence()
-        {
-            if (!CheckAuthority(AuthorityDefinition.EditSequence))
-            {
-                return;
-            }
-
-            string seqName;
-
-            #region SequenceName
-
-            do
-            {
-                _currentSequenceId++;
-                seqName = "Sequence" + _currentSequenceId.ToString();
-            } while (_userSequences.Contains(seqName));
-
-            #endregion
-
-            if (!SequenceTable.Name.Equals("UserSequenceList"))
-            {
-                throw new Exception("This should not happen, DGV must be UserSequenceList");
-            }
-
-            #region Testflow: AddSequence
-
-            TestflowDesigntimeSession.AddSequence(seqName, "", SequenceGroup.Sequences.Count);
-
-            #endregion
-
-            #region _userSequences: 添加
-
-            _userSequences.Add(seqName);
-
-            #endregion
-
-            #region 添加行
-
-            SequenceTable.Rows.Insert(SequenceTable.RowCount, seqName);
-
-            #endregion
-
-            #region 选中行
-
-            SequenceTable.CurrentCell = SequenceTable.Rows[SequenceTable.RowCount - 1].Cells[0];
-
-            #endregion
-        }
-
-        private void DeleteSubSequence()
-        {
-            #region Testflow: RemoveSequence
-
-            TestflowDesigntimeSession.RemoveSequence(CurrentSeq);
-
-            #endregion
-
-            #region _userSequences： 删除
-
-            _userSequences.RemoveAt(SequenceTable.CurrentRow.Index);
-
-            #endregion
-
-            #region 删除行
-
-            SequenceTable.Rows.RemoveAt(SequenceTable.CurrentRow.Index);
-
-            #endregion
-        }
 
 
         #endregion
@@ -3184,8 +3052,6 @@ namespace TestStation
 
             Menu_AddStep.Enabled = true;
             Menu_DeleteStep.Enabled = true;
-            Menu_DeleteSubSeq.Enabled = true;
-            Menu_AddSubSeq.Enabled = true;
         }
 
         #endregion

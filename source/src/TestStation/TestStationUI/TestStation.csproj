@@ -198,7 +198,6 @@
     <Compile Include="RenameForm.Designer.cs">
       <DependentUpon>RenameForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SaveCustomFile.cs" />
     <Compile Include="Controls\TreeDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>

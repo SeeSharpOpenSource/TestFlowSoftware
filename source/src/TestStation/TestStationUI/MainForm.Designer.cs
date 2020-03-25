@@ -1105,7 +1105,7 @@ namespace TestStation
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(903, 362);
+            this.tabpage_Module.Size = new System.Drawing.Size(907, 364);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1113,7 +1113,7 @@ namespace TestStation
             // button_selectAssembly
             // 
             this.button_selectAssembly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_selectAssembly.Location = new System.Drawing.Point(876, 6);
+            this.button_selectAssembly.Location = new System.Drawing.Point(880, 6);
             this.button_selectAssembly.Name = "button_selectAssembly";
             this.button_selectAssembly.Size = new System.Drawing.Size(33, 24);
             this.button_selectAssembly.TabIndex = 14;
@@ -1128,7 +1128,7 @@ namespace TestStation
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(784, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(788, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1158,7 +1158,7 @@ namespace TestStation
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_panel.Location = new System.Drawing.Point(86, 87);
             this.Parameter_panel.Name = "Parameter_panel";
-            this.Parameter_panel.Size = new System.Drawing.Size(827, 281);
+            this.Parameter_panel.Size = new System.Drawing.Size(831, 283);
             this.Parameter_panel.TabIndex = 10;
             // 
             // comboBox_Method
@@ -1166,7 +1166,7 @@ namespace TestStation
             this.comboBox_Method.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_Method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Method.FormattingEnabled = true;
-            this.comboBox_Method.Location = new System.Drawing.Point(589, 62);
+            this.comboBox_Method.Location = new System.Drawing.Point(593, 62);
             this.comboBox_Method.Name = "comboBox_Method";
             this.comboBox_Method.Size = new System.Drawing.Size(320, 20);
             this.comboBox_Method.TabIndex = 9;
@@ -1180,7 +1180,7 @@ namespace TestStation
             this.comboBox_RootClass.FormattingEnabled = true;
             this.comboBox_RootClass.Location = new System.Drawing.Point(85, 36);
             this.comboBox_RootClass.Name = "comboBox_RootClass";
-            this.comboBox_RootClass.Size = new System.Drawing.Size(824, 20);
+            this.comboBox_RootClass.Size = new System.Drawing.Size(828, 20);
             this.comboBox_RootClass.TabIndex = 9;
             this.comboBox_RootClass.TextChanged += new System.EventHandler(this.comboBox_RootClass_Validated);
             // 
@@ -1188,7 +1188,7 @@ namespace TestStation
             // 
             this.label_methodConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_methodConfig.AutoSize = true;
-            this.label_methodConfig.Location = new System.Drawing.Point(536, 65);
+            this.label_methodConfig.Location = new System.Drawing.Point(540, 65);
             this.label_methodConfig.Name = "label_methodConfig";
             this.label_methodConfig.Size = new System.Drawing.Size(47, 12);
             this.label_methodConfig.TabIndex = 7;
@@ -1217,7 +1217,7 @@ namespace TestStation
             this.tabpage_parameters.Location = new System.Drawing.Point(4, 22);
             this.tabpage_parameters.Name = "tabpage_parameters";
             this.tabpage_parameters.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_parameters.Size = new System.Drawing.Size(903, 362);
+            this.tabpage_parameters.Size = new System.Drawing.Size(907, 364);
             this.tabpage_parameters.TabIndex = 3;
             this.tabpage_parameters.Text = "Sequence Parameters";
             this.tabpage_parameters.UseVisualStyleBackColor = true;
