@@ -146,15 +146,6 @@ namespace TestStation
 
         #region 私有字段-被选中序列相关的标识
 
-        private ISequenceStep CurrentTypeStep
-            => (null != CurrentStep && CurrentStep.HasSubSteps) ? CurrentStep.SubSteps[0] : null;
-
-        private ISequenceStep CurrentConstructorStep
-            => CurrentStep.SubSteps.FirstOrDefault(item => item.Description.Equals("Constructor"));
-
-        private ISequenceStep CurrentFunctionStep
-            => CurrentStep.SubSteps.FirstOrDefault(item => item.Description.Equals("Method"));
-
         private string _oldVariableType;
         private string _oldVariableValue;
         private IComInterfaceDescription _currentComDescription;
@@ -182,7 +173,6 @@ namespace TestStation
         {
             #region Testflow：模块与服务初始化
             _globalInfo = GlobalInfo.GetInstance();
-            _globalInfo.Session = session;
             _globalInfo.PrintInfo = this.PrintInfo;
             _globalInfo.PrintUutResult = PrintUutResult;
             _testflowDesigntimeService = _globalInfo.TestflowEntity.DesignTimeService;
@@ -723,7 +713,6 @@ namespace TestStation
                 viewController_Main.State = RunState.RunIdle.ToString();
                 try
                 {
-                    _globalInfo.Session.CheckAuthority(AuthorityDefinition.RunSequence);
                     // 更新显示当前页面的所有step的unit
                     ShowSteps();
                     RunSequence();
@@ -2455,14 +2444,6 @@ namespace TestStation
 
         private void viewController_Main_PreListeners(int oldState, int newState)
         {
-            if (newState > 1)
-            {
-                _globalInfo.Session.CheckAuthority(AuthorityDefinition.RunSequence);
-            }
-            else if (newState <= 1)
-            {
-                _globalInfo.Session.CheckAuthority(AuthorityDefinition.EditSequence);
-            }
         }
 
         private void viewController_Main_PostListeners(int oldState, int newState)
@@ -2641,10 +2622,6 @@ namespace TestStation
         // 创建新的序列
         private void CreateNewSequence()
         {
-            if (!CheckAuthority(AuthorityDefinition.CreateSequence))
-            {
-                return;
-            }
             if (null != SequenceGroup && SequenceGroup.Info.Modified)
             {
                 DialogResult result = MessageBox.Show("Do you want to save current sequence?", "Create Sequence",
@@ -2935,10 +2912,7 @@ namespace TestStation
             // 参数检查提醒后如果用户取消则停止执行
             if (!CheckParameter())
             {
-                if (_globalInfo.Session.HasAuthority(AuthorityDefinition.EditSequence))
-                {
-                    viewController_Main.State = RunState.EditIdle.ToString();
-                }
+                viewController_Main.State = RunState.EditIdle.ToString();
                 return;
             }
 
@@ -2996,7 +2970,7 @@ namespace TestStation
 
         private void ShowOperationPanel(ISequenceGroup runtimeSequence)
         {
-            RuntimeDataCache dataCache = new RuntimeDataCache(_globalInfo.TestflowEntity, _globalInfo.Session,
+            RuntimeDataCache dataCache = new RuntimeDataCache(_globalInfo.TestflowEntity,
                 _globalInfo.Equipment)
             {
                 EnableStartTiming = _sequenceMaintainer.UserStartTiming,
@@ -3339,10 +3313,7 @@ namespace TestStation
         public void RunningOver()
         {
             viewController_Main.State = RunState.RunOver.ToString();
-            if (_globalInfo.Session.HasAuthority(AuthorityDefinition.EditSequence))
-            {
-                viewController_Main.State = RunState.EditIdle.ToString();
-            }
+            viewController_Main.State = RunState.EditIdle.ToString();
             if (!_operationPanel.FormUnavaiable)
             {
                 _operationPanel.BeginInvoke(new Action(() =>
@@ -3390,23 +3361,7 @@ namespace TestStation
 
         #endregion
 
-        // 检查权限，如果不通过则弹出错误窗口并返回false
-        private bool CheckAuthority(string authority)
-        {
-            try
-            {
-                _globalInfo.Session.CheckAuthority(authority);
-                return true;
-            }
-            catch (AuthenticationException ex)
-            {
-                Log.Print(LogLevel.ERROR, ex.Message);
-                ShowMessage(ex.Message, "Authority Check", MessageBoxIcon.Error);
-                return false;
-            }
-        }
-
-        public void ShowMessage(string message, string caption, MessageBoxIcon icon = MessageBoxIcon.Warning)
+        private void ShowMessage(string message, string caption, MessageBoxIcon icon = MessageBoxIcon.Warning)
         {
             if (InvokeRequired)
             {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using EasyTest.ModelManage.Data;
 using Testflow;
 using Testflow.Loader;
-using TestStation.Authentication;
 
 namespace TestStation.Common
 {
@@ -31,11 +29,7 @@ namespace TestStation.Common
             }
         }
 
-        public EquipmentData Equipment { get; set; }
-
         public event Action<RunState> StateChanged;
-
-        public AuthenticationSession Session { get; set; }
 
         public TestflowRunner TestflowEntity { get; }
 
@@ -79,7 +73,6 @@ namespace TestStation.Common
             this.ConfigManager = new ConfigManager();
             this.ConfigManager.LoadConfigData();
             this.BreakIfFailed = true;
-            this.Equipment = null;
             TestflowHome = Environment.GetEnvironmentVariable("TESTFLOW_HOME");
             if (string.IsNullOrWhiteSpace(TestflowHome) || !Directory.Exists(TestflowHome))
             {
@@ -95,38 +88,7 @@ namespace TestStation.Common
 
         private void OnStateChanged()
         {
-            CheckSession();
             StateChanged?.Invoke(RunState);
-        }
-
-        private void CheckSession()
-        {
-            RunState runState = RunState;
-            if (null == Session || runState == RunState.NotAvailable)
-            {
-                return;
-            }
-            switch (runState)
-            {
-                case RunState.NotAvailable:
-                    break;
-                case RunState.EditIdle:
-                    break;
-                case RunState.EditProcess:
-                    Session.CheckAuthority(AuthorityDefinition.EditSequence);
-                    break;
-                case RunState.RunIdle:
-                case RunState.RunProcessing:
-                case RunState.Running:
-                case RunState.RunOver:
-                    Session.CheckAuthority(AuthorityDefinition.RunSequence);
-                    break;
-                case RunState.RunBlock:
-                    Session.CheckAuthority(AuthorityDefinition.DebugSequence);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
     }
 }

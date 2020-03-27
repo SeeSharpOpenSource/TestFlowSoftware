@@ -110,7 +110,6 @@ namespace TestStation.OperationPanel
 
         private void button_userSwitch_Click(object sender, EventArgs e)
         {
-            _dataCache.Session = AuthenticationManage.GetLoginSession(_dataCache.Session);
         }
 
         private void button_resetInfo_Click(object sender, EventArgs e)
@@ -132,7 +131,7 @@ namespace TestStation.OperationPanel
             label_productNumber.Text = _dataCache.ProductNumber;
             label_testversion.Text = _dataCache.TestVersion;
             label_testDevice.Text = _dataCache.Device;
-            label_user.Text = _dataCache.Session.UserName;
+            label_user.Text = "UserName";
         }
 
         public void RefreshProductTestInformation(UutStatus uutStatus)

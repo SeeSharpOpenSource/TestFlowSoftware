@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
-using SeeSharpTools.JY.ThreadSafeQueue;
 using Testflow.Data.Sequence;
 using Testflow.Runtime.Data;
 using TestStation.Common;
@@ -47,7 +46,7 @@ namespace TestStation.Report
             reportNameFormat = reportNameFormat.Replace("{BaseName}", _globalInfo.ConfigManager.GetConfig<string>("BaseName"));
             _reportGlobalInfo = new ReportGlobalInfo()
             {
-                Operator = _globalInfo.Session.UserName,
+                Operator = "UserName",
                 SocketIndex = "0",
                 StationId = dataCache.StationName,
                 SequencePath = _seqMaintainer.GetSequencePath(),

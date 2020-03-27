@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
-using EasyTest.ModelManage.Data;
 using SeeSharpTools.JY.File;
 using Testflow;
 using Testflow.Data.Sequence;
-using TestStation.Authentication;
 
 namespace TestStation.Common
 {
     public class RuntimeDataCache
     {
         public TestflowRunner TestflowEntity { get; }
-        public EquipmentData Equipment { get; }
         public long Target { get; set; }
         private int _qualifiedCount;
         public int QualifiedCount => _qualifiedCount;
@@ -21,7 +18,6 @@ namespace TestStation.Common
         public int UnqualifiedCount => _unqualifiedCount;
         public int QualifiedRatio { get; private set; }
         public double UutProgress { get; set; }
-        public AuthenticationSession Session { get; set; }
         public string Customer { get; set; }
         public string Model { get; set; }
         public string ProductNumber { get; set; }
@@ -45,15 +41,13 @@ namespace TestStation.Common
 
         public RunType RunType { get; set; }
 
-        public RuntimeDataCache(TestflowRunner testflowEntity, AuthenticationSession session, EquipmentData equipment)
+        public RuntimeDataCache(TestflowRunner testflowEntity)
         {
             this.TestflowEntity = testflowEntity;
-            this.Equipment = equipment;
             this.Target = 500;
             this._qualifiedCount = 0;
             this._unqualifiedCount = 0;
             this.QualifiedRatio = 0;
-            this.Session = session;
             this.Customer = Constants.NASerialNo;
             this.Model = Constants.NASerialNo;
             this.TestVersion = Constants.NASerialNo;
@@ -84,25 +78,6 @@ namespace TestStation.Common
         public void AddUnQualified()
         {
             Interlocked.Increment(ref _unqualifiedCount);
-        }
-
-        public void InitModelInfo(EquipmentData model)
-        {
-            if (model?.SelectedTestModel == null)
-            {
-                this.Customer = string.Empty;
-                this.Model = string.Empty;
-                this.ProductNumber = string.Empty;
-                this.TestVersion = string.Empty;
-                this.Device = Dns.GetHostName();
-                return;
-            }
-            TestModelData selectedModel = model.SelectedTestModel;
-            this.Customer = selectedModel.Customer;
-            this.Model = selectedModel.ModelName;
-            this.ProductNumber = string.Empty;
-            this.TestVersion = selectedModel.TestVersion;
-            this.Device = model.StationID;
         }
 
         private Dictionary<string, string> ReadSectionData(IniData iniData, string sectionName, params string[] keys)

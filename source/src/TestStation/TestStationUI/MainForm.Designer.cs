@@ -1105,7 +1105,7 @@ namespace TestStation
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(907, 364);
+            this.tabpage_Module.Size = new System.Drawing.Size(903, 362);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1217,7 +1217,7 @@ namespace TestStation
             this.tabpage_parameters.Location = new System.Drawing.Point(4, 22);
             this.tabpage_parameters.Name = "tabpage_parameters";
             this.tabpage_parameters.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_parameters.Size = new System.Drawing.Size(907, 364);
+            this.tabpage_parameters.Size = new System.Drawing.Size(903, 362);
             this.tabpage_parameters.TabIndex = 3;
             this.tabpage_parameters.Text = "Sequence Parameters";
             this.tabpage_parameters.UseVisualStyleBackColor = true;
