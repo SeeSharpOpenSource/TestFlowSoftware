@@ -39,7 +39,6 @@ namespace TestStation
         private const string ExistingObjParent = "Existing Object";
 
         #region Id
-        private int _currentTestProjectId = 0;   //TestProject ID
         private int _currentSequenceId = 0;      //Sequence ID
         private int _currentStepId = 0;         //Step ID
         private int _currentVariableId = 0;     //Variable ID
@@ -156,10 +155,6 @@ namespace TestStation
 
         #region 私有字段-序列控件相关
 
-        //当前的sequence列表
-        private DataGridView SequenceTable => (DataGridView) (tabCon_Seq.SelectedTab.Controls[0]);
-        // step列表
-        private DataGridView _stepTable;
         // 当前的变量列表
         private DataGridView VaraibleTable => (DataGridView) (tabCon_Variable.SelectedTab.Controls[0]);
         // 参数列表
@@ -169,7 +164,7 @@ namespace TestStation
 
         #region 界面初始化
         
-        public MainForm(AuthenticationSession session, string sequencePath)
+        public MainForm(string sequencePath)
         {
             #region Testflow：模块与服务初始化
             _globalInfo = GlobalInfo.GetInstance();
@@ -218,6 +213,11 @@ namespace TestStation
 
         private void CreateDGVVariable(int tabNumber)
         {
+            if (null == CurrentSeq && tabNumber != 0 && tabCon_Variable.TabPages.Count >= 2)
+            {
+                tabCon_Variable.TabPages[1].Controls.Clear();
+                return;
+            }
             DataGridView dgv_variable = new DataGridView();
 
             // 属性
@@ -251,19 +251,14 @@ namespace TestStation
                 column.SortMode = DataGridViewColumnSortMode.NotSortable; //不能排序
             }
 
-            #region Global Variables
             if (tabNumber == 0)
             {
                 dgv_variable.Name = "GlobalVariableList";
                 globalVariableTab.Controls.Clear();
                 globalVariableTab.Controls.Add(dgv_variable);
             }
-            #endregion
-
-            #region Local Variables
             else //tabNumber == 1
             {
-                #region TabPages[1]
                 if (tabCon_Variable.TabPages.Count == 1)
                 {
                     tabCon_Variable.TabPages.Add(CurrentSeq.Name, "Var:" + CurrentSeq.Name);
@@ -273,7 +268,6 @@ namespace TestStation
                     tabCon_Variable.TabPages[1].Name = CurrentSeq.Name;
                     tabCon_Variable.TabPages[1].Text = "Var:" + CurrentSeq.Name;
                 }
-                #endregion
 
                 dgv_variable.Name = CurrentSeq.Name + "VariableList";
                 tabCon_Variable.TabPages[1].Controls.Clear();
@@ -367,87 +361,16 @@ namespace TestStation
             _paramTable.CellBeginEdit += TdgvParamCellEnterEdit;
         }
 
-        #endregion
-
         #region 窗体事件
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            SessionChangedAction();
-            if (viewController_Main.State == RunState.EditIdle.ToString())
-            {
-                // 隐藏运行时变量值窗体
-                splitContainer_runtime.Panel1Collapsed = true;
-            }
+            viewController_Main.State = RunState.EditIdle.ToString();
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TsfFilePath))
-            {
-                SelectTestModel();
-            }
-            else
-            {
-                try
-                {
-                    LoadSequence(TsfFilePath);
-                }
-                catch (ApplicationException ex)
-                {
-                    ShowMessage(ex.Message, "Load Sequence", MessageBoxIcon.Error);
-                }
-            }
             UpdateToolStripButtonsState();
-        }
-
-        private void SelectTestModel()
-        {
-            string configFile = _globalInfo.ConfigManager.GetConfig<string>("ModelConfigFilePath");
-            if (string.IsNullOrWhiteSpace(configFile) || !File.Exists(configFile))
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Title = "Load Configuration File";
-                openFileDialog.Filter = "Config file|*.ini";
-                string workspaceDir = Environment.GetEnvironmentVariable("TESTFLOW_WORKSPACE");
-                if (!string.IsNullOrWhiteSpace(workspaceDir) && Directory.Exists(workspaceDir))
-                {
-                    openFileDialog.InitialDirectory = workspaceDir;
-                }
-                DialogResult dialogResult = openFileDialog.ShowDialog(this);
-                if (dialogResult != DialogResult.OK)
-                {
-                    ShowMessage("Configuration file not selected.", "Load Configuration", MessageBoxIcon.Warning);
-                    return;
-                }
-                configFile = openFileDialog.FileName;
-            }
-            try
-            {
-                // 弹出模型选择窗口
-                _globalInfo.Equipment = ModelManager.ShowModelSelectionDialog(configFile);
-                // 写入最新的配置文件路径
-                _globalInfo.ConfigManager.ApplyConfig("ModelConfigFilePath", configFile);
-                _globalInfo.ConfigManager.WriteConfigData();
-
-                string sequenceFile = _globalInfo.Equipment?.SelectedTestModel?.SequenceFile;
-                if (!string.IsNullOrWhiteSpace(sequenceFile) && File.Exists(sequenceFile))
-                {
-                    LoadSequence(sequenceFile);
-                }
-                else
-                {
-                    ShowMessage("Sequence file not exist.", "Load Configuration", MessageBoxIcon.Warning);
-                }
-            }
-            catch (ApplicationException ex)
-            {
-                ShowMessage(ex.Message, "Load Configuration", MessageBoxIcon.Error);
-            }
-        }
-
-        private void SessionChangedAction()
-        {
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -629,7 +552,6 @@ namespace TestStation
 
         private void selectModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SelectTestModel();
         }
 
         #endregion
@@ -713,8 +635,6 @@ namespace TestStation
                 viewController_Main.State = RunState.RunIdle.ToString();
                 try
                 {
-                    // 更新显示当前页面的所有step的unit
-                    ShowSteps();
                     RunSequence();
                 }
                 catch (AuthenticationException ex)
@@ -805,6 +725,9 @@ namespace TestStation
 
         private void cMS_DgvVariable_Opening(object sender, CancelEventArgs e)
         {
+            if (_internalOperation) return;
+            _internalOperation = true;
+
             string varName = VaraibleTable.CurrentRow?.Cells["VariableName"].Value.ToString() ?? null;
             bool isGlobalVariable = VaraibleTable.Name.Equals("GlobalVariableList");
             // 系统变量不能删除
@@ -816,14 +739,17 @@ namespace TestStation
             {
                 toolStripMenuItem2.Enabled = true;
             }
+
+            _internalOperation = false;
         }
 
         private void AddVariable_Click(object sender, EventArgs e)
         {
-            if (null == TestflowDesigntimeSession)
+            if (null == TestflowDesigntimeSession || _internalOperation)
             {
                 return;
             }
+            _internalOperation = true;
             IVariable variable = null;
             string VariableName;
 
@@ -841,23 +767,25 @@ namespace TestStation
             AddVariable(VaraibleTable.Name.Equals("GlobalVariableList") ? (ISequenceFlowContainer)SequenceGroup : CurrentSeq,
                         VaraibleTable.Name.Equals("GlobalVariableList") ? 0 : 1,
                         VariableName, false);
-
+            _internalOperation = false;
         }
 
         private void DeleteVariable_Click(object sender, EventArgs e)
         {
+            if (_internalOperation) return;
+            _internalOperation = true;
             string varName = VaraibleTable.CurrentRow.Cells["VariableName"].Value.ToString();
             VaraibleTable.Rows.Remove(VaraibleTable.CurrentRow);
             TestflowDesigntimeSession.RemoveVariable(VaraibleTable.Name.Equals("GlobalVariableList") ?
                                                                (ISequenceFlowContainer)SequenceGroup : CurrentSeq,
                                                       varName);
-
+            _internalOperation = false;
         }
 
         #endregion
 
         #endregion
-        
+
         private void buttonOpenReport_Click(object sender, EventArgs e)
         {
             if (_eventController?.CurrentReport == null || !File.Exists(_eventController.CurrentReport))
@@ -1191,13 +1119,18 @@ namespace TestStation
 
         private void tabControl_settings_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_internalOperation) return;
+            _internalOperation = true;
             UpdateSettings();
+            _internalOperation = false;
         }
 
         private void StepTypecomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_internalOperation) { return; }
+            _internalOperation = true;
             SetStepProperties();
+            _internalOperation = false;
         }
 
         private void checkBox_RecordResult_CheckedChanged(object sender, EventArgs e)
@@ -1206,11 +1139,14 @@ namespace TestStation
             {
                 return;
             }
+            _internalOperation = true;
             SetStepProperties();
+            _internalOperation = false;
         }
         
         private void LoopTypecomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_internalOperation) return;
             _internalOperation = true;
             ISequenceStep currentStep = CurrentStep;
             if (null == currentStep)
@@ -1227,7 +1163,9 @@ namespace TestStation
             {
                 return;
             }
+            _internalOperation = true;
             SetStepProperties();
+            _internalOperation = false;
         }
         
         private void numericUpDown_retryTime_ValueChanged(object sender, EventArgs e)
@@ -1236,7 +1174,9 @@ namespace TestStation
             {
                 return;
             }
+            _internalOperation = true;
             CurrentStep.RetryCounter.MaxRetryTimes = Convert.ToInt32(numericUpDown_retryTime.Value);
+            _internalOperation = false;
         }
 
         private void numericUpDown_passTimes_ValueChanged(object sender, EventArgs e)
@@ -1245,7 +1185,9 @@ namespace TestStation
             {
                 return;
             }
+            _internalOperation = true;
             CurrentStep.RetryCounter.PassTimes = Convert.ToInt32(numericUpDown_passTimes.Value);
+            _internalOperation = false;
         }
 
         private void comboBox_conditionType_SelectedIndexChanged(object sender, EventArgs e)
@@ -1254,7 +1196,9 @@ namespace TestStation
             {
                 return;
             }
+            _internalOperation = true;
             SetStepProperties();
+            _internalOperation = false;
         }
 
         #endregion
@@ -1269,28 +1213,26 @@ namespace TestStation
                 return;
             }
 
-            if (openSign)
+            if (openSign || _internalOperation)
             {
                 return;
             }
-
-            #region 清空Parameters, comboBox_RootClass, comboBox_Method, _currentClassDescription, _currentFuncDescription
+            _internalOperation = true;
+            // 清空Parameters, comboBox_RootClass, comboBox_Method, _currentClassDescription, _currentFuncDescription
             _paramTable.Clear();
             comboBox_RootClass.DataSource = null;
             comboBox_Method.DataSource = null;
             comboBox_Constructor.DataSource = null;
             _currentClassDescription = null;
-            //_currentFuncDescription = null;
-            //_currentConstructorDescription = null;
-            #endregion
+            
 
-            #region 判断空选项
+            // 判断空选项
             if (comboBox_assembly.Text.Equals(""))
             {
+                _internalOperation = false;
                 _currentComDescription = null;
                 return;
             }
-            #endregion
 
             try
             {
@@ -1311,6 +1253,7 @@ namespace TestStation
             {
                 ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
             }
+            _internalOperation = false;
         }
 
         //类选择改变：展示方法名
@@ -1320,32 +1263,31 @@ namespace TestStation
             {
                 return;
             }
-
-            #region 清空Parameters、Method、Constructor
+            _internalOperation = true;
+            // 清空Parameters、Method、Constructor
             comboBox_Method.DataSource = null;
             comboBox_Constructor.DataSource = null;
             //_currentFuncDescription = null;
             //_currentConstructorDescription = null;
 
             _paramTable.Clear();
-            #endregion
 
-            #region 判断空选项
+            // 判断空选项
             if (comboBox_RootClass.SelectedValue == null || comboBox_RootClass.SelectedValue.Equals(""))
             {
                 _currentClassDescription = null;
+                _internalOperation = false;
                 return;
             }
-            #endregion
 
-            #region Testflow:获得类description
+            // Testflow:获得类description
             //获取当前选择的类的description：comboBox_RootClass.SelectedIndex 对应 Classes的Index
             _currentClassDescription = _currentComDescription.Classes[comboBox_RootClass.SelectedIndex];
-            #endregion
 
-            #region 展示方法名
+            // 展示方法名
             ShowConstructorsAndMethods();
-            #endregion
+
+            _internalOperation = false;
         }
 
         private void comboBox_Constructor_Validated(object sender, EventArgs e)
@@ -1355,7 +1297,7 @@ namespace TestStation
             {
                 return;
             }
-
+            _internalOperation = true;
             // 清空Parameter
             _paramTable.Clear();
 
@@ -1363,18 +1305,21 @@ namespace TestStation
 
             // 添加Parameter
             UpdateTDGVParameter();
+            _internalOperation = false;
         }
 
         private void InitializeConstructorStep()
         {
             // 判断空选项 , Existing Object
-            ISequenceStep currentConstructorStep = CurrentConstructorStep;
+            ISequenceStep constructorStep;
+            ISequenceStep functionStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
             if (string.IsNullOrWhiteSpace(comboBox_Constructor.Text) || comboBox_Constructor.Text.Equals(ExistingObjName))
             {
                 //_currentConstructorDescription = null;
-                if (currentConstructorStep != null)
+                if (constructorStep != null)
                 {
-                    TestflowDesigntimeSession.RemoveSequenceStep(CurrentStep, currentConstructorStep);
+                    TestflowDesigntimeSession.RemoveSequenceStep(CurrentStep, constructorStep);
                 }
                 return;
             }
@@ -1384,24 +1329,24 @@ namespace TestStation
                     item => GetConstructorSignature(item).Equals(comboBox_Constructor.Text));
 
             // 创建构造函数SubStep
-            if (currentConstructorStep == null)
+            if (constructorStep == null)
             {
-                currentConstructorStep = TestflowDesigntimeSession.AddSequenceStep(CurrentStep, $"Constructor", "Constructor", 1);
+                constructorStep = TestflowDesigntimeSession.AddSequenceStep(CurrentStep, $"Constructor", "Constructor", 1);
             }
 
             // 判断选择的构造函数有没有变
-            if (currentConstructorStep.Function == null ||
-                !IsFunctionCreatedFromDescription(currentConstructorStep.Function, constructorDescription))
+            if (constructorStep.Function == null ||
+                !IsFunctionCreatedFromDescription(constructorStep.Function, constructorDescription))
             {
                 // 创建functionData， 并改变_currentFunctionStep的functionData
                 IFunctionData constructorData =
                     _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(constructorDescription);
-                currentConstructorStep.Function = constructorData;
+                constructorStep.Function = constructorData;
 
                 // 删除functionStep里的instance
-                if (CurrentFunctionStep != null)
+                if (functionStep?.Function != null)
                 {
-                    TestflowDesigntimeSession.SetInstance("", CurrentFunctionStep);
+                    TestflowDesigntimeSession.SetInstance("", functionStep);
                 }
             }
         }
@@ -1412,22 +1357,25 @@ namespace TestStation
             {
                 return;
             }
+            _internalOperation = true;
             // 清空Parameter
             _paramTable.Clear();
 
             // 根据用户选择的方法，初始化FunctionStep
             InitializeFunctionStep();
             // 如果是实例方法且未配置Constructor，则修改Constructor为ExistingObject
-            if (null != CurrentStep && null != CurrentFunctionStep && IsInstanceFunction(CurrentFunctionStep.Function) &&
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
+            if (null != CurrentStep && null != functionStep && IsInstanceFunction(functionStep.Function) &&
                 string.IsNullOrWhiteSpace(comboBox_Constructor.Text))
             {
-                _internalOperation = true;
                 comboBox_Constructor.Text = ExistingObjName;
-                _internalOperation = false;
             }
             // 添加Parameter
             UpdateTDGVParameter();
             ShowStepInfo(CurrentStep);
+            _internalOperation = false;
         }
 
         private void InitializeFunctionStep()
@@ -1437,46 +1385,47 @@ namespace TestStation
             {
                 return;
             }
-            ISequenceStep currentFunctionStep = CurrentFunctionStep;
-            ISequenceStep currentConstructorStep = CurrentConstructorStep;
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
             // Static Class, remove Constructor
-            if (_currentClassDescription.IsStatic && currentConstructorStep != null)
+            if (_currentClassDescription.IsStatic && constructorStep != null)
             {
-                TestflowDesigntimeSession.RemoveSequenceStep(currentStep, currentConstructorStep);
+                TestflowDesigntimeSession.RemoveSequenceStep(currentStep, constructorStep);
             }
 
             // 判断空选项
             if (string.IsNullOrWhiteSpace(comboBox_Method.Text))
             {
-                if (currentFunctionStep != null)
+                if (functionStep != null)
                 {
-                    TestflowDesigntimeSession.RemoveSequenceStep(currentStep, currentFunctionStep);
+                    TestflowDesigntimeSession.RemoveSequenceStep(currentStep, functionStep);
                 }
                 return;
             }
             // 如果FunctionStep不存在则创建
-            if (currentFunctionStep == null)
+            if (functionStep == null)
             {
                 //添加在constructorStep后面
-                currentFunctionStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, Constants.MethodStepName,
-                    "Method", (currentConstructorStep == null) ? 1 : 2);
+                functionStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, Constants.MethodStepName,
+                    "Method", (constructorStep == null) ? 1 : 2);
             }
 
             IFuncInterfaceDescription funcDescription =
                     _currentClassDescription.Functions.FirstOrDefault(
                         item => GetMethodSignature(item).Equals(comboBox_Method.Text));
             //_currentFunctionStep没有方法 或 新的funcDescription
-            if (currentFunctionStep.Function == null ||
-                !IsFunctionCreatedFromDescription(currentFunctionStep.Function, funcDescription))
+            if (functionStep.Function == null ||
+                !IsFunctionCreatedFromDescription(functionStep.Function, funcDescription))
             {
                 //创建functionData， 并改变_currentFunctionStep的functionData
                 IFunctionData functionData = _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(funcDescription);
-                currentFunctionStep.Function = functionData;
+                functionStep.Function = functionData;
             }
             //Instance是constructorStep的instance
-            if (!string.IsNullOrWhiteSpace(currentConstructorStep?.Function.Instance))
+            if (!string.IsNullOrWhiteSpace(constructorStep?.Function.Instance))
             {
-                currentFunctionStep.Function.Instance = currentConstructorStep.Function.Instance;
+                functionStep.Function.Instance = constructorStep.Function.Instance;
             }
         }
 
@@ -1529,14 +1478,18 @@ namespace TestStation
                 ISequenceFlowContainer[] arr = new ISequenceFlowContainer[] { SequenceGroup, CurrentSeq };
 
                 #region Constructor
+
+                ISequenceStep functionStep;
+                ISequenceStep constructorStep;
+                GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
                 if (group.Equals("Constructor"))
                 {
                     #region 检查 Existing Object
                     if (name.Equals(ExistingObjParent))
                     {
-                        if (CurrentFunctionStep != null)
+                        if (functionStep != null)
                         {
-                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(CurrentFunctionStep, arr, false);
+                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(functionStep, arr, false);
                         }
                         else
                         {
@@ -1558,7 +1511,7 @@ namespace TestStation
 
                         else
                         {
-                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(CurrentConstructorStep, arr, false);
+                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(constructorStep, arr, false);
                         }
 
                     }
@@ -1572,15 +1525,15 @@ namespace TestStation
                     #region 检查返回值
                     if (name.Equals("Return Value"))
                     {
-                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckReturn(CurrentFunctionStep, arr, false);
+                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckReturn(functionStep, arr, false);
                     }
                     #endregion
 
                     #region 检查参数
                     else
                     {
-                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckParameterData(CurrentFunctionStep.Function,
-                                                                                                    (CurrentFunctionStep.Function.ReturnType == null) ? _paramTable.IndexInGroup(e.RowIndex) : _paramTable.IndexInGroup(e.RowIndex - 1),
+                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckParameterData(functionStep.Function,
+                                                                                                    (functionStep.Function.ReturnType == null) ? _paramTable.IndexInGroup(e.RowIndex) : _paramTable.IndexInGroup(e.RowIndex - 1),
                                                                                                     arr, false);
                     }
                     #endregion
@@ -1600,8 +1553,7 @@ namespace TestStation
             }
             #endregion
         }
-
-
+        
         private void TdgvParamCellEnterEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             int rowIndex = e.RowIndex;
@@ -1613,8 +1565,9 @@ namespace TestStation
             string value = _paramTable.Rows[rowIndex].Cells["ParameterValue"].Value?.ToString();
             string group = _paramTable.FindNodeGroup(rowIndex);
             IFunctionData function = null;
-            ISequenceStep functionStep = CurrentFunctionStep;
-            ISequenceStep constructorStep = CurrentConstructorStep;
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
             if (group.Equals(Constants.MethodStepName) && null != functionStep && null != functionStep.Function)
             {
                 function = functionStep.Function;
@@ -1712,21 +1665,21 @@ namespace TestStation
             try
             {
                 SetParamValue(e);
-                _internalOperation = false;
             }
             catch (ApplicationException ex)
             {
                 ShowMessage(ex.Message, "Set Parameter", MessageBoxIcon.Error);
-                _internalOperation = false;
+                
                 // 将默认值配置为空，连带更新值的变更
                 _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = string.Empty;
             }
+            _internalOperation = false;
         }
 
         private void SetParamValue(DataGridViewCellEventArgs e)
         {
             //注：只有value的值会改变
-            string paramName = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value?.ToString();
+            string paramName = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
             DataGridViewCell currentCell = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"];
             string tableValue = currentCell.Value?.ToString() ?? string.Empty;
             // 如果是在编辑第三列的数据，并且值等于local.或者global.，则弹出变量选择列表
@@ -1743,13 +1696,13 @@ namespace TestStation
             bool isVariable;
             string value = Utility.GetParamValue(tableValue, out isVariable);
 
-            ISequenceStep functionStep = CurrentFunctionStep;
-            ISequenceStep constructorStep = CurrentConstructorStep;
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
             ISequenceStep currentStep = CurrentStep;
             // 修改构造方法的参数
             if (_paramTable.FindNodeGroup(e.RowIndex).Equals("Constructor"))
             {
-                string instance = value;
                 // 实例为已存在的变量
                 if (paramName.Equals(ExistingObjParent))
                 {
@@ -1897,25 +1850,6 @@ namespace TestStation
             throw new ApplicationException($"Variable {variableName} not exist.");
         }
 
-        private IVariable ShowCreateVariableForm(string variableName, ITypeData typeData)
-        {
-            DialogResult dialogResult = MessageBox.Show(string.Format(Resources.AddVarMessage, variableName), "Parameter", 
-                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Cancel)
-            {
-                return null;
-            }
-            ISequenceFlowContainer parent = dialogResult == DialogResult.Yes
-                ? (ISequenceFlowContainer)SequenceGroup
-                :(ISequenceFlowContainer) CurrentSeq;
-            IVariable varialbe = TestflowDesigntimeSession.AddVariable(parent, variableName, string.Empty, 0);
-            varialbe.LogRecordLevel = RecordLevel.None;
-            varialbe.ReportRecordLevel = RecordLevel.None;
-            varialbe.Type = typeData;
-            ShowVariables(parent is ISequenceGroup ?　0 : 1);
-            return varialbe;
-        }
-
         private void ShowVariableList(string value, int rowIndex, Rectangle cellRectangle)
         {
             contextMenuStrip_varList.Items.Clear();
@@ -1941,7 +1875,6 @@ namespace TestStation
             Point showLocation = new Point(cellRectangle.X, cellRectangle.Bottom);
             contextMenuStrip_varList.Show(_paramTable, showLocation);
         }
-
 
         private void contextMenuStrip_varList_VisibleChanged(object sender, EventArgs e)
         {
@@ -2023,7 +1956,8 @@ namespace TestStation
                 }
                 else
                 {
-                    switch (variable.Type.Name)
+                    string variableTypeName = variable.Type?.Name ?? string.Empty;
+                    switch (variableTypeName)
                     {
                         case "":
                             rowIndex = dgv.Rows.Add(variable.Name, "", variable.Value);
@@ -2040,7 +1974,7 @@ namespace TestStation
 
                         //Object
                         default:
-                            rowIndex = dgv.Rows.Add(variable.Name, "Object", variable.Type.Name);
+                            rowIndex = dgv.Rows.Add(variable.Name, "Object", variableTypeName);
                             dgv.Rows[rowIndex].Cells["VariableType"].ReadOnly = true;
                             break;
                     }
@@ -2051,20 +1985,21 @@ namespace TestStation
 
         private void UpdateModule()
         {
-            if (CurrentFunctionStep == null && CurrentConstructorStep == null)
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
+            if (functionStep == null && constructorStep == null)
             {
                 return;
             }
-            _internalOperation = true;
-            IFunctionData function = (CurrentFunctionStep == null) ? (CurrentConstructorStep.Function)
-                                                                       : (CurrentFunctionStep.Function);
-            //IFuncInterfaceDescription funcDescription = function.Description;
-            //#region 加载进来的function，Description值为null，这时候从components里寻找
-            //if(funcDescription == null)
-            //{
-            //    LoadfuncDescription(function);
-            //}
-            //#endregion
+            IFunctionData function = (functionStep == null)
+                ? (constructorStep.Function)
+                : (functionStep.Function);
+            if (null == function || null == function.ClassType || string.IsNullOrWhiteSpace(function.MethodName))
+            {
+                ClearSettings();
+                return;
+            }
             _currentComDescription = _testflowDesigntimeService.Components[function.ClassType.AssemblyName];
             if (!comboBox_assembly.Items.Contains(_currentComDescription.Assembly.Path))
             {
@@ -2074,10 +2009,9 @@ namespace TestStation
 
             ShowClasses(function.ClassType);
 
-            ShowConstructorsAndMethods(CurrentFunctionStep?.Function, CurrentConstructorStep?.Function);
+            ShowConstructorsAndMethods(functionStep?.Function, constructorStep?.Function);
 
             UpdateTDGVParameter();
-            _internalOperation = false;
         }
 
         private void UpdateSettings()
@@ -2111,7 +2045,6 @@ namespace TestStation
 
         private void ClearSettings()
         {
-            _internalOperation = true;
             // 清空Properties
             //注：StepTypeComboBox与LoopTypeComboBox没有空值，也就是不用把SelectedIndex变成-1.
             LoopTimesnumericUpDown.Value = 2;
@@ -2125,8 +2058,6 @@ namespace TestStation
             comboBox_Constructor.DataSource = null;
             comboBox_Method.Text = "";
             _paramTable.Clear();
-
-            _internalOperation = false;
         }
 
         private void ShowClasses(ITypeData selectedClass = null)
@@ -2242,7 +2173,11 @@ namespace TestStation
             }
 
             #region 判断 <Existing Object>
-            if (CurrentConstructorStep == null && CurrentFunctionStep != null && CurrentFunctionStep.Function.Instance != "")
+
+            ISequenceStep constructorStep;
+            ISequenceStep functionStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
+            if (functionStep?.Function != null && functionStep.Function.Instance != "")
             {
                 constructorIndex = constructorNames.IndexOf(ExistingObjName);
             }
@@ -2285,53 +2220,12 @@ namespace TestStation
             }
         }
 
-        private void ShowSteps()
+        private void GetConstructAndFuncStep(ISequenceStep currentStep, out ISequenceStep constructorStep, out ISequenceStep functionStep)
         {
-            if (null == CurrentSeq)
-            {
-                if (tabCon_Step.TabPages.Count > 1)
-                {
-                    tabCon_Step.TabPages.RemoveAt(0);
-                }
-                return;
-            }
-            _stepTable.Rows.Clear();
-            tabPage_stepData.Name = CurrentSeq.Name;
-            tabPage_stepData.Text = "Steps:" + CurrentSeq.Name;
-
-            _stepTable.Name = CurrentSeq.Name;
-            if (tabCon_Step.TabPages.Count == 1)
-            {
-                tabCon_Step.TabPages.Insert(0, tabPage_stepData);
-            }
-
-            // Sequence无Step就取消tabControl_Setting
-            if (CurrentSeq.Steps.Count == 0)
-            {
-                if (tabControl_settings.Visible)
-                {
-                    tabControl_settings.Visible = false;
-                }
-                return;
-            }
-            else if (!tabControl_settings.Visible)
-            {
-                tabControl_settings.Visible = true;
-            }
-
-            // 输入steps
-            foreach (ISequenceStep step in CurrentSeq.Steps)
-            {
-                string stepType = Utility.GetStepType(step);
-                string unit = "";
-                if (stepType.Equals(Constants.TestType))
-                {
-                    ISequenceStep limitStep = Utility.GetLimitStep(step);
-                    unit = limitStep?.Function.Parameters[4].Value ?? "";
-                }
-                _stepTable.Rows.Add(GetImage(step.SubSteps[0].Name), GetShowStepName(step.Name), step.Description,
-                    step.SubSteps[0].Description, unit, "", "");
-            }
+            constructorStep = null != currentStep.Function && currentStep.Function.Type == FunctionType.Constructor
+                ? currentStep
+                : null;
+            functionStep = null == constructorStep ? currentStep : null;
         }
 
         private static string GetShowStepName(string stepName)
@@ -2406,8 +2300,9 @@ namespace TestStation
 
         private void UpdateTDGVParameter()
         {
-            ISequenceStep currentFunctionStep = CurrentFunctionStep;
-            ISequenceStep constructorStep = CurrentConstructorStep;
+            ISequenceStep constructorStep;
+            ISequenceStep functionStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
             #region 构造函数
             if (!string.IsNullOrWhiteSpace(comboBox_Constructor.Text))
             {
@@ -2417,12 +2312,11 @@ namespace TestStation
                     _paramTable.AddParent($"{ _currentClassDescription.ClassType.Namespace}.{ _currentClassDescription.ClassType.Name}", "Constructor");
                     ShowReturnAndParameters(constructorStep, constructorStep.Function);
                 }
-                else if (comboBox_Constructor.SelectedValue.Equals(ExistingObjName) && null != currentFunctionStep)
+                else if (comboBox_Constructor.SelectedValue.Equals(ExistingObjName) && null != functionStep?.Function)
                 {
-                    if (null != currentFunctionStep)
-                        _paramTable.AddParent(ExistingObjParent, "Constructor");
-                    string instanceValue = Utility.GetShowVariableName(currentFunctionStep.Function.Instance,
-                        currentFunctionStep);
+                    _paramTable.AddParent(ExistingObjParent, "Constructor");
+                    string instanceValue = Utility.GetShowVariableName(functionStep.Function.Instance,
+                        functionStep);
                     _paramTable.Rows.Add(new object[] { null, ExistingObjParent,
                     $"Object({_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name})", "In",
                                                         instanceValue});
@@ -2431,10 +2325,10 @@ namespace TestStation
             #endregion
 
             // 方法显示
-            if (!string.IsNullOrWhiteSpace(comboBox_Method.Text) && null != currentFunctionStep)
+            if (!string.IsNullOrWhiteSpace(comboBox_Method.Text) && null != functionStep)
             {
                 _paramTable.AddParent($"{comboBox_Method.SelectedValue}", "Method");
-                ShowReturnAndParameters(currentFunctionStep, currentFunctionStep.Function);
+                ShowReturnAndParameters(functionStep, functionStep.Function);
             }
         }
 
@@ -2533,6 +2427,8 @@ namespace TestStation
         {
             _paramTable.CellValueChanged += TdgvParamCellValueChanged;
             _paramTable.CellContentClick += TdgvParamCellContentClick;
+            treeView_sequenceTree.ContextMenuStrip = contextMenuStrip_sequence;
+            treeView_stepView.ContextMenuStrip = cMS_DgvStep;
             ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = false;
             // 隐藏运行时变量值窗体
             splitContainer_runtime.Panel1Collapsed = true;
@@ -2541,17 +2437,11 @@ namespace TestStation
             // 子序列名称可修改
             ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = false;
 
-            // 隐藏运行时信息列
-            _stepTable.Columns[StepTableDataCol].Visible = false;
-            _stepTable.Columns[StepTableUnitCol].Visible = false;
-            _stepTable.Columns[StepTableResultCol].Visible = false;
             // 隐藏返回编辑状态的菜单
             editSequenceToolStripMenuItem.Visible = false;
             // 显示编辑序列的菜单项
             addSequenceToolStripMenuItem.Visible = true;
             addStepToolStripMenuItem.Visible = true;
-            // 添加step表格的右键菜单
-            _stepTable.ContextMenuStrip = this.cMS_DgvStep;
 
             _eventController?.UnRegisterEvent();
             if (null != SequenceGroup)
@@ -2564,26 +2454,23 @@ namespace TestStation
         {
             _paramTable.CellValueChanged -= TdgvParamCellValueChanged;
             _paramTable.CellContentClick -= TdgvParamCellContentClick;
+            treeView_sequenceTree.ContextMenuStrip = null;
+            treeView_stepView.ContextMenuStrip = null;
             // 显示运行时变量值窗体
             splitContainer_runtime.Panel1Collapsed = false;
             ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = true;
             // step表格只读，且不响应值变更事件
             treeView_stepView.AfterSelect -= treeView_stepView_AfterSelect;
-            _stepTable.ReadOnly = true;
             // 子序列名称只读
             ((DataGridView) tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = true;
 
             // 显示运行时信息列
-            _stepTable.Columns[StepTableDataCol].Visible = true;
-            _stepTable.Columns[StepTableUnitCol].Visible = true;
-            _stepTable.Columns[StepTableResultCol].Visible = true;
             // 显示返回编辑状态的菜单
             editSequenceToolStripMenuItem.Visible = true;
             // 隐藏编辑序列的菜单项
             addSequenceToolStripMenuItem.Visible = false;
             addStepToolStripMenuItem.Visible = false;
             // 删除step表格的右键菜单
-            _stepTable.ContextMenuStrip = null;
             if (null != SequenceGroup)
             {
                 ShowSequences(SequenceGroup);
@@ -2592,10 +2479,6 @@ namespace TestStation
 
         private void ClearAll()
         {
-            // Step
-            tabCon_Step.TabPages.Clear();
-            tabCon_Step.TabPages.Add(ReportTab);
-
             // Variable
             if (tabCon_Variable.TabPages.Count > 1)
             {
@@ -2644,128 +2527,25 @@ namespace TestStation
 
             #region _currentId
 
-            _currentTestProjectId++;
             _currentSequenceId = 0;
             _currentVariableId = 0;
 
             #endregion
 
-            string projectName = "Test Project " + _currentTestProjectId.ToString();
+            string projectName = "SequenceGroup";
             labelProject.Text = projectName + Constants.ProjectNamePostfix;
 
             // Testflow: 创建新的TestProject => SequenceGroup => Setup/Cleanup, MainSequence
             _testflowDesigntimeService.Unload();
             _testflowDesigntimeService.Load("Test Project", "");
             _testflowDesigntimeService.AddComponent(_interfaceManger.GetComponentDescriptions()[0]); //加载System.mscorlib
-            IComInterfaceDescription limitDLLDescription = _testflowDesigntimeService.AddComponent(
-                    _interfaceManger.GetComponentDescriptions()
-                        .First(item => item.Assembly.AssemblyName.Equals("TestStationLimit")));
-            //加载TestStationLimit.dll
-
             _testflowDesigntimeService.AddSequenceGroup(projectName, "");
-            TestflowDesigntimeSession.AddSequence("ProcessSetup", "", -1);
-            TestflowDesigntimeSession.AddSequence("ProcessCleanup", "", -2);
-
-            #region PreUUT: ScanCode Step
-
-            IList<IFuncInterfaceDescription> funcList =
-                limitDLLDescription.Classes.First(item => item.Name.Equals("UIUtils")).Functions;
-            IFuncInterfaceDescription scanCodeFunc = funcList.FirstOrDefault(item => item.Name.Equals("GetInput"));
-            if (null != scanCodeFunc)
-            {
-                IFunctionData function = _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(scanCodeFunc);
-                function.Parameters[0].Value = Constants.SerialNoVarName;
-                function.Parameters[0].ParameterType = ParameterType.Variable;
-                function.Return = Constants.ContinueVariable;
-                ISequence preUUTSequence = TestflowDesigntimeSession.AddSequence("PreUUT", "", 0);
-                ISequenceStep scanCodeStep = TestflowDesigntimeSession.AddSequenceStep(preUUTSequence, "Scan Code", "", 0);
-                scanCodeStep.RecordStatus = true;
-                TestflowDesigntimeSession.AddSequenceStep(scanCodeStep, "Action", "", 0);
-                TestflowDesigntimeSession.AddSequenceStep(scanCodeStep, function, Constants.MethodStepName, Constants.MethodStepName, 1);
-            }
-
-            #endregion
-
-            TestflowDesigntimeSession.AddSequence("MainSequence", "", 1);
-            TestflowDesigntimeSession.AddSequence("PostUUT", "", 2);
 
             // Sequence UI
             tabCon_Seq.SelectedIndex = 0;
             ShowSequences(SequenceGroup);
 
-            // 创建默认添加的变量
-            CreateDefaultVariable();
-
             EnableAllEditControl();
-        }
-
-        private void CreateDefaultVariable()
-        {
-            // 循环控制变量
-            if (!SequenceGroup.Sequences[0].Variables.Any(item => item.Name.Equals(Constants.ContinueVariable)))
-            {
-                Type boolType = typeof(bool);
-                IVariable continueVar = TestflowDesigntimeSession.AddVariable(SequenceGroup.Sequences[0],
-                    Constants.ContinueVariable, true.ToString(), 0);
-                TestflowDesigntimeSession.SetVariableValue(continueVar, true.ToString());
-                continueVar.Type = _globalInfo.TestflowEntity.ComInterfaceManager.GetTypeByName(boolType.Name,
-                    boolType.Namespace);
-                continueVar.ReportRecordLevel = RecordLevel.None;
-            }
-            // 时钟使能变量
-            if (!SequenceGroup.Variables.Any(item => item.Name.Equals(Constants.TimingEnableVar)))
-            {
-                Type boolType = typeof(bool);
-                IVariable timingEnableVar = TestflowDesigntimeSession.AddVariable(SequenceGroup,
-                    Constants.TimingEnableVar, false.ToString(), 0);
-                TestflowDesigntimeSession.SetVariableValue(timingEnableVar, false.ToString());
-                timingEnableVar.Type = _globalInfo.TestflowEntity.ComInterfaceManager.GetTypeByName(boolType.Name,
-                    boolType.Namespace);
-                timingEnableVar.ReportRecordLevel = RecordLevel.None;
-            }
-            // 开始时间变量
-            if (!SequenceGroup.Variables.Any(item => item.Name.Equals(Constants.StartTimeVar)))
-            {
-                Type timeType = typeof(DateTime);
-                IVariable startTimeVar = TestflowDesigntimeSession.AddVariable(SequenceGroup, Constants.StartTimeVar,
-                    DateTime.MinValue.ToString(Constants.TimeFormat), 0);
-                startTimeVar.Type = _globalInfo.TestflowEntity.ComInterfaceManager.GetTypeByName(timeType.Name,
-                    timeType.Namespace);
-                startTimeVar.ReportRecordLevel = RecordLevel.FinalResult;
-            }
-            // 结束时间变量
-            if (!SequenceGroup.Variables.Any(item => item.Name.Equals(Constants.EndTimeVar)))
-            {
-                Type timeType = typeof(DateTime);
-                IVariable endTimeVar = TestflowDesigntimeSession.AddVariable(SequenceGroup, Constants.EndTimeVar,
-                    DateTime.MinValue.ToString(Constants.TimeFormat), 0);
-                endTimeVar.Type = _globalInfo.TestflowEntity.ComInterfaceManager.GetTypeByName(timeType.Name,
-                    timeType.Namespace);
-                endTimeVar.ReportRecordLevel = RecordLevel.FinalResult;
-            }
-            // DUT索引号变量
-            if (!SequenceGroup.Variables.Any(item => item.Name.Equals(Constants.DutIndexVarName)))
-            {
-                Type intType = typeof(double);
-                IVariable dutIndexVar = TestflowDesigntimeSession.AddVariable(SequenceGroup,
-                    Constants.DutIndexVarName, "0", 0);
-                TestflowDesigntimeSession.SetVariableValue(dutIndexVar, "0");
-                dutIndexVar.Type = _globalInfo.TestflowEntity.ComInterfaceManager.GetTypeByName(intType.Name,
-                    intType.Namespace);
-                dutIndexVar.ReportRecordLevel = RecordLevel.FullTrace;
-            }
-            // 硬件序列号变量
-            if (!SequenceGroup.Variables.Any(item => item.Name.Equals(Constants.SerialNoVarName)))
-            {
-                Type strType = typeof(string);
-                IVariable seriaNoVar = TestflowDesigntimeSession.AddVariable(SequenceGroup,
-                    Constants.SerialNoVarName, false.ToString(), 0);
-                TestflowDesigntimeSession.SetVariableValue(seriaNoVar, Constants.NASerialNo);
-                seriaNoVar.Type = _globalInfo.TestflowEntity.ComInterfaceManager.GetTypeByName(strType.Name,
-                    strType.Namespace);
-                seriaNoVar.ReportRecordLevel = RecordLevel.FullTrace;
-            }
-            ShowVariables(0);
         }
 
         // 载入序列
@@ -2970,33 +2750,33 @@ namespace TestStation
 
         private void ShowOperationPanel(ISequenceGroup runtimeSequence)
         {
-            RuntimeDataCache dataCache = new RuntimeDataCache(_globalInfo.TestflowEntity,
-                _globalInfo.Equipment)
-            {
-                EnableStartTiming = _sequenceMaintainer.UserStartTiming,
-                EnableEndTiming = _sequenceMaintainer.UserEndTiming,
-                MainStartStack = _sequenceMaintainer.MainStartStack,
-                MainOverStack = _sequenceMaintainer.MainOverStack,
-                PostStartStack = _sequenceMaintainer.PostStartStack,
-                SequenceData = runtimeSequence,
-                RunType = RunType.Slave,
-                SequenceName = SequenceGroup.Name,
-                Target = _globalInfo.ConfigManager.GetConfig<long>("Target")
-            };
-            _eventController.DataCache = dataCache;
-            dataCache.InitModelInfo(_globalInfo.Equipment);
-            ThreadPool.QueueUserWorkItem(state =>
-            {
-                _operationPanel = new OperationPanelForm(dataCache);
-                _operationPanel.Initialize();
-                Application.Run(_operationPanel);
-            });
-            // 等待
-            while (null == _operationPanel)
-            {
-                Thread.Yield();
-            }
-            _operationPanel.Start();
+//            RuntimeDataCache dataCache = new RuntimeDataCache(_globalInfo.TestflowEntity,
+//                _globalInfo.Equipment)
+//            {
+//                EnableStartTiming = _sequenceMaintainer.UserStartTiming,
+//                EnableEndTiming = _sequenceMaintainer.UserEndTiming,
+//                MainStartStack = _sequenceMaintainer.MainStartStack,
+//                MainOverStack = _sequenceMaintainer.MainOverStack,
+//                PostStartStack = _sequenceMaintainer.PostStartStack,
+//                SequenceData = runtimeSequence,
+//                RunType = RunType.Slave,
+//                SequenceName = SequenceGroup.Name,
+//                Target = _globalInfo.ConfigManager.GetConfig<long>("Target")
+//            };
+//            _eventController.DataCache = dataCache;
+//            dataCache.InitModelInfo(_globalInfo.Equipment);
+//            ThreadPool.QueueUserWorkItem(state =>
+//            {
+//                _operationPanel = new OperationPanelForm(dataCache);
+//                _operationPanel.Initialize();
+//                Application.Run(_operationPanel);
+//            });
+//            // 等待
+//            while (null == _operationPanel)
+//            {
+//                Thread.Yield();
+//            }
+//            _operationPanel.Start();
         }
 
         private void SuspendSequence()
@@ -3015,7 +2795,6 @@ namespace TestStation
 
             tabControl_settings.Visible = true;
             // tabControl_setting.SelectedTab = tabControl_setting.TabPages[1]; ;
-            _stepTable.BackgroundColor = Color.White;
 
             toolStripButton_New.Enabled = true;
             toolStripButton_Open.Enabled = true;
@@ -3199,54 +2978,54 @@ namespace TestStation
 
         private void ShowStepResults(ISequenceStep step, IList<ResultState> stepResults, IList<string> variables)
         {
-            DataGridView stepTable = _stepTable;
-            int stepIndex = step.Index;
-            for (int i = 0; i < stepTable.RowCount; i++)
-            {
-                string variableValue = variables[i];
-                DataGridViewCell dataCell = stepTable.Rows[i].Cells[StepTableDataCol];
-                if (!variableValue.Equals(dataCell.Value.ToString()))
-                {
-                    dataCell.Value = variableValue;
-                }
-                ResultState stepResult = stepResults[i];
-                DataGridViewCell resultCell = stepTable.Rows[i].Cells[StepTableResultCol];
-                string state = resultCell.Value.ToString();
-                string newState = stepResult != ResultState.NA ? stepResult.ToString() : string.Empty;
-                if (state.Equals(newState))
-                {
-                    continue;
-                }
-                resultCell.Value = newState;
-                
-                switch (stepResult)
-                {
-                    case ResultState.NA:
-                        resultCell.Style.BackColor = NAColor;
-                        break;
-                    case ResultState.Running:
-                        resultCell.Style.BackColor = RunningColor;
-                        break;
-                    case ResultState.Skip:
-                        resultCell.Style.BackColor = SkipColor;
-                        break;
-                    case ResultState.Pass:
-                        resultCell.Style.BackColor = PassColor;
-                        break;
-                    case ResultState.Fail:
-                        resultCell.Style.BackColor = FailedColor;
-                        break;
-                    case ResultState.Error:
-                        resultCell.Style.BackColor = FailedColor;
-                        break;
-                    case ResultState.Done:
-                        resultCell.Style.BackColor = PassColor;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            stepTable.CurrentCell = stepTable.Rows[stepIndex].Cells[StepTableNameCol];
+//            DataGridView stepTable = _stepTable;
+//            int stepIndex = step.Index;
+//            for (int i = 0; i < stepTable.RowCount; i++)
+//            {
+//                string variableValue = variables[i];
+//                DataGridViewCell dataCell = stepTable.Rows[i].Cells[StepTableDataCol];
+//                if (!variableValue.Equals(dataCell.Value.ToString()))
+//                {
+//                    dataCell.Value = variableValue;
+//                }
+//                ResultState stepResult = stepResults[i];
+//                DataGridViewCell resultCell = stepTable.Rows[i].Cells[StepTableResultCol];
+//                string state = resultCell.Value.ToString();
+//                string newState = stepResult != ResultState.NA ? stepResult.ToString() : string.Empty;
+//                if (state.Equals(newState))
+//                {
+//                    continue;
+//                }
+//                resultCell.Value = newState;
+//                
+//                switch (stepResult)
+//                {
+//                    case ResultState.NA:
+//                        resultCell.Style.BackColor = NAColor;
+//                        break;
+//                    case ResultState.Running:
+//                        resultCell.Style.BackColor = RunningColor;
+//                        break;
+//                    case ResultState.Skip:
+//                        resultCell.Style.BackColor = SkipColor;
+//                        break;
+//                    case ResultState.Pass:
+//                        resultCell.Style.BackColor = PassColor;
+//                        break;
+//                    case ResultState.Fail:
+//                        resultCell.Style.BackColor = FailedColor;
+//                        break;
+//                    case ResultState.Error:
+//                        resultCell.Style.BackColor = FailedColor;
+//                        break;
+//                    case ResultState.Done:
+//                        resultCell.Style.BackColor = PassColor;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//            stepTable.CurrentCell = stepTable.Rows[stepIndex].Cells[StepTableNameCol];
         }
 
         private ISequence GetSequence(ISequenceStep step)
@@ -3488,7 +3267,7 @@ namespace TestStation
             {
                 nodeStack.Push(node);
                 node = node.Parent;
-            } while (null != node);
+            } while (null != node && node.Level > 0);
             ISequence currentSeq = CurrentSeq;
             ISequenceStep step = currentSeq.Steps[nodeStack.Pop().Index];
             for (int i = nodeStack.Count - 1; i >= 0; i--)
@@ -3500,6 +3279,8 @@ namespace TestStation
 
         private void treeView_sequenceTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (_internalOperation) return;
+            _internalOperation = true;
             ISequence selectedSequence = FindSelectedSequence(e.Node);
             if (selectedSequence != CurrentSeq)
             {
@@ -3512,6 +3293,7 @@ namespace TestStation
                 ShowSteps(CurrentSeq);
             }
             CreateDGVVariable(1);
+            _internalOperation = false;
         }
 
         private void ShowSequences(ISequenceGroup sequenceGroup)
@@ -3565,23 +3347,39 @@ namespace TestStation
             {
                 LoopTypecomboBox.SelectedIndex = 1;
                 LoopTimesnumericUpDown.Value = step.LoopCounter.MaxValue;
+                numericUpDown_retryTime.Value = 0;
+                numericUpDown_passTimes.Value = 1;
                 LoopTimesnumericUpDown.Enabled = true;
-                numericUpDown_retryTime.Enabled = false;
+                numericUpDown_passTimes.Enabled = false;
                 numericUpDown_retryTime.Enabled = false;
             }
             else if (null != step.RetryCounter)
             {
                 LoopTypecomboBox.SelectedIndex = 2;
+                LoopTimesnumericUpDown.Value = 1;
                 numericUpDown_retryTime.Value = step.RetryCounter.MaxRetryTimes;
                 numericUpDown_passTimes.Value = step.RetryCounter.PassTimes;
                 LoopTimesnumericUpDown.Enabled = false;
+                numericUpDown_passTimes.Enabled = true;
                 numericUpDown_retryTime.Enabled = true;
+            }
+            else
+            {
+                LoopTypecomboBox.SelectedIndex = 0;
+                LoopTimesnumericUpDown.Value = 1;
+                numericUpDown_retryTime.Value = 0;
+                numericUpDown_passTimes.Value = 1;
+                LoopTimesnumericUpDown.Enabled = false;
+                numericUpDown_passTimes.Enabled = true;
                 numericUpDown_retryTime.Enabled = true;
             }
         }
 
         private void treeView_stepView_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (_internalOperation) return;
+            _internalOperation = true;
+
             ISequenceStep selectedStep = FindSelectedStep(e.Node);
             CurrentStep = selectedStep;
             if (null != selectedStep)
@@ -3595,6 +3393,7 @@ namespace TestStation
                 tabControl_settings.SelectedIndex = 0;
             }
             UpdateSettings();
+            _internalOperation = false;
         }
 
         private void toolStripMenuItem3_Click(object sender, EventArgs e)

@@ -26,19 +26,7 @@ namespace TestStation
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            AuthenticationSession session = AuthenticationManage.GetLoginSession(null);
-            if (null == session)
-            {
-                return;
-            }
-            try
-            {
-                Application.Run(new MainForm(session, filePath));
-            }
-            finally
-            {
-                AuthenticationManage.Logout(session);
-            }
+            Application.Run(new MainForm(filePath));
         }
     }
 }

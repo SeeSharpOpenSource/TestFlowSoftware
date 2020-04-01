@@ -32,7 +32,7 @@ namespace TestStation.Report
 
         public TestTraceCreator(GlobalInfo globalInfo, SequenceMaintainer seqMaintainer)
         {
-            _globalInfo = globalInfo;
+            _globalInfo = globalInfo; 
             _seqMaintainer = seqMaintainer;
             PruductTestResults = new List<ProductTestResult>(100);
             _over = false;

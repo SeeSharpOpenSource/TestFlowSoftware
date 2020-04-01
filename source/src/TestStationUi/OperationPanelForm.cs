@@ -87,21 +87,6 @@ namespace TestStation.OperationPanel
             _sizeAdapter.RegisterControl(button_stopDevice);
         }
 
-        private void LoadConfigurationFile()
-        {
-            string fileName = openFileDialog_configFile.FileName;
-            try
-            {
-                _dataCache.InitModelInfo(_dataCache.Equipment);
-                OiReady = true;
-            }
-            catch (ApplicationException ex)
-            {
-                MessageBox.Show(ex.Message, "Configure", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-            }
-        }
-
         private void button_setTarget_Click(object sender, EventArgs e)
         {
             TargetSetForm targetSetForm = new TargetSetForm(this, _dataCache.Target);
