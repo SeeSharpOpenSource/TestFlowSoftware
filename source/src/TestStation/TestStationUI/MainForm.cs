@@ -257,7 +257,7 @@ namespace TestStation
                 globalVariableTab.Controls.Clear();
                 globalVariableTab.Controls.Add(dgv_variable);
             }
-            else //tabNumber == 1
+            else if (null != CurrentSeq) //tabNumber == 1
             {
                 if (tabCon_Variable.TabPages.Count == 1)
                 {
@@ -366,6 +366,7 @@ namespace TestStation
         private void Form1_Load(object sender, EventArgs e)
         {
             viewController_Main.State = RunState.EditIdle.ToString();
+            EditModeAction();
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -3180,7 +3181,7 @@ namespace TestStation
             ISequence sequence = TestflowDesigntimeSession.AddSequence("", "", selectedSequence.Index);
             TreeNode parentNode = FindTreeNode(sequenceGroup);
             TreeNode newSeqNode = new TreeNode(sequence.Name);
-            parentNode.Nodes.Insert(selectedSequence.Index, newSeqNode);
+            parentNode.Nodes.Insert(sequence.Index + 2, newSeqNode);
             treeView_sequenceTree.SelectedNode = newSeqNode;
         }
 
@@ -3258,7 +3259,7 @@ namespace TestStation
 
         private ISequenceStep FindSelectedStep(TreeNode node)
         {
-            if (null == node)
+            if (null == node || node.Level == 0)
             {
                 return null;
             }
@@ -3425,7 +3426,7 @@ namespace TestStation
         private void renameSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ISequence selectedSeq = FindSelectedSequence(treeView_sequenceTree.SelectedNode);
-            if (null == selectedSeq)
+            if (null == selectedSeq || selectedSeq.Index == CommonConst.SetupIndex || selectedSeq.Index == CommonConst.TeardownIndex)
             {
                 return;
             }

@@ -37,7 +37,7 @@
             // label_name
             // 
             this.label_name.AutoSize = true;
-            this.label_name.Location = new System.Drawing.Point(56, 44);
+            this.label_name.Location = new System.Drawing.Point(26, 29);
             this.label_name.Name = "label_name";
             this.label_name.Size = new System.Drawing.Size(35, 12);
             this.label_name.TabIndex = 0;
@@ -45,14 +45,14 @@
             // 
             // textBox_name
             // 
-            this.textBox_name.Location = new System.Drawing.Point(97, 40);
+            this.textBox_name.Location = new System.Drawing.Point(67, 25);
             this.textBox_name.Name = "textBox_name";
             this.textBox_name.Size = new System.Drawing.Size(207, 21);
             this.textBox_name.TabIndex = 1;
             // 
             // button_confirm
             // 
-            this.button_confirm.Location = new System.Drawing.Point(67, 93);
+            this.button_confirm.Location = new System.Drawing.Point(43, 70);
             this.button_confirm.Name = "button_confirm";
             this.button_confirm.Size = new System.Drawing.Size(75, 23);
             this.button_confirm.TabIndex = 2;
@@ -62,7 +62,7 @@
             // 
             // button_cancell
             // 
-            this.button_cancell.Location = new System.Drawing.Point(229, 93);
+            this.button_cancell.Location = new System.Drawing.Point(183, 70);
             this.button_cancell.Name = "button_cancell";
             this.button_cancell.Size = new System.Drawing.Size(75, 23);
             this.button_cancell.TabIndex = 3;
@@ -74,7 +74,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(369, 160);
+            this.ClientSize = new System.Drawing.Size(291, 105);
             this.Controls.Add(this.button_cancell);
             this.Controls.Add(this.button_confirm);
             this.Controls.Add(this.textBox_name);
@@ -82,7 +82,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "RenameForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Rename Form";
+            this.Text = "Rename";
             this.ResumeLayout(false);
             this.PerformLayout();
 

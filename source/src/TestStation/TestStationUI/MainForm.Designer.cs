@@ -636,7 +636,7 @@ namespace TestStation
             this.Menu_DeleteStep,
             this.toolStripMenuItem3});
             this.cMS_DgvStep.Name = "cMS_DgvStep";
-            this.cMS_DgvStep.Size = new System.Drawing.Size(154, 92);
+            this.cMS_DgvStep.Size = new System.Drawing.Size(154, 114);
             // 
             // Menu_AddStep
             // 
