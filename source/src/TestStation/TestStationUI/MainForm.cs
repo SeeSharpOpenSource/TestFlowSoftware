@@ -28,6 +28,7 @@ using TestStation.OperationPanel;
 using TestStation.ParameterChecker;
 using TestStation.Properties;
 using TestStation.Report;
+using TestStation.Runtime;
 using TestStationLimit;
 using LogLevel = TestStation.Common.LogLevel;
 
@@ -58,7 +59,6 @@ namespace TestStation
 
         private string _expandImagePath;
         private string _NexpandImagePath;
-        private SequenceMaintainer _sequenceMaintainer;
         #endregion
 
         #region 其他字段
@@ -137,7 +137,6 @@ namespace TestStation
         } 
         private readonly IRuntimeService _testflowRuntimeService;
         private readonly IComInterfaceManager _interfaceManger;
-        private EventController _eventController;
         // 表达式匹配模式，第1组为数组的源数据，第二组为数组的变量名称
         private readonly Regex _expRegex;
 
@@ -149,7 +148,6 @@ namespace TestStation
         private string _oldVariableValue;
         private IComInterfaceDescription _currentComDescription;
         private IClassInterfaceDescription _currentClassDescription;
-        private volatile OperationPanelForm _operationPanel;
 
         #endregion
 
@@ -199,7 +197,12 @@ namespace TestStation
             _interfaceManger.GetComponentInterface(Environment.GetEnvironmentVariable("TESTFLOW_WORKSPACE") + @"\TestStationLimit.dll");
             
             // 暂时移除Parameters页
-            tabControl_settings.TabPages.Remove(tabpage_parameters);
+//            tabControl_settings.TabPages.Remove(tabpage_parameters);
+            RuntimeStatusForm runtimeStatusForm = new RuntimeStatusForm(this);
+            RuntimeStatusTab.Controls.Clear();
+            RuntimeStatusTab.Controls.Add(runtimeStatusForm);
+            runtimeStatusForm.Dock = DockStyle.Fill;
+            runtimeStatusForm.Show();
         }
 
         private void InitControls()
@@ -595,7 +598,7 @@ namespace TestStation
 
         private void button_copyOutput_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBox_output.Text))
+            if (!string.IsNullOrWhiteSpace(textBox_output.Text))
             {
                 Clipboard.SetText(textBox_output.Text);
             }
@@ -789,34 +792,34 @@ namespace TestStation
 
         private void buttonOpenReport_Click(object sender, EventArgs e)
         {
-            if (_eventController?.CurrentReport == null || !File.Exists(_eventController.CurrentReport))
-            {
-                return;
-            }
-            try
-            {
-                Process.Start("notepad.exe", _eventController.CurrentReport);
-            }
-            catch (Exception ex)
-            {
-                Log.Print(LogLevel.ERROR, ex.Message);
-            }
+//            if (_eventController?.CurrentReport == null || !File.Exists(_eventController.CurrentReport))
+//            {
+//                return;
+//            }
+//            try
+//            {
+//                Process.Start("notepad.exe", _eventController.CurrentReport);
+//            }
+//            catch (Exception ex)
+//            {
+//                Log.Print(LogLevel.ERROR, ex.Message);
+//            }
         }
 
         private void button_openReportDir_Click(object sender, EventArgs e)
         {
-            if (_eventController?.ReportDir == null || !Directory.Exists(_eventController.ReportDir))
-            {
-                return;
-            }
-            try
-            {
-                Process.Start(_eventController.ReportDir);
-            }
-            catch (Exception ex)
-            {
-                Log.Print(LogLevel.ERROR, ex.Message);
-            }
+//            if (_eventController?.ReportDir == null || !Directory.Exists(_eventController.ReportDir))
+//            {
+//                return;
+//            }
+//            try
+//            {
+//                Process.Start(_eventController.ReportDir);
+//            }
+//            catch (Exception ex)
+//            {
+//                Log.Print(LogLevel.ERROR, ex.Message);
+//            }
         }
 
         #region Variable相关事件
@@ -2020,8 +2023,8 @@ namespace TestStation
             ISequenceStep step = FindSelectedStep(treeView_stepView.SelectedNode);
             if (null == step)
             {
-                tabControl_settings.Enabled = false;
-                tabControl_settings.SelectedIndex = 0;
+//                tabControl_settings.Enabled = false;
+//                tabControl_settings.SelectedIndex = 0;
                 ClearSettings();
                 return;
             }
@@ -2445,7 +2448,6 @@ namespace TestStation
             addSequenceToolStripMenuItem.Visible = true;
             addStepToolStripMenuItem.Visible = true;
 
-            _eventController?.UnRegisterEvent();
             if (null != SequenceGroup)
             {
                 ShowSequences(SequenceGroup);
@@ -2485,7 +2487,7 @@ namespace TestStation
             }
             ((DataGridView)globalVariableTab.Controls[0]).Rows.Clear();
             // Module
-            tabControl_settings.Visible = false;
+//            tabControl_settings.Visible = false;
             comboBox_assembly.Text = "";
             comboBox_RootClass.DataSource = null;
             comboBox_RootClass.Text = "";
@@ -2852,8 +2854,6 @@ namespace TestStation
 
         private void RunSequence()
         {
-            _operationPanel?.Close();
-            _operationPanel = null;
             // 序列未保存则弹出保存界面，如果保存失败或取消则返回不执行
             if (string.IsNullOrWhiteSpace(SequenceGroup.Info.SequenceGroupFile))
             {
@@ -2866,16 +2866,7 @@ namespace TestStation
                 }
             }
 
-            #region 参数检查
-
-            // 参数检查提醒后如果用户取消则停止执行
-            if (!CheckParameter())
-            {
-                viewController_Main.State = RunState.EditIdle.ToString();
-                return;
-            }
-
-            #endregion
+            // 参数检查
 
             _start = true;
 
@@ -2884,25 +2875,21 @@ namespace TestStation
                 // 配置引擎以调试方式运行
                 _globalInfo.TestflowEntity.EngineController.ConfigData.SetProperty("RuntimeType", RuntimeType.Debug);
                 // Runtime SequenceGroup
-                this._sequenceMaintainer = new SequenceMaintainer(SequenceGroup, _globalInfo);
-                ISequenceGroup runtimeSequenceGroup = _sequenceMaintainer.GetRuntimeSequence();
-
+                ISequenceGroup runtimeSequenceGroup = SequenceGroup;
                 // Testflow: RuntimeService.Load
                 _testflowRuntimeService.Initialize();
                 _testflowRuntimeService.Load(runtimeSequenceGroup);
                 _globalInfo.TestflowEntity.EngineController.ConfigData.SetProperty("TestName", SequenceGroup.Name);
 
                 // 添加事件
-                _eventController = new EventController(_globalInfo, SequenceGroup, this, _sequenceMaintainer);
-                _eventController.RegisterEvents();
-                
                 tabCon_Seq.SelectedIndex = 0;
-                DataGridView seqTable = ((DataGridView)tabCon_Seq.TabPages[0].Controls[0]);
-                seqTable.CurrentCell = seqTable.Rows[0].Cells[0];
                 ResetRuntimeStatus();
                 tabControl_settings.SelectedTab = tabPage_runtimeInfo;
                 _watchVariables.Clear();
                 ShowOperationPanel(runtimeSequenceGroup);
+                RuntimeStatusForm runtimeStatusForm = (RuntimeStatusForm)RuntimeStatusTab.Controls[0];
+                runtimeStatusForm.LoadSequence(runtimeSequenceGroup);
+                runtimeStatusForm.RegisterEvent();
                 _testflowRuntimeService.Run();
                 viewController_Main.State = RunState.Running.ToString();
             }
@@ -3023,28 +3010,28 @@ namespace TestStation
             runtimeVariableName = null;
             variableShowName = null;
             sequenceIndex = -3;
-            ISequence currentSequence = _eventController.CurrentSequence;
-            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, currentSequence.Variables,
-                string.Empty);
-            variableForm.ShowDialog(this);
-            string variableName = variableForm.Value;
-            if (variableForm.IsCancelled || string.IsNullOrWhiteSpace(variableName))
-            {
-                return;
-            }
-            IVariable variable = null;
-            sequenceIndex = variableForm.SequenceIndex;
-            if (variableForm.IsGlobalVariable)
-            {
-                variable = SequenceGroup.Variables.FirstOrDefault(item => item.Name.Equals(variableName));
-                sequenceIndex = Constants.SequenceGroupIndex;
-            }
-            else
-            {
-                variable = currentSequence.Variables.FirstOrDefault(item => item.Name.Equals(variableName));
-            }
-            variableShowName = variable?.Name ?? null;
-            runtimeVariableName = _sequenceMaintainer.GetRuntimeVariable(sequenceIndex, variableShowName);
+//            ISequence currentSequence = _eventController.CurrentSequence;
+//            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, currentSequence.Variables,
+//                string.Empty);
+//            variableForm.ShowDialog(this);
+//            string variableName = variableForm.Value;
+//            if (variableForm.IsCancelled || string.IsNullOrWhiteSpace(variableName))
+//            {
+//                return;
+//            }
+//            IVariable variable = null;
+//            sequenceIndex = variableForm.SequenceIndex;
+//            if (variableForm.IsGlobalVariable)
+//            {
+//                variable = SequenceGroup.Variables.FirstOrDefault(item => item.Name.Equals(variableName));
+//                sequenceIndex = Constants.SequenceGroupIndex;
+//            }
+//            else
+//            {
+//                variable = currentSequence.Variables.FirstOrDefault(item => item.Name.Equals(variableName));
+//            }
+//            variableShowName = variable?.Name ?? null;
+//            runtimeVariableName = variableShowName;
         }
 
         private void button_deleteWatch_Click(object sender, EventArgs e)
@@ -3272,14 +3259,15 @@ namespace TestStation
         {
             viewController_Main.State = RunState.RunOver.ToString();
             viewController_Main.State = RunState.EditIdle.ToString();
-            if (!_operationPanel.FormUnavaiable)
-            {
-                _operationPanel.BeginInvoke(new Action(() =>
-                {
-                    Thread.Sleep(200);
-                    _operationPanel.Close();
-                }));
-            }
+            // TODO 释放OI面板
+//            if (!_operationPanel.FormUnavaiable)
+//            {
+//                _operationPanel.BeginInvoke(new Action(() =>
+//                {
+//                    Thread.Sleep(200);
+//                    _operationPanel.Close();
+//                }));
+//            }
         }
 
         internal void PrintUutResults(IList<ProductTestResult> results)
@@ -3296,7 +3284,7 @@ namespace TestStation
 //            reportValue.Append(Environment.NewLine);
 //            reportValue.Append(textBoxReport.Text);
 //            textBoxReport.Text = reportValue.ToString();
-            tabCon_Step.SelectedTab = ReportTab;
+            tabCon_Step.SelectedTab = RuntimeStatusTab;
         }
 
         internal void PrintUutResult(string uutResult)
@@ -3522,6 +3510,7 @@ namespace TestStation
             comboBox_asserFailedAction.Text = step.AssertFailedAction.ToString();
             comboBox_invokeFailedAction.Text = step.InvokeErrorAction.ToString();
             comboBox_runType.Text = step.Behavior.ToString();
+            checkBox_RecordStatus.Checked = step.RecordStatus;
             if (null != step.LoopCounter)
             {
                 LoopTypecomboBox.SelectedIndex = 1;

@@ -158,7 +158,7 @@ namespace TestStation
             this.tabCon_Step = new System.Windows.Forms.TabControl();
             this.tabPage_stepData = new System.Windows.Forms.TabPage();
             this.treeView_stepView = new System.Windows.Forms.TreeView();
-            this.ReportTab = new System.Windows.Forms.TabPage();
+            this.RuntimeStatusTab = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.textBoxReport = new System.Windows.Forms.TextBox();
             this.panel_buttonPanel = new System.Windows.Forms.Panel();
@@ -227,7 +227,7 @@ namespace TestStation
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_variableValues)).BeginInit();
             this.tabCon_Step.SuspendLayout();
             this.tabPage_stepData.SuspendLayout();
-            this.ReportTab.SuspendLayout();
+            this.RuntimeStatusTab.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel_buttonPanel.SuspendLayout();
             this.statusStripButton.SuspendLayout();
@@ -772,7 +772,7 @@ namespace TestStation
             // testToolStripMenuItem1
             // 
             this.testToolStripMenuItem1.Name = "testToolStripMenuItem1";
-            this.testToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.testToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
             this.testToolStripMenuItem1.Tag = "Execution";
             this.testToolStripMenuItem1.Text = "Common";
             this.testToolStripMenuItem1.Click += new System.EventHandler(this.InsertSequenceStep);
@@ -784,7 +784,7 @@ namespace TestStation
             this.conditionStatementToolStripMenuItem1,
             this.conditionLoopToolStripMenuItem1});
             this.actionToolStripMenuItem3.Name = "actionToolStripMenuItem3";
-            this.actionToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
+            this.actionToolStripMenuItem3.Size = new System.Drawing.Size(149, 22);
             this.actionToolStripMenuItem3.Text = "Condition";
             // 
             // conditionBlockToolStripMenuItem1
@@ -818,14 +818,14 @@ namespace TestStation
             this.timerBlockToolStripMenuItem,
             this.batchBlockToolStripMenuItem1});
             this.sequenceCallToolStripMenuItem2.Name = "sequenceCallToolStripMenuItem2";
-            this.sequenceCallToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.sequenceCallToolStripMenuItem2.Size = new System.Drawing.Size(149, 22);
             this.sequenceCallToolStripMenuItem2.Text = "Parallel";
             this.sequenceCallToolStripMenuItem2.Visible = false;
             // 
             // multiThreadToolStripMenuItem1
             // 
             this.multiThreadToolStripMenuItem1.Name = "multiThreadToolStripMenuItem1";
-            this.multiThreadToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.multiThreadToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
             this.multiThreadToolStripMenuItem1.Tag = "MultiThreadBlock";
             this.multiThreadToolStripMenuItem1.Text = "Multi-Thread";
             this.multiThreadToolStripMenuItem1.Click += new System.EventHandler(this.InsertSequenceStep);
@@ -833,7 +833,7 @@ namespace TestStation
             // timerBlockToolStripMenuItem
             // 
             this.timerBlockToolStripMenuItem.Name = "timerBlockToolStripMenuItem";
-            this.timerBlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.timerBlockToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.timerBlockToolStripMenuItem.Tag = "TimerBlock";
             this.timerBlockToolStripMenuItem.Text = "Timer Block";
             this.timerBlockToolStripMenuItem.Click += new System.EventHandler(this.InsertSequenceStep);
@@ -841,7 +841,7 @@ namespace TestStation
             // batchBlockToolStripMenuItem1
             // 
             this.batchBlockToolStripMenuItem1.Name = "batchBlockToolStripMenuItem1";
-            this.batchBlockToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.batchBlockToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
             this.batchBlockToolStripMenuItem1.Tag = "BatchBlock";
             this.batchBlockToolStripMenuItem1.Text = "Batch Block";
             this.batchBlockToolStripMenuItem1.Click += new System.EventHandler(this.InsertSequenceStep);
@@ -852,13 +852,13 @@ namespace TestStation
             this.gotoToolStripMenuItem1,
             this.tryFinallyBlockToolStripMenuItem});
             this.timingToolStripMenuItem1.Name = "timingToolStripMenuItem1";
-            this.timingToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.timingToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
             this.timingToolStripMenuItem1.Text = "Flow Control";
             // 
             // gotoToolStripMenuItem1
             // 
             this.gotoToolStripMenuItem1.Name = "gotoToolStripMenuItem1";
-            this.gotoToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.gotoToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.gotoToolStripMenuItem1.Tag = "Goto";
             this.gotoToolStripMenuItem1.Text = "Goto";
             this.gotoToolStripMenuItem1.Visible = false;
@@ -898,7 +898,6 @@ namespace TestStation
             this.tabControl_settings.SelectedIndex = 0;
             this.tabControl_settings.Size = new System.Drawing.Size(916, 386);
             this.tabControl_settings.TabIndex = 5;
-            this.tabControl_settings.Visible = false;
             this.tabControl_settings.SelectedIndexChanged += new System.EventHandler(this.tabControl_settings_SelectedIndexChanged);
             // 
             // tabpage_Properties
@@ -1442,7 +1441,7 @@ namespace TestStation
             // tabCon_Step
             // 
             this.tabCon_Step.Controls.Add(this.tabPage_stepData);
-            this.tabCon_Step.Controls.Add(this.ReportTab);
+            this.tabCon_Step.Controls.Add(this.RuntimeStatusTab);
             this.tabCon_Step.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabCon_Step.Location = new System.Drawing.Point(0, 0);
             this.tabCon_Step.Name = "tabCon_Step";
@@ -1471,16 +1470,16 @@ namespace TestStation
             this.treeView_stepView.TabIndex = 0;
             this.treeView_stepView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_stepView_AfterSelect);
             // 
-            // ReportTab
+            // RuntimeStatusTab
             // 
-            this.ReportTab.Controls.Add(this.tableLayoutPanel1);
-            this.ReportTab.Location = new System.Drawing.Point(4, 22);
-            this.ReportTab.Name = "ReportTab";
-            this.ReportTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ReportTab.Size = new System.Drawing.Size(904, 204);
-            this.ReportTab.TabIndex = 1;
-            this.ReportTab.Text = "Report";
-            this.ReportTab.UseVisualStyleBackColor = true;
+            this.RuntimeStatusTab.Controls.Add(this.tableLayoutPanel1);
+            this.RuntimeStatusTab.Location = new System.Drawing.Point(4, 22);
+            this.RuntimeStatusTab.Name = "RuntimeStatusTab";
+            this.RuntimeStatusTab.Padding = new System.Windows.Forms.Padding(3);
+            this.RuntimeStatusTab.Size = new System.Drawing.Size(904, 204);
+            this.RuntimeStatusTab.TabIndex = 1;
+            this.RuntimeStatusTab.Text = "Runtime Status";
+            this.RuntimeStatusTab.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
             // 
@@ -2007,7 +2006,7 @@ namespace TestStation
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_variableValues)).EndInit();
             this.tabCon_Step.ResumeLayout(false);
             this.tabPage_stepData.ResumeLayout(false);
-            this.ReportTab.ResumeLayout(false);
+            this.RuntimeStatusTab.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.panel_buttonPanel.ResumeLayout(false);
@@ -2081,7 +2080,7 @@ namespace TestStation
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabControl tabCon_Step;
-        private System.Windows.Forms.TabPage ReportTab;
+        private System.Windows.Forms.TabPage RuntimeStatusTab;
         private System.Windows.Forms.ComboBox LoopTypecomboBox;
         private System.Windows.Forms.CheckBox checkBox_RecordStatus;
         private System.Windows.Forms.NumericUpDown LoopTimesnumericUpDown;
