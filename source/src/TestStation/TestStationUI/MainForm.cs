@@ -359,8 +359,8 @@ namespace TestStation
             #endregion
 
             // 事件
-            _paramTable.CellValueChanged += TdgvParamCellValueChanged;
-            _paramTable.CellContentClick += TdgvParamCellContentClick;
+//            _paramTable.CellValueChanged += TdgvParamCellValueChanged;
+//            _paramTable.CellContentClick += TdgvParamCellContentClick;
             _paramTable.CellBeginEdit += TdgvParamCellEnterEdit;
         }
 
