@@ -2434,13 +2434,10 @@ namespace TestStation
             _paramTable.CellContentClick += TdgvParamCellContentClick;
             treeView_sequenceTree.ContextMenuStrip = contextMenuStrip_sequence;
             treeView_stepView.ContextMenuStrip = cMS_DgvStep;
-            ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = false;
             // 隐藏运行时变量值窗体
             splitContainer_runtime.Panel1Collapsed = true;
             // step表格只读，且不响应值变更事件
             treeView_stepView.AfterSelect += treeView_stepView_AfterSelect;
-            // 子序列名称可修改
-            ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = false;
 
             // 隐藏返回编辑状态的菜单
             editSequenceToolStripMenuItem.Visible = false;
@@ -2463,11 +2460,8 @@ namespace TestStation
             treeView_stepView.ContextMenuStrip = null;
             // 显示运行时变量值窗体
             splitContainer_runtime.Panel1Collapsed = false;
-            ((DataGridView)tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = true;
             // step表格只读，且不响应值变更事件
             treeView_stepView.AfterSelect -= treeView_stepView_AfterSelect;
-            // 子序列名称只读
-            ((DataGridView) tabCon_Seq.TabPages[1].Controls[0]).ReadOnly = true;
 
             // 显示运行时信息列
             // 显示返回编辑状态的菜单
@@ -2677,7 +2671,7 @@ namespace TestStation
             {
                 return;
             }
-            Control control = sender as Control;
+            ToolStripMenuItem control = sender as ToolStripMenuItem;
             string tag = control?.Tag?.ToString();
             SequenceStepType type;
             if (string.IsNullOrWhiteSpace(tag) || !Enum.TryParse<SequenceStepType>(tag, out type))
@@ -2695,7 +2689,7 @@ namespace TestStation
             {
                 return;
             }
-            Control control = sender as Control;
+            ToolStripMenuItem control = sender as ToolStripMenuItem;
             string tag = control?.Tag?.ToString();
             SequenceStepType type;
             if (string.IsNullOrWhiteSpace(tag) || !Enum.TryParse<SequenceStepType>(tag, out type))
@@ -2727,13 +2721,13 @@ namespace TestStation
                 ClearSettings();
                 return;
             }
-            TreeNode parentNode = selectedNode.Parent;
+            TreeNode parentNode = selectedNode;
             ISequenceFlowContainer parent = selectedStep;
-            int index = selectedStep?.Index ?? CurrentSeq.Steps.Count;
+            int index = selectedStep?.SubSteps?.Count ?? 0;
             if (null == selectedStep)
             {
-                parentNode = selectedNode;
                 parent = CurrentSeq;
+                index = CurrentSeq.Steps.Count;
             }
             ISequenceStep newStep = AddStepToParent(parent, index, type);
             ShowAddStep(newStep, parentNode);

@@ -34,9 +34,9 @@ namespace TestStation
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -660,7 +660,7 @@ namespace TestStation
             // actionToolStripMenuItem
             // 
             this.actionToolStripMenuItem.Name = "actionToolStripMenuItem";
-            this.actionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.actionToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.actionToolStripMenuItem.Tag = "Execution";
             this.actionToolStripMenuItem.Text = "Common";
             this.actionToolStripMenuItem.Click += new System.EventHandler(this.AddSequenceStep);
@@ -672,7 +672,7 @@ namespace TestStation
             this.conditionStatementToolStripMenuItem,
             this.conditionLoopToolStripMenuItem});
             this.actionToolStripMenuItem1.Name = "actionToolStripMenuItem1";
-            this.actionToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.actionToolStripMenuItem1.Size = new System.Drawing.Size(149, 22);
             this.actionToolStripMenuItem1.Text = "Condition";
             // 
             // conditionBlockToolStripMenuItem
@@ -706,13 +706,13 @@ namespace TestStation
             this.timingToolStripMenuItem3,
             this.batchBlockToolStripMenuItem});
             this.sequenceCallToolStripMenuItem.Name = "sequenceCallToolStripMenuItem";
-            this.sequenceCallToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sequenceCallToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.sequenceCallToolStripMenuItem.Text = "Parallel";
             // 
             // multiThreadToolStripMenuItem
             // 
             this.multiThreadToolStripMenuItem.Name = "multiThreadToolStripMenuItem";
-            this.multiThreadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.multiThreadToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.multiThreadToolStripMenuItem.Tag = "MultiThreadBlock";
             this.multiThreadToolStripMenuItem.Text = "Multi-Thread";
             this.multiThreadToolStripMenuItem.Click += new System.EventHandler(this.AddSequenceStep);
@@ -720,7 +720,7 @@ namespace TestStation
             // timingToolStripMenuItem3
             // 
             this.timingToolStripMenuItem3.Name = "timingToolStripMenuItem3";
-            this.timingToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
+            this.timingToolStripMenuItem3.Size = new System.Drawing.Size(151, 22);
             this.timingToolStripMenuItem3.Tag = "TimerBlock";
             this.timingToolStripMenuItem3.Text = "Timer Block";
             this.timingToolStripMenuItem3.Click += new System.EventHandler(this.AddSequenceStep);
@@ -728,7 +728,7 @@ namespace TestStation
             // batchBlockToolStripMenuItem
             // 
             this.batchBlockToolStripMenuItem.Name = "batchBlockToolStripMenuItem";
-            this.batchBlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.batchBlockToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.batchBlockToolStripMenuItem.Tag = "BatchBlock";
             this.batchBlockToolStripMenuItem.Text = "Batch Block";
             this.batchBlockToolStripMenuItem.Click += new System.EventHandler(this.AddSequenceStep);
@@ -739,13 +739,13 @@ namespace TestStation
             this.gotoToolStripMenuItem,
             this.tryFinallyToolStripMenuItem});
             this.timingToolStripMenuItem.Name = "timingToolStripMenuItem";
-            this.timingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.timingToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.timingToolStripMenuItem.Text = "Flow Control";
             // 
             // gotoToolStripMenuItem
             // 
             this.gotoToolStripMenuItem.Name = "gotoToolStripMenuItem";
-            this.gotoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.gotoToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.gotoToolStripMenuItem.Tag = "Goto";
             this.gotoToolStripMenuItem.Text = "Goto";
             this.gotoToolStripMenuItem.Click += new System.EventHandler(this.AddSequenceStep);
@@ -753,7 +753,7 @@ namespace TestStation
             // tryFinallyToolStripMenuItem
             // 
             this.tryFinallyToolStripMenuItem.Name = "tryFinallyToolStripMenuItem";
-            this.tryFinallyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tryFinallyToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.tryFinallyToolStripMenuItem.Tag = "TryFinallyBlock";
             this.tryFinallyToolStripMenuItem.Text = "Try-Finally";
             this.tryFinallyToolStripMenuItem.Click += new System.EventHandler(this.AddSequenceStep);
@@ -820,6 +820,7 @@ namespace TestStation
             this.sequenceCallToolStripMenuItem2.Name = "sequenceCallToolStripMenuItem2";
             this.sequenceCallToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.sequenceCallToolStripMenuItem2.Text = "Parallel";
+            this.sequenceCallToolStripMenuItem2.Visible = false;
             // 
             // multiThreadToolStripMenuItem1
             // 
@@ -860,12 +861,13 @@ namespace TestStation
             this.gotoToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.gotoToolStripMenuItem1.Tag = "Goto";
             this.gotoToolStripMenuItem1.Text = "Goto";
+            this.gotoToolStripMenuItem1.Visible = false;
             this.gotoToolStripMenuItem1.Click += new System.EventHandler(this.InsertSequenceStep);
             // 
             // tryFinallyBlockToolStripMenuItem
             // 
             this.tryFinallyBlockToolStripMenuItem.Name = "tryFinallyBlockToolStripMenuItem";
-            this.tryFinallyBlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tryFinallyBlockToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.tryFinallyBlockToolStripMenuItem.Tag = "TryFinallyBlock";
             this.tryFinallyBlockToolStripMenuItem.Text = "Try-Finally";
             this.tryFinallyBlockToolStripMenuItem.Click += new System.EventHandler(this.InsertSequenceStep);
@@ -905,7 +907,7 @@ namespace TestStation
             this.tabpage_Properties.Controls.Add(this.flowLayoutPanel_stepProperties);
             this.tabpage_Properties.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Properties.Name = "tabpage_Properties";
-            this.tabpage_Properties.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabpage_Properties.Padding = new System.Windows.Forms.Padding(3);
             this.tabpage_Properties.Size = new System.Drawing.Size(908, 360);
             this.tabpage_Properties.TabIndex = 0;
             this.tabpage_Properties.Text = "Properties";
@@ -1153,8 +1155,8 @@ namespace TestStation
             this.tabpage_Module.Controls.Add(this.label_assemblyConfig);
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
-            this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabpage_Module.Size = new System.Drawing.Size(906, 368);
+            this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
+            this.tabpage_Module.Size = new System.Drawing.Size(904, 358);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1265,8 +1267,8 @@ namespace TestStation
             // 
             this.tabpage_parameters.Location = new System.Drawing.Point(4, 22);
             this.tabpage_parameters.Name = "tabpage_parameters";
-            this.tabpage_parameters.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabpage_parameters.Size = new System.Drawing.Size(906, 368);
+            this.tabpage_parameters.Padding = new System.Windows.Forms.Padding(3);
+            this.tabpage_parameters.Size = new System.Drawing.Size(904, 358);
             this.tabpage_parameters.TabIndex = 3;
             this.tabpage_parameters.Text = "Sequence Parameters";
             this.tabpage_parameters.UseVisualStyleBackColor = true;
@@ -1276,8 +1278,8 @@ namespace TestStation
             this.tabPage_runtimeInfo.Controls.Add(this.splitContainer_runtime);
             this.tabPage_runtimeInfo.Location = new System.Drawing.Point(4, 22);
             this.tabPage_runtimeInfo.Name = "tabPage_runtimeInfo";
-            this.tabPage_runtimeInfo.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(906, 368);
+            this.tabPage_runtimeInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(904, 358);
             this.tabPage_runtimeInfo.TabIndex = 4;
             this.tabPage_runtimeInfo.Text = "RuntimeInformation";
             this.tabPage_runtimeInfo.UseVisualStyleBackColor = true;
@@ -1302,14 +1304,14 @@ namespace TestStation
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_clearOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_copyOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.textBox_output);
-            this.splitContainer_runtime.Size = new System.Drawing.Size(900, 362);
-            this.splitContainer_runtime.SplitterDistance = 423;
+            this.splitContainer_runtime.Size = new System.Drawing.Size(898, 352);
+            this.splitContainer_runtime.SplitterDistance = 422;
             this.splitContainer_runtime.TabIndex = 0;
             // 
             // button_deleteWatch
             // 
             this.button_deleteWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_deleteWatch.Location = new System.Drawing.Point(266, 327);
+            this.button_deleteWatch.Location = new System.Drawing.Point(266, 317);
             this.button_deleteWatch.Name = "button_deleteWatch";
             this.button_deleteWatch.Size = new System.Drawing.Size(100, 28);
             this.button_deleteWatch.TabIndex = 7;
@@ -1320,7 +1322,7 @@ namespace TestStation
             // button_addWatch
             // 
             this.button_addWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_addWatch.Location = new System.Drawing.Point(47, 327);
+            this.button_addWatch.Location = new System.Drawing.Point(47, 317);
             this.button_addWatch.Name = "button_addWatch";
             this.button_addWatch.Size = new System.Drawing.Size(100, 28);
             this.button_addWatch.TabIndex = 6;
@@ -1336,14 +1338,14 @@ namespace TestStation
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1353,13 +1355,13 @@ namespace TestStation
             this.dataGridView_variableValues.ReadOnly = true;
             this.dataGridView_variableValues.RowHeadersVisible = false;
             this.dataGridView_variableValues.RowTemplate.Height = 23;
-            this.dataGridView_variableValues.Size = new System.Drawing.Size(419, 299);
+            this.dataGridView_variableValues.Size = new System.Drawing.Size(418, 289);
             this.dataGridView_variableValues.TabIndex = 5;
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle5;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1367,8 +1369,8 @@ namespace TestStation
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle6;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -1399,7 +1401,7 @@ namespace TestStation
             this.button_clearOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_clearOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_clearOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_clearOutput.Location = new System.Drawing.Point(424, -1);
+            this.button_clearOutput.Location = new System.Drawing.Point(423, -1);
             this.button_clearOutput.Name = "button_clearOutput";
             this.button_clearOutput.Size = new System.Drawing.Size(45, 22);
             this.button_clearOutput.TabIndex = 2;
@@ -1414,7 +1416,7 @@ namespace TestStation
             this.button_copyOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_copyOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_copyOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_copyOutput.Location = new System.Drawing.Point(379, -1);
+            this.button_copyOutput.Location = new System.Drawing.Point(378, -1);
             this.button_copyOutput.Name = "button_copyOutput";
             this.button_copyOutput.Size = new System.Drawing.Size(45, 22);
             this.button_copyOutput.TabIndex = 1;
@@ -1434,7 +1436,7 @@ namespace TestStation
             this.textBox_output.Name = "textBox_output";
             this.textBox_output.ReadOnly = true;
             this.textBox_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_output.Size = new System.Drawing.Size(468, 339);
+            this.textBox_output.Size = new System.Drawing.Size(467, 329);
             this.textBox_output.TabIndex = 0;
             // 
             // tabCon_Step
@@ -1474,8 +1476,8 @@ namespace TestStation
             this.ReportTab.Controls.Add(this.tableLayoutPanel1);
             this.ReportTab.Location = new System.Drawing.Point(4, 22);
             this.ReportTab.Name = "ReportTab";
-            this.ReportTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.ReportTab.Size = new System.Drawing.Size(906, 211);
+            this.ReportTab.Padding = new System.Windows.Forms.Padding(3);
+            this.ReportTab.Size = new System.Drawing.Size(904, 204);
             this.ReportTab.TabIndex = 1;
             this.ReportTab.Text = "Report";
             this.ReportTab.UseVisualStyleBackColor = true;
@@ -1492,7 +1494,7 @@ namespace TestStation
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(900, 205);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(898, 198);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // textBoxReport
@@ -1504,7 +1506,7 @@ namespace TestStation
             this.textBoxReport.Name = "textBoxReport";
             this.textBoxReport.ReadOnly = true;
             this.textBoxReport.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxReport.Size = new System.Drawing.Size(894, 184);
+            this.textBoxReport.Size = new System.Drawing.Size(892, 184);
             this.textBoxReport.TabIndex = 0;
             // 
             // panel_buttonPanel
@@ -1514,7 +1516,7 @@ namespace TestStation
             this.panel_buttonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_buttonPanel.Location = new System.Drawing.Point(3, 3);
             this.panel_buttonPanel.Name = "panel_buttonPanel";
-            this.panel_buttonPanel.Size = new System.Drawing.Size(894, 24);
+            this.panel_buttonPanel.Size = new System.Drawing.Size(892, 24);
             this.panel_buttonPanel.TabIndex = 15;
             // 
             // button_openReportDir
@@ -1606,7 +1608,7 @@ namespace TestStation
             this.StatusDataL.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.StatusDataL.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
             this.StatusDataL.Name = "StatusDataL";
-            this.StatusDataL.Size = new System.Drawing.Size(1, 26);
+            this.StatusDataL.Size = new System.Drawing.Size(51, 26);
             this.StatusDataL.Spring = true;
             this.StatusDataL.Text = "Date:";
             // 
@@ -1624,7 +1626,7 @@ namespace TestStation
             this.StatusTimeL.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.StatusTimeL.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
             this.StatusTimeL.Name = "StatusTimeL";
-            this.StatusTimeL.Size = new System.Drawing.Size(1, 26);
+            this.StatusTimeL.Size = new System.Drawing.Size(51, 26);
             this.StatusTimeL.Spring = true;
             this.StatusTimeL.Text = "Time:";
             // 
@@ -1634,7 +1636,7 @@ namespace TestStation
             this.StatusTime.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
             this.StatusTime.Name = "StatusTime";
             this.StatusTime.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.StatusTime.Size = new System.Drawing.Size(1, 26);
+            this.StatusTime.Size = new System.Drawing.Size(51, 26);
             this.StatusTime.Spring = true;
             this.StatusTime.Text = "08:36:12";
             // 
@@ -1743,7 +1745,7 @@ namespace TestStation
             // 
             this.splitContainer_sequenceAndVar.Panel2.Controls.Add(this.tabCon_Variable);
             this.splitContainer_sequenceAndVar.Size = new System.Drawing.Size(360, 630);
-            this.splitContainer_sequenceAndVar.SplitterDistance = 311;
+            this.splitContainer_sequenceAndVar.SplitterDistance = 310;
             this.splitContainer_sequenceAndVar.TabIndex = 1;
             // 
             // tabCon_Seq
@@ -1754,7 +1756,7 @@ namespace TestStation
             this.tabCon_Seq.Location = new System.Drawing.Point(0, 0);
             this.tabCon_Seq.Name = "tabCon_Seq";
             this.tabCon_Seq.SelectedIndex = 0;
-            this.tabCon_Seq.Size = new System.Drawing.Size(356, 307);
+            this.tabCon_Seq.Size = new System.Drawing.Size(356, 306);
             this.tabCon_Seq.TabIndex = 0;
             this.tabCon_Seq.SelectedIndexChanged += new System.EventHandler(this.tabCon_Seq_SelectedIndexChanged);
             // 
@@ -1763,7 +1765,7 @@ namespace TestStation
             this.tabPage_mainSequence.Controls.Add(this.treeView_sequenceTree);
             this.tabPage_mainSequence.Location = new System.Drawing.Point(4, 22);
             this.tabPage_mainSequence.Name = "tabPage_mainSequence";
-            this.tabPage_mainSequence.Size = new System.Drawing.Size(348, 281);
+            this.tabPage_mainSequence.Size = new System.Drawing.Size(348, 280);
             this.tabPage_mainSequence.TabIndex = 0;
             this.tabPage_mainSequence.Text = "Default Sequences";
             this.tabPage_mainSequence.UseVisualStyleBackColor = true;
@@ -1774,7 +1776,7 @@ namespace TestStation
             this.treeView_sequenceTree.Font = new System.Drawing.Font("Courier New", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView_sequenceTree.Location = new System.Drawing.Point(0, 0);
             this.treeView_sequenceTree.Name = "treeView_sequenceTree";
-            this.treeView_sequenceTree.Size = new System.Drawing.Size(348, 281);
+            this.treeView_sequenceTree.Size = new System.Drawing.Size(348, 280);
             this.treeView_sequenceTree.TabIndex = 0;
             this.treeView_sequenceTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_sequenceTree_AfterSelect);
             // 
@@ -1786,15 +1788,15 @@ namespace TestStation
             this.tabCon_Variable.Location = new System.Drawing.Point(0, 0);
             this.tabCon_Variable.Name = "tabCon_Variable";
             this.tabCon_Variable.SelectedIndex = 0;
-            this.tabCon_Variable.Size = new System.Drawing.Size(356, 311);
+            this.tabCon_Variable.Size = new System.Drawing.Size(356, 312);
             this.tabCon_Variable.TabIndex = 0;
             // 
             // globalVariableTab
             // 
             this.globalVariableTab.Location = new System.Drawing.Point(4, 22);
             this.globalVariableTab.Name = "globalVariableTab";
-            this.globalVariableTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.globalVariableTab.Size = new System.Drawing.Size(348, 285);
+            this.globalVariableTab.Padding = new System.Windows.Forms.Padding(3);
+            this.globalVariableTab.Size = new System.Drawing.Size(348, 286);
             this.globalVariableTab.TabIndex = 0;
             this.globalVariableTab.Text = "Global Variables";
             this.globalVariableTab.UseVisualStyleBackColor = true;
