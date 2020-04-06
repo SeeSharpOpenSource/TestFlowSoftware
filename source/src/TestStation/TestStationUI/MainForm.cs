@@ -2022,13 +2022,13 @@ namespace TestStation
             {
                 tabControl_settings.Enabled = false;
                 tabControl_settings.SelectedIndex = 0;
+                ClearSettings();
                 return;
             }
             TabPage currentTab = tabControl_settings.SelectedTab;
             if (currentTab != tabPage_runtimeInfo && null != CurrentStep)
             {
                 ClearSettings();
-
                 if (currentTab == tabpage_Properties)
                 {
                     ShowStepInfo(step);
@@ -2049,7 +2049,11 @@ namespace TestStation
             // 清空Properties
             //注：StepTypeComboBox与LoopTypeComboBox没有空值，也就是不用把SelectedIndex变成-1.
             LoopTimesnumericUpDown.Value = 2;
+            ClearModules();
+        }
 
+        private void ClearModules()
+        {
             // 清空module
             comboBox_assembly.Text = "";
             comboBox_RootClass.DataSource = null;
@@ -2667,6 +2671,186 @@ namespace TestStation
 
         #region 序列编辑
 
+        private void AddSequenceStep(object sender, EventArgs args)
+        {
+            if (_internalOperation || null == CurrentSeq)
+            {
+                return;
+            }
+            Control control = sender as Control;
+            string tag = control?.Tag?.ToString();
+            SequenceStepType type;
+            if (string.IsNullOrWhiteSpace(tag) || !Enum.TryParse<SequenceStepType>(tag, out type))
+            {
+                return;
+            }
+            _internalOperation = true;
+            AddStep(type);
+            _internalOperation = false;
+        }
+
+        private void InsertSequenceStep(object sender, EventArgs args)
+        {
+            if (_internalOperation || null == CurrentSeq)
+            {
+                return;
+            }
+            Control control = sender as Control;
+            string tag = control?.Tag?.ToString();
+            SequenceStepType type;
+            if (string.IsNullOrWhiteSpace(tag) || !Enum.TryParse<SequenceStepType>(tag, out type))
+            {
+                return;
+            }
+            _internalOperation = true;
+            InsertStep(type);
+            _internalOperation = false;
+        }
+
+        private void DeleteSequenceStep(object sender, EventArgs args)
+        {
+            if (_internalOperation || null == CurrentSeq || null == CurrentStep)
+            {
+                return;
+            }
+            _internalOperation = true;
+            DeleteStep();
+            _internalOperation = false;
+        }
+
+        private void AddStep(SequenceStepType type)
+        {
+            TreeNode selectedNode = treeView_stepView.SelectedNode;
+            ISequenceStep selectedStep = FindSelectedStep(selectedNode);
+            if (null == selectedNode || (null == selectedStep && selectedNode.Level != 0))
+            {
+                ClearSettings();
+                return;
+            }
+            TreeNode parentNode = selectedNode.Parent;
+            ISequenceFlowContainer parent = selectedStep;
+            int index = selectedStep?.Index ?? CurrentSeq.Steps.Count;
+            if (null == selectedStep)
+            {
+                parentNode = selectedNode;
+                parent = CurrentSeq;
+            }
+            ISequenceStep newStep = AddStepToParent(parent, index, type);
+            ShowAddStep(newStep, parentNode);
+            CurrentStep = newStep;
+            UpdateSettings();
+        }
+
+        private void InsertStep(SequenceStepType type)
+        {
+            TreeNode selectedNode = treeView_stepView.SelectedNode;
+            ISequenceStep selectedStep = FindSelectedStep(selectedNode);
+            if (null == selectedStep)
+            {
+                ClearSettings();
+                return;
+            }
+            TreeNode parentNode = selectedNode.Parent;
+            ISequenceFlowContainer parent = selectedStep.Parent;
+            int index = selectedStep.Index;
+            ISequenceStep newStep = AddStepToParent(parent, index, type);
+            ShowAddStep(newStep, parentNode);
+            CurrentStep = newStep;
+            UpdateSettings();
+        }
+
+        private ISequenceStep AddStepToParent(ISequenceFlowContainer parent, int index, SequenceStepType type)
+        {
+            ISequenceStep newStep = type == SequenceStepType.Execution
+                ? _globalInfo.TestflowEntity.SequenceManager.CreateSequenceStep(false)
+                : _globalInfo.TestflowEntity.SequenceManager.CreateNonExecutionStep(type);
+            TestflowDesigntimeSession.AddSequenceStep(parent, newStep, index);
+            return newStep;
+        }
+
+        private void ShowAddStep(ISequenceStep step, TreeNode parent)
+        {
+            TreeNode newNode;
+            if (step.Index >= parent.Nodes.Count)
+            {
+                newNode = parent.Nodes.Add(step.Name);
+            }
+            else
+            {
+                newNode = parent.Nodes.Insert(step.Index, step.Name);
+            }
+            if (step.HasSubSteps)
+            {
+                foreach (ISequenceStep subStep in step.SubSteps)
+                {
+                    ShowAddStep(subStep, newNode);
+                }
+            }
+            treeView_stepView.SelectedNode = newNode;
+        }
+
+        private void DeleteStep()
+        {
+            TreeNode selectedNode = treeView_stepView.SelectedNode;
+            ISequenceStep selectedStep = FindSelectedStep(selectedNode);
+            if (null == selectedNode)
+            {
+                ClearSettings();
+                return;
+            }
+            TreeNode parentNode = selectedNode.Parent;
+            int index = selectedStep.Index;
+            DeleteStepFromParent(selectedStep.Parent, index);
+            CurrentStep = ShowDeleteStep(selectedStep, parentNode);
+            UpdateSettings();
+        }
+
+        private void DeleteStepFromParent(ISequenceFlowContainer parent, int index)
+        {
+            ISequenceStep parentStep = parent as ISequenceStep;
+            ISequence parentSeq = parent as ISequence;
+
+            if (parentStep?.SubSteps != null && parentStep.SubSteps.Count > index)
+            {
+                parentStep.SubSteps.RemoveAt(index);
+            }
+            else if (null != parentSeq && parentSeq.Steps.Count > index)
+            {
+                parentSeq.Steps.RemoveAt(index);
+            }
+        }
+
+        private ISequenceStep ShowDeleteStep(ISequenceStep step, TreeNode parent)
+        {
+            if (parent.Nodes.Count <= step.Index)
+            {
+                return null;
+            }
+            parent.Nodes.RemoveAt(step.Index);
+            TreeNode selectNode = null;
+            ISequenceStep currentStep;
+            ISequenceStepCollection stepCollection = step.Parent is ISequenceStep
+                ? ((ISequenceStep) step.Parent).SubSteps
+                : ((ISequence) step.Parent).Steps;
+
+            if (parent.Nodes.Count == 0)
+            {
+                selectNode = parent;
+                currentStep = null;
+            }
+            else if (step.Index > 0)
+            {
+                selectNode = treeView_stepView.Nodes[step.Index - 1];
+                currentStep = stepCollection[step.Index - 1];
+            }
+            else
+            {
+                selectNode = treeView_stepView.Nodes[step.Index];
+                currentStep = stepCollection[step.Index];
+            }
+            treeView_stepView.SelectedNode = selectNode;
+            return currentStep;
+        }
 
         #endregion
 

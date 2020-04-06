@@ -168,6 +168,12 @@
     <Compile Include="Controls\SimpleClassEditor.Designer.cs">
       <DependentUpon>SimpleClassEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\StatusForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\StatusForm.Designer.cs">
+      <DependentUpon>StatusForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StringEditor.cs">
       <SubType>Form</SubType>
     </Compile>
