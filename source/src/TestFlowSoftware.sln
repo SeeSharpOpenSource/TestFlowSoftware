@@ -21,6 +21,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelManage", "ModelManage\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParameterChecker", "ParameterChecker\ParameterChecker.csproj", "{28E0FE09-2EF3-41FE-8788-35870C601F1B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{21FD1BDC-C334-4EFB-916F-0A51B3D72803}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallDeploy", "Installer\InstallDeploy\InstallDeploy.csproj", "{9D663304-19B3-46DD-A519-384B6A72FF68}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TestFlowSoftwareInstaller", "Installer\TestFlowSoftwareInstaller\TestFlowSoftwareInstaller.vdproj", "{8E3D2D48-02F2-4906-941C-F1E239AC7AF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,11 +65,21 @@ Global
 		{28E0FE09-2EF3-41FE-8788-35870C601F1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28E0FE09-2EF3-41FE-8788-35870C601F1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28E0FE09-2EF3-41FE-8788-35870C601F1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D663304-19B3-46DD-A519-384B6A72FF68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D663304-19B3-46DD-A519-384B6A72FF68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D663304-19B3-46DD-A519-384B6A72FF68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D663304-19B3-46DD-A519-384B6A72FF68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E3D2D48-02F2-4906-941C-F1E239AC7AF3}.Debug|Any CPU.ActiveCfg = Debug
+		{8E3D2D48-02F2-4906-941C-F1E239AC7AF3}.Debug|Any CPU.Build.0 = Debug
+		{8E3D2D48-02F2-4906-941C-F1E239AC7AF3}.Release|Any CPU.ActiveCfg = Release
+		{8E3D2D48-02F2-4906-941C-F1E239AC7AF3}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9EC9428B-47CE-48EE-813A-D9C5DC1AFBD3} = {1E8DC17C-B93F-4CA6-BB5A-D25296824319}
+		{9D663304-19B3-46DD-A519-384B6A72FF68} = {21FD1BDC-C334-4EFB-916F-0A51B3D72803}
+		{8E3D2D48-02F2-4906-941C-F1E239AC7AF3} = {21FD1BDC-C334-4EFB-916F-0A51B3D72803}
 	EndGlobalSection
 EndGlobal

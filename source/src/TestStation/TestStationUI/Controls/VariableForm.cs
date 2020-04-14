@@ -15,7 +15,6 @@ namespace TestStation.Controls
     public partial class VariableForm : Form
     {
         public string ParamValue { get; private set; }
-        public bool IsGlobalVariable { get; private set; }
         public bool IsCancelled { get; private set; }
         public bool IsExpression { get; private set; }
         private readonly Regex _expRegex;
@@ -36,8 +35,6 @@ namespace TestStation.Controls
             this.ParamValue = paramValue;
             _globalVariables = globalVariables;
             _localVariables = localVariableses;
-            string variableName = Utility.GetVariableName(paramValue);
-            this.IsGlobalVariable = !_localVariables.Any(item => item.Name.Equals(variableName));
 
             // Global Variables
             _globalNode = treeView_variables.Nodes.Add("Global Variables");
@@ -55,7 +52,7 @@ namespace TestStation.Controls
 
             if (!string.IsNullOrWhiteSpace(paramValue))
             {
-                textBox_expression.Text = Utility.GetShowVariableName(IsGlobalVariable, paramValue);
+                textBox_expression.Text = paramValue;
             }
         }
 
@@ -83,7 +80,6 @@ namespace TestStation.Controls
             if (treeView_variables.SelectedNode != null && treeView_variables.SelectedNode != _globalNode && !_localNodes.Contains(treeView_variables.SelectedNode))
             {
                 this.ParamValue = (string)treeView_variables.SelectedNode.Tag;
-                this.IsGlobalVariable = treeView_variables.SelectedNode.Parent == _globalNode;
             }
             else
             {
@@ -93,7 +89,7 @@ namespace TestStation.Controls
             {
                 return;
             }
-            textBox_expression.Text = Utility.GetShowVariableName(IsGlobalVariable, ParamValue);
+            textBox_expression.Text = ParamValue;
             if (!_expressionEnabled)
             {
                 this.IsCancelled = false;
@@ -122,7 +118,6 @@ namespace TestStation.Controls
                     MessageBoxIcon.Error);
                 return;
             }
-            this.IsGlobalVariable = !isLocalVariable;
             this.IsExpression = matchData.Success;
             this.IsCancelled = false;
             this.Close();

@@ -941,7 +941,6 @@ namespace TestStation
 
             ISequenceFlowContainer variableParent = VaraibleTable.Name.Equals("GlobalVariableList") ?
                 (ISequenceFlowContainer)SequenceGroup : CurrentSeq;
-            
 
             #region 改名
             if (VaraibleTable.Columns[e.ColumnIndex].Name.Equals("VariableName"))
@@ -1441,122 +1440,144 @@ namespace TestStation
 
         private void TdgvParamCellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            #region ColumnHeaders不作为
-            if (e.RowIndex < 0)
+            // ColumnHeaders不作为,标题行不作为
+            if (e.RowIndex < 0 || _paramTable.IsParent(e.RowIndex) || _internalOperation)
             {
                 return;
             }
-            #endregion
+            _internalOperation = true;
 
-            #region 标题行不作为
-            if (_paramTable.IsParent(e.RowIndex))
+            try
             {
-                return;
+                int columnIndex = e.ColumnIndex;
+                if (_paramTable.Columns[columnIndex].Name.Equals("Parameterfx"))
+                {
+                    SetParamValueFromFx(e);
+                }
+                else if (_paramTable.Columns[columnIndex].Name.Equals("ParameterCheck"))
+                {
+                    CheckParamValue(e);
+                }
             }
-            #endregion
+            catch (ApplicationException ex)
+            {
+                ShowMessage(ex.Message, "Set Parameter", MessageBoxIcon.Error);
+            }
+            _internalOperation = false;
+        }
 
+        private void SetParamValueFromFx(DataGridViewCellEventArgs e)
+        {
+            string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString();
+            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
+                true);
+            variableForm.ShowDialog(this);
+            if (!variableForm.IsCancelled)
+            {
+                SetParamValue(true, e.RowIndex, ParamTableValueCol);
+                _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = variableForm.ParamValue;
+            }
+            variableForm.Dispose();
+        }
+
+        private void CheckParamValue(DataGridViewCellEventArgs e)
+        {
             string name = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value.ToString();
             string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString();
             string group = _paramTable.FindNodeGroup(e.RowIndex);
+            IWarningInfo warningInfo = null;
+            ISequenceFlowContainer[] arr = new ISequenceFlowContainer[] {SequenceGroup, CurrentSeq};
 
-            #region f(x) button
+            #region Constructor
 
-            int columnIndex = e.ColumnIndex;
-            if (_paramTable.Columns[columnIndex].Name.Equals("Parameterfx"))
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
+            if (@group.Equals("Constructor"))
             {
-                VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
-                    true);
-                variableForm.ShowDialog(this);
-                if (!variableForm.IsCancelled)
-                {
-                    _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = variableForm.ParamValue;
-                }
-                variableForm.Dispose();
-            }
-            #endregion
-            #region check button
-            else if (_paramTable.Columns[columnIndex].Name.Equals("ParameterCheck"))
-            {
-                IWarningInfo warningInfo = null;
-                ISequenceFlowContainer[] arr = new ISequenceFlowContainer[] { SequenceGroup, CurrentSeq };
+                #region 检查 Existing Object
 
-                #region Constructor
-
-                ISequenceStep functionStep;
-                ISequenceStep constructorStep;
-                GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-                if (group.Equals("Constructor"))
+                if (name.Equals(ExistingObjParent))
                 {
-                    #region 检查 Existing Object
-                    if (name.Equals(ExistingObjParent))
+                    if (functionStep != null)
                     {
-                        if (functionStep != null)
+                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(functionStep, arr, false);
+                    }
+                    else
+                    {
+                        if (
+                            (warningInfo =
+                                _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(CurrentSeq, value,
+                                    _currentClassDescription.ClassType, false)).WarnCode == 1025)
                         {
-                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(functionStep, arr, false);
-                        }
-                        else
-                        {
-                            if ((warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(CurrentSeq, value, _currentClassDescription.ClassType, false)).WarnCode == 1025)
-                            {
-                                warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(SequenceGroup, value, _currentClassDescription.ClassType, false);
-                            }
+                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckPropertyType(SequenceGroup, value,
+                                _currentClassDescription.ClassType, false);
                         }
                     }
+                }
                     #endregion
 
                     #region 检查构造函数
-                    else
+
+                else
+                {
+                    #region 空值
+
+                    //todo 如果值为空表示，实例不为变量，在运行开始前再创造变量
+                    if (string.IsNullOrEmpty(value) || !name.Equals("Return Value"))
                     {
-                        #region 空值
-                        //todo 如果值为空表示，实例不为变量，在运行开始前再创造变量
-                        if (string.IsNullOrEmpty(value) || !name.Equals("Return Value")) { }
+                    }
                         #endregion
 
-                        else
-                        {
-                            warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(constructorStep, arr, false);
-                        }
-
+                    else
+                    {
+                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckInstance(constructorStep, arr, false);
                     }
-                    #endregion
                 }
+
+                #endregion
+            }
                 #endregion
 
                 #region Method
-                else
+
+            else
+            {
+                #region 检查返回值
+
+                if (name.Equals("Return Value"))
                 {
-                    #region 检查返回值
-                    if (name.Equals("Return Value"))
-                    {
-                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckReturn(functionStep, arr, false);
-                    }
+                    warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckReturn(functionStep, arr, false);
+                }
                     #endregion
 
                     #region 检查参数
-                    else
-                    {
-                        warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckParameterData(functionStep.Function,
-                                                                                                    (functionStep.Function.ReturnType == null) ? _paramTable.IndexInGroup(e.RowIndex) : _paramTable.IndexInGroup(e.RowIndex - 1),
-                                                                                                    arr, false);
-                    }
-                    #endregion
-                }
-                #endregion
 
-                #region 报成功或错误信息
-                if (warningInfo != null)
-                {
-                    MessageBox.Show(warningInfo.Infomation);
-                }
                 else
                 {
-                    MessageBox.Show("Success");
+                    warningInfo = _globalInfo.TestflowEntity.ParameterChecker.CheckParameterData(functionStep.Function,
+                        (functionStep.Function.ReturnType == null)
+                            ? _paramTable.IndexInGroup(e.RowIndex)
+                            : _paramTable.IndexInGroup(e.RowIndex - 1),
+                        arr, false);
                 }
+
                 #endregion
             }
+
             #endregion
+
+            // 报成功或错误信息
+            if (warningInfo != null)
+            {
+                MessageBox.Show(warningInfo.Infomation);
+            }
+            else
+            {
+                MessageBox.Show("Success");
+            }
         }
-        
+
         private void TdgvParamCellEnterEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             int rowIndex = e.RowIndex;
@@ -1575,7 +1596,7 @@ namespace TestStation
             {
                 function = functionStep.Function;
             }
-            else if (null != constructorStep && null != constructorStep.Function)
+            else if (constructorStep?.Function != null)
             {
                 function = constructorStep.Function;
             }
@@ -1667,7 +1688,7 @@ namespace TestStation
 
             try
             {
-                SetParamValue(e);
+                SetParamValue(false, e.RowIndex, e.ColumnIndex);
             }
             catch (ApplicationException ex)
             {
@@ -1679,32 +1700,30 @@ namespace TestStation
             _internalOperation = false;
         }
 
-        private void SetParamValue(DataGridViewCellEventArgs e)
+        private void SetParamValue(bool setByFx, int rowIndex, int columnIndex)
         {
             //注：只有value的值会改变
-            string paramName = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
-            DataGridViewCell currentCell = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"];
-            string tableValue = currentCell.Value?.ToString() ?? string.Empty;
+            string paramName = _paramTable.Rows[rowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
+            DataGridViewCell currentCell = _paramTable.Rows[rowIndex].Cells["ParameterValue"];
+            string value = currentCell.Value?.ToString() ?? string.Empty;
             // 如果是在编辑第三列的数据，并且值等于local.或者global.，则弹出变量选择列表
-            if (e.ColumnIndex == 4 &&
-                (tableValue.Equals(Constants.GlobalVarPrefix + Constants.VaraibleDelim,
+            if (columnIndex == 4 &&
+                (value.Equals(Constants.GlobalVarPrefix + Constants.VaraibleDelim,
                     StringComparison.CurrentCultureIgnoreCase) ||
-                 tableValue.Equals(Constants.LocalVarPrefix + Constants.VaraibleDelim, StringComparison.CurrentCultureIgnoreCase)))
+                 value.Equals(Constants.LocalVarPrefix + Constants.VaraibleDelim, StringComparison.CurrentCultureIgnoreCase)))
             {
-                Rectangle rectangle = _paramTable.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
-                ShowVariableList(tableValue, e.RowIndex, rectangle);
+                Rectangle rectangle = _paramTable.GetCellDisplayRectangle(columnIndex, rowIndex, true);
+                ShowVariableList(value, rowIndex, rectangle);
                 return;
             }
 
-            bool isVariable;
-            string value = Utility.GetParamValue(tableValue, out isVariable);
-
+            
             ISequenceStep functionStep;
             ISequenceStep constructorStep;
             GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
             ISequenceStep currentStep = CurrentStep;
             // 修改构造方法的参数
-            if (_paramTable.FindNodeGroup(e.RowIndex).Equals("Constructor"))
+            if (_paramTable.FindNodeGroup(rowIndex).Equals("Constructor"))
             {
                 // 实例为已存在的变量
                 if (paramName.Equals(ExistingObjParent))
@@ -1736,17 +1755,17 @@ namespace TestStation
                     if (paramName.Equals("Return Value"))
                     {
                         IVariable variable = GetAvailableVariable(currentStep, value, constructorStep.Function.ClassType);
-                        TestflowDesigntimeSession.SetInstance(variable?.Name ?? string.Empty, constructorStep);
+                        TestflowDesigntimeSession.SetInstance(value, constructorStep);
                         SetVariableType(constructorStep.Function.ClassType, variable);
                         if (null != functionStep)
                         {
-                            TestflowDesigntimeSession.SetInstance(variable?.Name ?? string.Empty, functionStep);
+                            TestflowDesigntimeSession.SetInstance(value, functionStep);
                         }
                         currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
                     }
                     else
                     {
-                        SetStepParamValue(constructorStep, paramName, isVariable, value, currentCell);
+                        SetStepParamValue(constructorStep, paramName, value, currentCell, setByFx);
                     }
                 }
             }
@@ -1767,7 +1786,7 @@ namespace TestStation
                 }
                 else
                 {
-                    SetStepParamValue(functionStep, paramName, isVariable, value, currentCell);
+                    SetStepParamValue(functionStep, paramName, value, currentCell, setByFx);
                 }
             }
         }
@@ -1781,8 +1800,7 @@ namespace TestStation
             variable.Type = paramType;
         }
 
-        private void SetStepParamValue(ISequenceStep step, string paramName, bool isVariable, string value, 
-            DataGridViewCell currentCell)
+        private void SetStepParamValue(ISequenceStep step, string paramName, string value, DataGridViewCell currentCell, bool setByFx)
         {
             IArgument argument = step.Function.ParameterType.FirstOrDefault(item => item.Name.Equals(paramName));
             if (null == argument)
@@ -1790,7 +1808,7 @@ namespace TestStation
                 return;
             }
             // 如果确认为变量，则直接写入参数
-            if (isVariable)
+            if (setByFx)
             {
                 string variableName = value;
                 ParameterType paramType = ParameterType.Variable;
