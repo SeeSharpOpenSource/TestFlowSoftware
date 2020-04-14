@@ -53,6 +53,17 @@ namespace TestStation.Common
             }
         }
 
+        public static string GetVariableName(string paramValue)
+        {
+            string variableName = paramValue;
+            char delim = '.';
+            if (paramValue.Contains(delim))
+            {
+                variableName = paramValue.Substring(0, paramValue.IndexOf(delim));
+            }
+            return variableName;
+        }
+
         public static string GetParamValue(string tableValue, out bool isVariable)
         {
             if (tableValue.StartsWith(Constants.GlobalVarPrefix + ".", StringComparison.OrdinalIgnoreCase) ||

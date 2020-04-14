@@ -1,27 +1,67 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Testflow.Data;
+using Testflow.Data.Description;
 using Testflow.Data.Sequence;
+using Testflow.Modules;
+using Testflow.Usr;
+using TestStation.Common;
 
 namespace TestStation.Controls
 {
     public partial class VariableForm : Form
     {
-        public string Value { get; private set; }
+        public string ParamValue { get; private set; }
         public bool IsGlobalVariable { get; private set; }
         public bool IsCancelled { get; private set; }
-        public int SequenceIndex { get; private set; }
         public bool IsExpression { get; private set; }
         private readonly Regex _expRegex;
+        private readonly GlobalInfo _globalInfo;
 
         private readonly TreeNode _globalNode;
         private readonly bool _expressionEnabled;
         private readonly List<TreeNode> _localNodes = new List<TreeNode>(10);
+        private IVariableCollection _globalVariables;
+        private IVariableCollection _localVariables;
+        private readonly Regex _propertyItemRegex;
 
-        private void CreateNode(TreeNode parent, IVariableCollection variables, string group)
+        public VariableForm(IVariableCollection globalVariables, IVariableCollection localVariableses, GlobalInfo globalInfo, string paramValue = "", bool expressionEnabled = false)
         {
-            string variableName = Value;
+            this._expRegex = new Regex("^(([^\\.]+)(?:\\.[^\\.]+)*)\\[\\d+\\]$");
+            _propertyItemRegex = new Regex("^(.+)\\(.+\\)$");
+            InitializeComponent();
+            this.ParamValue = paramValue;
+            _globalVariables = globalVariables;
+            _localVariables = localVariableses;
+            string variableName = Utility.GetVariableName(paramValue);
+            this.IsGlobalVariable = !_localVariables.Any(item => item.Name.Equals(variableName));
+
+            // Global Variables
+            _globalNode = treeView_variables.Nodes.Add("Global Variables");
+            CreateNode(_globalNode, _globalVariables);
+            _globalNode.Tag = -3;
+
+            // Local Variables
+            _localNodes.Add(treeView_variables.Nodes.Add("Local Variables"));
+            CreateNode(_localNodes[0], _localVariables);
+            _localNodes[0].Tag = -1;
+            this.IsCancelled = true;
+            this.IsExpression = false;
+            this._globalInfo = globalInfo;
+            _expressionEnabled = expressionEnabled;
+
+            if (!string.IsNullOrWhiteSpace(paramValue))
+            {
+                textBox_expression.Text = Utility.GetShowVariableName(IsGlobalVariable, paramValue);
+            }
+        }
+
+        private void CreateNode(TreeNode parent, IVariableCollection variables)
+        {
+            string variableName = ParamValue;
             Match match = _expRegex.Match(variableName);
             if (match.Success)
             {
@@ -38,51 +78,23 @@ namespace TestStation.Controls
             }
         }
 
-        public VariableForm(IVariableCollection globalVariables, IVariableCollection localVariables, string group,
-            string value = "", bool expressionEnabled = false)
-        {
-            this._expRegex = new Regex("^(([^\\.]+)(?:\\.[^\\.]+)*)\\[\\d+\\]$");
-            InitializeComponent();
-            this.Value = value;
-            this.IsGlobalVariable = localVariables.Any(item => item.Name.Equals(value));
-
-            // Global Variables
-            _globalNode = treeView_variables.Nodes.Add("Global Variables");
-            CreateNode(_globalNode, globalVariables, group);
-            _globalNode.Tag = -3;
-
-            // Local Variables
-            _localNodes.Add(treeView_variables.Nodes.Add("Local Variables"));
-            CreateNode(_localNodes[0], localVariables, group);
-            _localNodes[0].Tag = -1;
-            this.IsCancelled = true;
-            this.IsExpression = false;
-
-            textBox_expression.Text = Value;
-            _expressionEnabled = expressionEnabled;
-        }
-
         private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (treeView_variables.SelectedNode != null && treeView_variables.SelectedNode != _globalNode && !_localNodes.Contains(treeView_variables.SelectedNode) )
+            if (treeView_variables.SelectedNode != null && treeView_variables.SelectedNode != _globalNode && !_localNodes.Contains(treeView_variables.SelectedNode))
             {
-                this.Value = (string) treeView_variables.SelectedNode.Tag;
+                this.ParamValue = (string)treeView_variables.SelectedNode.Tag;
                 this.IsGlobalVariable = treeView_variables.SelectedNode.Parent == _globalNode;
             }
             else
             {
-                Value = string.Empty;
+                ParamValue = string.Empty;
             }
             if (e.Node == _globalNode || _localNodes.Contains(e.Node))
             {
                 return;
             }
-            SequenceIndex = (int) e.Node.Parent.Tag;
-            if (_expressionEnabled)
-            {
-                textBox_expression.Text = Value;
-            }
-            else
+            textBox_expression.Text = Utility.GetShowVariableName(IsGlobalVariable, ParamValue);
+            if (!_expressionEnabled)
             {
                 this.IsCancelled = false;
                 this.Close();
@@ -91,36 +103,28 @@ namespace TestStation.Controls
 
         private void button_confirm_Click(object sender, System.EventArgs e)
         {
-            if (treeView_variables.SelectedNode == null || treeView_variables.SelectedNode == _globalNode || _localNodes.Contains(treeView_variables.SelectedNode) )
+            string showValue = textBox_expression.Text;
+            if (string.IsNullOrWhiteSpace(showValue))
             {
                 MessageBox.Show("Please select a variable.", "Variable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            SequenceIndex = (int)treeView_variables.SelectedNode.Parent.Tag;
-            this.IsGlobalVariable = treeView_variables.SelectedNode.Parent == _globalNode;
-            if (_expressionEnabled)
+            bool isVariable;
+            this.ParamValue = Utility.GetParamValue(showValue, out isVariable);
+            Match matchData = _expRegex.Match(this.ParamValue);
+            string variableName = _expressionEnabled && matchData.Success
+                ? matchData.Groups[2].Value
+                : Utility.GetVariableName(ParamValue);
+            bool isLocalVariable = _localVariables.Any(item => item.Name.Equals(variableName));
+            if (!isLocalVariable && !_globalVariables.Any(item => item.Name.Equals(variableName)))
             {
-                if (textBox_expression.Text.Equals(this.Value))
-                {
-                    this.IsCancelled = false;
-                }
-                else if (_expRegex.IsMatch(textBox_expression.Text))
-                {
-                    this.Value = textBox_expression.Text;
-                    this.IsExpression = true;
-                    this.IsCancelled = false;
-                }
-                else
-                {
-                    MessageBox.Show("Invalid expression.", "Expression", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                MessageBox.Show($"Variable <{variableName}> does not exist.", "Variable", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                this.Value = (string)treeView_variables.SelectedNode.Tag;
-                this.IsCancelled = false;
-            }
+            this.IsGlobalVariable = !isLocalVariable;
+            this.IsExpression = matchData.Success;
+            this.IsCancelled = false;
             this.Close();
         }
 
@@ -139,6 +143,96 @@ namespace TestStation.Controls
         {
             treeView_variables.ExpandAll();
             splitContainer_varControls.Panel2Collapsed = !_expressionEnabled;
+        }
+
+        private void textBox_expression_TextChanged(object sender, System.EventArgs e)
+        {
+            if (!_expressionEnabled)
+            {
+                return;
+            }
+            listBox_properties.Items.Clear();
+            string showValue = textBox_expression.Text;
+            if (string.IsNullOrWhiteSpace(showValue) || _expRegex.IsMatch(showValue))
+            {
+                return;
+            }
+            bool isVariable;
+            string paramValue = Utility.GetParamValue(showValue, out isVariable);
+            IVariable variable = GetVariable(paramValue);
+            if (variable?.Type == null)
+            {
+                return;
+            }
+            IComInterfaceManager interfaceManager = _globalInfo.TestflowEntity.ComInterfaceManager;
+            try
+            {
+                ITypeData propertyType = variable.Type;
+                if (!paramValue.Equals(variable.Name))
+                {
+                    string propertyStr = paramValue.Substring(variable.Name.Length + 1,
+                    paramValue.Length - variable.Name.Length - 1);
+                    propertyType = interfaceManager.GetPropertyType(variable.Type, propertyStr);
+                }
+                IAssemblyInfo assemblyInfo;
+                IClassInterfaceDescription classDescription = interfaceManager.GetClassDescriptionByType(propertyType, out assemblyInfo);
+                if (null == classDescription ||
+                    (classDescription.Kind != VariableType.Class && classDescription.Kind != VariableType.Struct))
+                {
+                    return;
+                }
+                Dictionary<string, string> properties = interfaceManager.GetTypeProperties(propertyType);
+                const string itemFormat = "{0}({1})";
+                if (null != properties)
+                {
+                    foreach (KeyValuePair<string, string> keyValuePair in properties)
+                    {
+                        int typeNameStartIndex = keyValuePair.Value.LastIndexOf('.') + 1;
+                        string itemType = keyValuePair.Value.Substring(typeNameStartIndex, keyValuePair.Value.Length - typeNameStartIndex);
+                        listBox_properties.Items.Add(string.Format(itemFormat, keyValuePair.Key, itemType));
+                    }
+                }
+                Dictionary<string, string> fields = interfaceManager.GetTypeFields(propertyType);
+                if (null != fields)
+                {
+                    foreach (KeyValuePair<string, string> keyValuePair in fields)
+                    {
+                        int typeNameStartIndex = keyValuePair.Value.LastIndexOf('.') + 1;
+                        string itemType = keyValuePair.Value.Substring(typeNameStartIndex, keyValuePair.Value.Length - typeNameStartIndex);
+                        listBox_properties.Items.Add(string.Format(itemFormat, keyValuePair.Key, itemType));
+                    }
+                }
+            }
+            catch (TestflowException exception)
+            {
+                MessageBox.Show(exception.Message, "Variable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private IVariable GetVariable(string paramValue)
+        {
+            string variableName = Utility.GetVariableName(paramValue);
+            IVariable variable = _localVariables.FirstOrDefault(item => item.Name.Equals(variableName));
+            if (null != variable)
+            {
+                return variable;
+            }
+            return _globalVariables.FirstOrDefault(item => item.Name.Equals(variableName));
+        }
+
+        private void listBox_properties_DoubleClick(object sender, System.EventArgs e)
+        {
+            if (listBox_properties.SelectedIndex < 0)
+            {
+                return;
+            }
+            Match matchData = _propertyItemRegex.Match(listBox_properties.Items[listBox_properties.SelectedIndex].ToString());
+            if (!matchData.Success)
+            {
+                return;
+            }
+            string selectProperty = matchData.Groups[1].Value;
+            textBox_expression.AppendText($".{selectProperty}");
         }
     }
 }

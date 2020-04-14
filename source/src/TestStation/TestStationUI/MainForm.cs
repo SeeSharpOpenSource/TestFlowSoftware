@@ -1464,13 +1464,13 @@ namespace TestStation
             int columnIndex = e.ColumnIndex;
             if (_paramTable.Columns[columnIndex].Name.Equals("Parameterfx"))
             {
-                VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, group, value,
+                VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
                     true);
                 variableForm.ShowDialog(this);
                 if (!variableForm.IsCancelled)
                 {
                     _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value =
-                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.Value);
+                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.ParamValue);
                 }
                 variableForm.Dispose();
             }

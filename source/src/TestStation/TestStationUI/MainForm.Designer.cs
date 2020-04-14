@@ -34,9 +34,9 @@ namespace TestStation
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -142,7 +142,6 @@ namespace TestStation
             this.label_methodConfig = new System.Windows.Forms.Label();
             this.label_ClassConfig = new System.Windows.Forms.Label();
             this.label_assemblyConfig = new System.Windows.Forms.Label();
-            this.tabpage_parameters = new System.Windows.Forms.TabPage();
             this.tabPage_runtimeInfo = new System.Windows.Forms.TabPage();
             this.splitContainer_runtime = new System.Windows.Forms.SplitContainer();
             this.button_deleteWatch = new System.Windows.Forms.Button();
@@ -890,7 +889,6 @@ namespace TestStation
             // 
             this.tabControl_settings.Controls.Add(this.tabpage_Properties);
             this.tabControl_settings.Controls.Add(this.tabpage_Module);
-            this.tabControl_settings.Controls.Add(this.tabpage_parameters);
             this.tabControl_settings.Controls.Add(this.tabPage_runtimeInfo);
             this.tabControl_settings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl_settings.Location = new System.Drawing.Point(0, 0);
@@ -1155,7 +1153,7 @@ namespace TestStation
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(904, 358);
+            this.tabpage_Module.Size = new System.Drawing.Size(908, 360);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1163,7 +1161,7 @@ namespace TestStation
             // button_selectAssembly
             // 
             this.button_selectAssembly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_selectAssembly.Location = new System.Drawing.Point(866, 6);
+            this.button_selectAssembly.Location = new System.Drawing.Point(870, 6);
             this.button_selectAssembly.Name = "button_selectAssembly";
             this.button_selectAssembly.Size = new System.Drawing.Size(33, 24);
             this.button_selectAssembly.TabIndex = 14;
@@ -1178,7 +1176,7 @@ namespace TestStation
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(774, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(778, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1208,7 +1206,7 @@ namespace TestStation
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_panel.Location = new System.Drawing.Point(86, 87);
             this.Parameter_panel.Name = "Parameter_panel";
-            this.Parameter_panel.Size = new System.Drawing.Size(815, 274);
+            this.Parameter_panel.Size = new System.Drawing.Size(819, 276);
             this.Parameter_panel.TabIndex = 10;
             // 
             // comboBox_Method
@@ -1216,7 +1214,7 @@ namespace TestStation
             this.comboBox_Method.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_Method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Method.FormattingEnabled = true;
-            this.comboBox_Method.Location = new System.Drawing.Point(579, 62);
+            this.comboBox_Method.Location = new System.Drawing.Point(583, 62);
             this.comboBox_Method.Name = "comboBox_Method";
             this.comboBox_Method.Size = new System.Drawing.Size(320, 20);
             this.comboBox_Method.TabIndex = 9;
@@ -1230,7 +1228,7 @@ namespace TestStation
             this.comboBox_RootClass.FormattingEnabled = true;
             this.comboBox_RootClass.Location = new System.Drawing.Point(85, 36);
             this.comboBox_RootClass.Name = "comboBox_RootClass";
-            this.comboBox_RootClass.Size = new System.Drawing.Size(814, 20);
+            this.comboBox_RootClass.Size = new System.Drawing.Size(818, 20);
             this.comboBox_RootClass.TabIndex = 9;
             this.comboBox_RootClass.TextChanged += new System.EventHandler(this.comboBox_RootClass_Validated);
             // 
@@ -1238,7 +1236,7 @@ namespace TestStation
             // 
             this.label_methodConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_methodConfig.AutoSize = true;
-            this.label_methodConfig.Location = new System.Drawing.Point(526, 65);
+            this.label_methodConfig.Location = new System.Drawing.Point(530, 65);
             this.label_methodConfig.Name = "label_methodConfig";
             this.label_methodConfig.Size = new System.Drawing.Size(47, 12);
             this.label_methodConfig.TabIndex = 7;
@@ -1262,23 +1260,13 @@ namespace TestStation
             this.label_assemblyConfig.TabIndex = 7;
             this.label_assemblyConfig.Text = "Assemble:";
             // 
-            // tabpage_parameters
-            // 
-            this.tabpage_parameters.Location = new System.Drawing.Point(4, 22);
-            this.tabpage_parameters.Name = "tabpage_parameters";
-            this.tabpage_parameters.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_parameters.Size = new System.Drawing.Size(904, 358);
-            this.tabpage_parameters.TabIndex = 3;
-            this.tabpage_parameters.Text = "Sequence Parameters";
-            this.tabpage_parameters.UseVisualStyleBackColor = true;
-            // 
             // tabPage_runtimeInfo
             // 
             this.tabPage_runtimeInfo.Controls.Add(this.splitContainer_runtime);
             this.tabPage_runtimeInfo.Location = new System.Drawing.Point(4, 22);
             this.tabPage_runtimeInfo.Name = "tabPage_runtimeInfo";
             this.tabPage_runtimeInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(904, 358);
+            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(908, 360);
             this.tabPage_runtimeInfo.TabIndex = 4;
             this.tabPage_runtimeInfo.Text = "RuntimeInformation";
             this.tabPage_runtimeInfo.UseVisualStyleBackColor = true;
@@ -1303,14 +1291,14 @@ namespace TestStation
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_clearOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_copyOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.textBox_output);
-            this.splitContainer_runtime.Size = new System.Drawing.Size(898, 352);
-            this.splitContainer_runtime.SplitterDistance = 422;
+            this.splitContainer_runtime.Size = new System.Drawing.Size(902, 354);
+            this.splitContainer_runtime.SplitterDistance = 423;
             this.splitContainer_runtime.TabIndex = 0;
             // 
             // button_deleteWatch
             // 
             this.button_deleteWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_deleteWatch.Location = new System.Drawing.Point(266, 317);
+            this.button_deleteWatch.Location = new System.Drawing.Point(266, 319);
             this.button_deleteWatch.Name = "button_deleteWatch";
             this.button_deleteWatch.Size = new System.Drawing.Size(100, 28);
             this.button_deleteWatch.TabIndex = 7;
@@ -1321,7 +1309,7 @@ namespace TestStation
             // button_addWatch
             // 
             this.button_addWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_addWatch.Location = new System.Drawing.Point(47, 317);
+            this.button_addWatch.Location = new System.Drawing.Point(47, 319);
             this.button_addWatch.Name = "button_addWatch";
             this.button_addWatch.Size = new System.Drawing.Size(100, 28);
             this.button_addWatch.TabIndex = 6;
@@ -1337,14 +1325,14 @@ namespace TestStation
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1354,13 +1342,13 @@ namespace TestStation
             this.dataGridView_variableValues.ReadOnly = true;
             this.dataGridView_variableValues.RowHeadersVisible = false;
             this.dataGridView_variableValues.RowTemplate.Height = 23;
-            this.dataGridView_variableValues.Size = new System.Drawing.Size(418, 289);
+            this.dataGridView_variableValues.Size = new System.Drawing.Size(419, 291);
             this.dataGridView_variableValues.TabIndex = 5;
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1368,8 +1356,8 @@ namespace TestStation
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -1400,7 +1388,7 @@ namespace TestStation
             this.button_clearOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_clearOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_clearOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_clearOutput.Location = new System.Drawing.Point(423, -1);
+            this.button_clearOutput.Location = new System.Drawing.Point(426, -1);
             this.button_clearOutput.Name = "button_clearOutput";
             this.button_clearOutput.Size = new System.Drawing.Size(45, 22);
             this.button_clearOutput.TabIndex = 2;
@@ -1415,7 +1403,7 @@ namespace TestStation
             this.button_copyOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_copyOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_copyOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_copyOutput.Location = new System.Drawing.Point(378, -1);
+            this.button_copyOutput.Location = new System.Drawing.Point(381, -1);
             this.button_copyOutput.Name = "button_copyOutput";
             this.button_copyOutput.Size = new System.Drawing.Size(45, 22);
             this.button_copyOutput.TabIndex = 1;
@@ -1435,7 +1423,7 @@ namespace TestStation
             this.textBox_output.Name = "textBox_output";
             this.textBox_output.ReadOnly = true;
             this.textBox_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_output.Size = new System.Drawing.Size(467, 329);
+            this.textBox_output.Size = new System.Drawing.Size(470, 331);
             this.textBox_output.TabIndex = 0;
             // 
             // tabCon_Step
@@ -2119,7 +2107,6 @@ namespace TestStation
         private ToolStripMenuItem actionToolStripMenuItem;
         private ToolStripMenuItem actionToolStripMenuItem1;
         private ToolStripMenuItem sequenceCallToolStripMenuItem;
-        private TabPage tabpage_parameters;
         private BindingSource mainFormBindingSource;
         private Label labelTestRunning;
         private Label labelTestGen;
