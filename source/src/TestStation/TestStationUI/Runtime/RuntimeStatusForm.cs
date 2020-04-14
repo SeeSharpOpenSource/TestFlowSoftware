@@ -103,15 +103,15 @@ namespace TestStation.Runtime
 
         private void PrintWatchData(IDictionary<IVariable, string> rawWatchDatta)
         {
-            if (null != rawWatchDatta && rawWatchDatta.Count > 0)
-            {
-                Dictionary<string, string> watchData = new Dictionary<string, string>(rawWatchDatta.Count);
-                foreach (KeyValuePair<IVariable, string> keyValuePair in rawWatchDatta)
-                {
-                    watchData.Add(keyValuePair.Key.Value, keyValuePair.Value);
-                }
-                Invoke(new Action(() => { _mainForm.RefreshVariableValues(watchData); }));
-            }
+//            if (null != rawWatchDatta && rawWatchDatta.Count > 0)
+//            {
+//                Dictionary<string, string> watchData = new Dictionary<string, string>(rawWatchDatta.Count);
+//                foreach (KeyValuePair<IVariable, string> keyValuePair in rawWatchDatta)
+//                {
+//                    watchData.Add(keyValuePair.Key.Value, keyValuePair.Value);
+//                }
+//                Invoke(new Action(() => { _mainForm.RefreshVariableValues(watchData); }));
+//            }
         }
 
         private string GetReportPath()

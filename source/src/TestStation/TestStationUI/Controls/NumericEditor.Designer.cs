@@ -93,6 +93,7 @@
             // 
             // TypecomboBox
             // 
+            this.TypecomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.TypecomboBox.FormattingEnabled = true;
             this.TypecomboBox.Items.AddRange(new object[] {
             "Real",
@@ -101,7 +102,6 @@
             this.TypecomboBox.Name = "TypecomboBox";
             this.TypecomboBox.Size = new System.Drawing.Size(118, 20);
             this.TypecomboBox.TabIndex = 37;
-            this.TypecomboBox.Text = "Real";
             this.TypecomboBox.SelectedIndexChanged += new System.EventHandler(this.TypecomboBox_SelectedIndexChanged);
             // 
             // FormattedNumbertextBox
@@ -123,9 +123,7 @@
             this.Controls.Add(this.TypecomboBox);
             this.Controls.Add(this.FormattedNumbertextBox);
             this.Controls.Add(FormattedNumberLabel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "NumericEditor";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NumericEditor";
             this.Controls.SetChildIndex(this.TypeLabel, 0);
             this.Controls.SetChildIndex(this.OkButton, 0);
