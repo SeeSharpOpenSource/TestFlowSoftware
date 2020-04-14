@@ -1469,8 +1469,7 @@ namespace TestStation
                 variableForm.ShowDialog(this);
                 if (!variableForm.IsCancelled)
                 {
-                    _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value =
-                        Utility.GetShowVariableName(variableForm.IsGlobalVariable, variableForm.ParamValue);
+                    _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = variableForm.ParamValue;
                 }
                 variableForm.Dispose();
             }
@@ -1572,7 +1571,7 @@ namespace TestStation
             ISequenceStep functionStep;
             ISequenceStep constructorStep;
             GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-            if (group.Equals(Constants.MethodStepName) && null != functionStep && null != functionStep.Function)
+            if (@group.Equals(Constants.MethodStepName) && functionStep?.Function != null)
             {
                 function = functionStep.Function;
             }
@@ -1716,9 +1715,8 @@ namespace TestStation
                         return;
                     }
                     IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
-                    TestflowDesigntimeSession.SetInstance(variable?.Name ?? string.Empty, functionStep);
+                    TestflowDesigntimeSession.SetInstance(value, functionStep);
                     SetVariableType(functionStep.Function.ClassType, variable);
-                    currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
                 }
                 else
                 {
@@ -1950,22 +1948,14 @@ namespace TestStation
             foreach (IVariable variable in variableCollection)
             {
                 int rowIndex;
-                if (variable.VariableType == VariableType.Undefined)
+                if (null == variable.Type)
                 {
-                    rowIndex = dgv.Rows.Add(variable.Name, "", variable.Value);
-                }
-                else if (variable.VariableType == VariableType.Class && variable.Type == null)
-                {
-                    rowIndex = dgv.Rows.Add(variable.Name, "Object", variable.Value);
+                    rowIndex = dgv.Rows.Add(variable.Name, "Object", "");
                 }
                 else
                 {
-                    string variableTypeName = variable.Type?.Name ?? string.Empty;
-                    switch (variableTypeName)
+                    switch (variable.Type.Name)
                     {
-                        case "":
-                            rowIndex = dgv.Rows.Add(variable.Name, "", variable.Value);
-                            break;
                         case "String":
                             rowIndex = dgv.Rows.Add(variable.Name, "String", variable.Value);
                             break;
@@ -1973,18 +1963,84 @@ namespace TestStation
                             rowIndex = dgv.Rows.Add(variable.Name, "Boolean", variable.Value);
                             break;
                         case "Double":
+                        case "Single":
+                        case "Int32":
+                        case "UInt32":
+                        case "Int16":
+                        case "UInt16":
+                        case "Byte":
+                        case "Char":
                             rowIndex = dgv.Rows.Add(variable.Name, "Numeric", variable.Value);
                             break;
-
                         //Object
                         default:
-                            rowIndex = dgv.Rows.Add(variable.Name, "Object", variableTypeName);
-                            dgv.Rows[rowIndex].Cells["VariableType"].ReadOnly = true;
+                            rowIndex = dgv.Rows.Add(variable.Name, "Object", variable.Type.Name);
+                            //                            dgv.Rows[rowIndex].Cells["VariableType"].ReadOnly = true;
                             break;
                     }
                 }
                 dgv.Rows[rowIndex].Tag = variable.Name;
             }
+        }
+
+        private void UpdateSingleVariable(IVariable variable, bool isGlobal)
+        {
+            DataGridView varTable = isGlobal
+                ? (DataGridView) tabCon_Variable.TabPages[0].Controls[0]
+                : (DataGridView) tabCon_Variable.TabPages[1].Controls[0];
+            DataGridViewRow editRow = null;
+            foreach (DataGridViewRow row in varTable.Rows)
+            {
+                if (variable.Name.Equals(row.Cells[0].Value?.ToString()))
+                {
+                    editRow = row;
+                }
+            }
+            if (null == editRow)
+            {
+                return;
+            }
+            string type;
+            string value;
+            if (null == variable.Type)
+            {
+                type = "Object";
+                value = "";
+            }
+            else
+            {
+                
+                switch (variable.Type.Name)
+                {
+                    case "String":
+                        type= "String";
+                        value = variable.Value ?? string.Empty;
+                        break;
+                    case "Boolean":
+                        type = "Boolean";
+                        value = variable.Value ?? true.ToString();
+                        break;
+                    case "Double":
+                    case "Single":
+                    case "Int32":
+                    case "UInt32":
+                    case "Int16":
+                    case "UInt16":
+                    case "Byte":
+                    case "Char":
+                        type = "Numeric";
+                        value = variable.Value ?? "0";
+                        break;
+
+                    //Object
+                    default:
+                        type = "Object";
+                        value = variable.Type.Name;
+                        break;
+                }
+            }
+            editRow.Cells[1].Value = type;
+            editRow.Cells[2].Value = value;
         }
 
         private void UpdateModule()
@@ -3446,13 +3502,22 @@ namespace TestStation
 
         private void treeView_sequenceTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (_internalOperation) return;
+            if (_internalOperation || _lastSelectSeqNode == e.Node) return;
             _internalOperation = true;
+
+            if (null != _lastSelectSeqNode)
+            {
+                _lastSelectSeqNode.ForeColor = _nonSelectedColor;
+                _lastSelectSeqNode = null;
+            }
+
             ISequence selectedSequence = FindSelectedSequence(e.Node);
             if (selectedSequence != CurrentSeq)
             {
                 CurrentSeq = selectedSequence;
                 treeView_stepView.SelectedNode = null;
+                _lastSelectSeqNode = e.Node;
+                _lastSelectSeqNode.ForeColor = _selectedColor;
             }
             CurrentSeq = selectedSequence;
             if (null != CurrentSeq)
@@ -3543,21 +3608,33 @@ namespace TestStation
             }
         }
 
+        private TreeNode _lastSelectSeqNode;
+        private TreeNode _lastSelectStepNode;
+        private Color _selectedColor = Color.DeepSkyBlue;
+        private Color _nonSelectedColor = Color.FromArgb(0, 0, 0, 0);
+
         private void treeView_stepView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (_internalOperation) return;
+            if (_internalOperation || _lastSelectStepNode == e.Node) return;
             _internalOperation = true;
 
+            if (null != _lastSelectStepNode)
+            {
+                _lastSelectStepNode.ForeColor = _nonSelectedColor;
+                _lastSelectStepNode = null;
+            }
             ISequenceStep selectedStep = FindSelectedStep(e.Node);
             CurrentStep = selectedStep;
             if (null != selectedStep)
             {
                 ShowStepInfo(selectedStep);
-                tabControl_settings.Enabled = true;
+                tabControl_settings.Visible = true;
+                _lastSelectStepNode = e.Node;
+                _lastSelectStepNode.ForeColor = _selectedColor;
             }
             else
             {
-                tabControl_settings.Enabled = false;
+                tabControl_settings.Visible = false;
                 tabControl_settings.SelectedIndex = 0;
             }
             UpdateSettings();
