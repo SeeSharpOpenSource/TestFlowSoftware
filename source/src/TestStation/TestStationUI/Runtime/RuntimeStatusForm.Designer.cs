@@ -31,6 +31,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView_status = new System.Windows.Forms.DataGridView();
+            this.groupBox_runstatus = new System.Windows.Forms.GroupBox();
+            this.groupBox_sequenceInfo = new System.Windows.Forms.GroupBox();
+            this.textBox_testInstanceName = new System.Windows.Forms.TextBox();
+            this.label_runtimeName = new System.Windows.Forms.Label();
+            this.label_nameValue = new System.Windows.Forms.Label();
+            this.label_name = new System.Windows.Forms.Label();
             this.Column_session = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_sequence = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_sequenceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -39,12 +45,6 @@
             this.Column_endTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_elapsedTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_result = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.groupBox_runstatus = new System.Windows.Forms.GroupBox();
-            this.groupBox_sequenceInfo = new System.Windows.Forms.GroupBox();
-            this.textBox_testInstanceName = new System.Windows.Forms.TextBox();
-            this.label_runtimeName = new System.Windows.Forms.Label();
-            this.label_nameValue = new System.Windows.Forms.Label();
-            this.label_name = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_status)).BeginInit();
             this.groupBox_runstatus.SuspendLayout();
             this.groupBox_sequenceInfo.SuspendLayout();
@@ -91,72 +91,9 @@
             this.dataGridView_status.Size = new System.Drawing.Size(853, 414);
             this.dataGridView_status.TabIndex = 0;
             // 
-            // Column_session
-            // 
-            this.Column_session.Frozen = true;
-            this.Column_session.HeaderText = "会话";
-            this.Column_session.Name = "Column_session";
-            this.Column_session.ReadOnly = true;
-            this.Column_session.Width = 60;
-            // 
-            // Column_sequence
-            // 
-            this.Column_sequence.Frozen = true;
-            this.Column_sequence.HeaderText = "序列号";
-            this.Column_sequence.Name = "Column_sequence";
-            this.Column_sequence.ReadOnly = true;
-            this.Column_sequence.Width = 74;
-            // 
-            // Column_sequenceName
-            // 
-            this.Column_sequenceName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column_sequenceName.Frozen = true;
-            this.Column_sequenceName.HeaderText = "序列名称";
-            this.Column_sequenceName.Name = "Column_sequenceName";
-            this.Column_sequenceName.ReadOnly = true;
-            this.Column_sequenceName.Width = 200;
-            // 
-            // Column_nowState
-            // 
-            this.Column_nowState.Frozen = true;
-            this.Column_nowState.HeaderText = "状态";
-            this.Column_nowState.Name = "Column_nowState";
-            this.Column_nowState.ReadOnly = true;
-            this.Column_nowState.Width = 80;
-            // 
-            // Column_startTime
-            // 
-            this.Column_startTime.Frozen = true;
-            this.Column_startTime.HeaderText = "开始时间";
-            this.Column_startTime.Name = "Column_startTime";
-            this.Column_startTime.ReadOnly = true;
-            this.Column_startTime.Width = 110;
-            // 
-            // Column_endTime
-            // 
-            this.Column_endTime.Frozen = true;
-            this.Column_endTime.HeaderText = "结束时间";
-            this.Column_endTime.Name = "Column_endTime";
-            this.Column_endTime.ReadOnly = true;
-            this.Column_endTime.Width = 110;
-            // 
-            // Column_elapsedTime
-            // 
-            this.Column_elapsedTime.HeaderText = "运行时间/ms";
-            this.Column_elapsedTime.Name = "Column_elapsedTime";
-            this.Column_elapsedTime.ReadOnly = true;
-            this.Column_elapsedTime.Width = 109;
-            // 
-            // Column_result
-            // 
-            this.Column_result.HeaderText = "运行结果";
-            this.Column_result.Name = "Column_result";
-            this.Column_result.ReadOnly = true;
-            this.Column_result.Width = 120;
-            // 
             // groupBox_runstatus
             // 
-            this.groupBox_runstatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox_runstatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox_runstatus.Controls.Add(this.dataGridView_status);
             this.groupBox_runstatus.Location = new System.Drawing.Point(12, 77);
@@ -212,6 +149,64 @@
             this.label_name.TabIndex = 0;
             this.label_name.Text = "序列名称：";
             this.label_name.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // Column_session
+            // 
+            this.Column_session.Frozen = true;
+            this.Column_session.HeaderText = "会话";
+            this.Column_session.Name = "Column_session";
+            this.Column_session.ReadOnly = true;
+            this.Column_session.Width = 60;
+            // 
+            // Column_sequence
+            // 
+            this.Column_sequence.Frozen = true;
+            this.Column_sequence.HeaderText = "序列号";
+            this.Column_sequence.Name = "Column_sequence";
+            this.Column_sequence.ReadOnly = true;
+            this.Column_sequence.Width = 74;
+            // 
+            // Column_sequenceName
+            // 
+            this.Column_sequenceName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column_sequenceName.HeaderText = "序列名称";
+            this.Column_sequenceName.Name = "Column_sequenceName";
+            this.Column_sequenceName.ReadOnly = true;
+            // 
+            // Column_nowState
+            // 
+            this.Column_nowState.HeaderText = "状态";
+            this.Column_nowState.Name = "Column_nowState";
+            this.Column_nowState.ReadOnly = true;
+            this.Column_nowState.Width = 80;
+            // 
+            // Column_startTime
+            // 
+            this.Column_startTime.HeaderText = "开始时间";
+            this.Column_startTime.Name = "Column_startTime";
+            this.Column_startTime.ReadOnly = true;
+            this.Column_startTime.Width = 110;
+            // 
+            // Column_endTime
+            // 
+            this.Column_endTime.HeaderText = "结束时间";
+            this.Column_endTime.Name = "Column_endTime";
+            this.Column_endTime.ReadOnly = true;
+            this.Column_endTime.Width = 110;
+            // 
+            // Column_elapsedTime
+            // 
+            this.Column_elapsedTime.HeaderText = "运行时间/ms";
+            this.Column_elapsedTime.Name = "Column_elapsedTime";
+            this.Column_elapsedTime.ReadOnly = true;
+            this.Column_elapsedTime.Width = 109;
+            // 
+            // Column_result
+            // 
+            this.Column_result.HeaderText = "运行结果";
+            this.Column_result.Name = "Column_result";
+            this.Column_result.ReadOnly = true;
+            this.Column_result.Width = 120;
             // 
             // RuntimeStatusForm
             // 
