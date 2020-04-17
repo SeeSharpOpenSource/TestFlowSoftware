@@ -311,5 +311,15 @@ namespace TestStation.Controls
                 this._variable.Value = _originalValue;
             }
         }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow currentRow = dataGridView_element.CurrentRow;
+            if (null == currentRow || currentRow.Index == dataGridView_element.RowCount - 1)
+            {
+                return;
+            }
+            dataGridView_element.Rows.RemoveAt(currentRow.Index);
+        }
     }
 }

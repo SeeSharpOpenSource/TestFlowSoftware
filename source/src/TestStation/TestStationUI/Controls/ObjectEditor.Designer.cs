@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.comboBox_type = new System.Windows.Forms.ComboBox();
             this.label_typeValue = new System.Windows.Forms.Label();
             this.label_objType = new System.Windows.Forms.Label();
@@ -35,7 +36,10 @@
             this.button_cancel = new System.Windows.Forms.Button();
             this.dataGridView_element = new System.Windows.Forms.DataGridView();
             this.Column_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextMenuStrip_delete = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_element)).BeginInit();
+            this.contextMenuStrip_delete.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboBox_type
@@ -102,6 +106,7 @@
             this.dataGridView_element.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_element.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_value});
+            this.dataGridView_element.ContextMenuStrip = this.contextMenuStrip_delete;
             this.dataGridView_element.Location = new System.Drawing.Point(13, 35);
             this.dataGridView_element.Name = "dataGridView_element";
             this.dataGridView_element.RowTemplate.Height = 23;
@@ -113,6 +118,20 @@
             this.Column_value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Column_value.HeaderText = "Value";
             this.Column_value.Name = "Column_value";
+            // 
+            // contextMenuStrip_delete
+            // 
+            this.contextMenuStrip_delete.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip_delete.Name = "contextMenuStrip_delete";
+            this.contextMenuStrip_delete.Size = new System.Drawing.Size(153, 48);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // ObjectEditor
             // 
@@ -129,6 +148,7 @@
             this.Text = "Object Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ObjectEditor_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_element)).EndInit();
+            this.contextMenuStrip_delete.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,5 +163,7 @@
         private System.Windows.Forms.Button button_cancel;
         private System.Windows.Forms.DataGridView dataGridView_element;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_value;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip_delete;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }
