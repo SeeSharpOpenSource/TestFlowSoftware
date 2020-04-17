@@ -13,44 +13,9 @@ namespace TestFlow.SoftDevCommon
 {
     public static class Utility
     {
-        public static string GetShowVariableName(IVariable variable)
-        {
-            string variableName = variable.Name;
-            bool isGlobalVariable = !(variable.Parent is ISequence);
-            return GetShowVariableName(isGlobalVariable, variableName);
-        }
-
-
         public static bool IsActionStep(ISequenceStep step)
         {
             return step.HasSubSteps && step.SubSteps[0].Name.Equals(Constants.ActionType);
-        }
-
-        public static string GetShowVariableName(string variableName, ISequenceStep functionStep)
-        {
-            if (null == functionStep || string.IsNullOrWhiteSpace(variableName))
-            {
-                return string.Empty;
-            }
-            ISequenceStep step = functionStep;
-            while (step.Parent is ISequenceStep)
-            {
-                step = (ISequenceStep) functionStep.Parent;
-            }
-            bool isGlobalVariable = !((step.Parent as ISequence)?.Variables.Any(item => item.Name.Equals(variableName)) ?? false);
-            return GetShowVariableName(isGlobalVariable, variableName);
-        }
-
-        public static string GetShowVariableName(bool isGlobalVariable, string variableName)
-        {
-            if (isGlobalVariable)
-            {
-                return $"{Constants.GlobalVarPrefix}{Constants.VaraibleDelim}{variableName}";
-            }
-            else
-            {
-                return $"{Constants.LocalVarPrefix}{Constants.VaraibleDelim}{variableName}";
-            }
         }
 
         public static string GetVariableName(string paramValue)

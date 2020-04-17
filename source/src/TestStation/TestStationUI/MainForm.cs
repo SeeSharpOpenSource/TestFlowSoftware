@@ -35,8 +35,8 @@ namespace TestFlow.DevSoftware
 {
     public partial class MainForm : Form
     {
-        private const string ExistingObjName = "<Existing Object>";
-        private const string ExistingObjParent = "Existing Object";
+        private const string ExistingObjName = "<Instance Object>";
+        private const string ExistingObjParent = "Instance Object";
 
         #region Id
         private int _currentSequenceId = 0;      //Sequence ID
@@ -1222,7 +1222,6 @@ namespace TestFlow.DevSoftware
             _paramTable.Clear();
             comboBox_RootClass.DataSource = null;
             comboBox_Method.DataSource = null;
-            comboBox_Constructor.DataSource = null;
             _currentClassDescription = null;
             
 
@@ -1266,7 +1265,6 @@ namespace TestFlow.DevSoftware
             _internalOperation = true;
             // 清空Parameters、Method、Constructor
             comboBox_Method.DataSource = null;
-            comboBox_Constructor.DataSource = null;
             //_currentFuncDescription = null;
             //_currentConstructorDescription = null;
 
@@ -1290,67 +1288,6 @@ namespace TestFlow.DevSoftware
             _internalOperation = false;
         }
 
-        private void comboBox_Constructor_Validated(object sender, EventArgs e)
-        {
-            if (_internalOperation || string.IsNullOrWhiteSpace(comboBox_Constructor.Text) ||
-                !comboBox_Constructor.Enabled)
-            {
-                return;
-            }
-            _internalOperation = true;
-            // 清空Parameter
-            _paramTable.Clear();
-
-            InitializeConstructorStep();
-
-            // 添加Parameter
-            UpdateTDGVParameter();
-            _internalOperation = false;
-        }
-
-        private void InitializeConstructorStep()
-        {
-            // 判断空选项 , Existing Object
-            ISequenceStep constructorStep;
-            ISequenceStep functionStep;
-            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-            if (string.IsNullOrWhiteSpace(comboBox_Constructor.Text) || comboBox_Constructor.Text.Equals(ExistingObjName))
-            {
-                //_currentConstructorDescription = null;
-                if (constructorStep != null)
-                {
-                    TestflowDesigntimeSession.RemoveSequenceStep(CurrentStep, constructorStep);
-                }
-                return;
-            }
-            // Testflow: 获得构造函数description
-            IFuncInterfaceDescription constructorDescription =
-                _currentClassDescription.Functions.FirstOrDefault(
-                    item => GetConstructorSignature(item).Equals(comboBox_Constructor.Text));
-
-            // 创建构造函数SubStep
-            if (constructorStep == null)
-            {
-                constructorStep = TestflowDesigntimeSession.AddSequenceStep(CurrentStep, $"Constructor", "Constructor", 1);
-            }
-
-            // 判断选择的构造函数有没有变
-            if (constructorStep.Function == null ||
-                !IsFunctionCreatedFromDescription(constructorStep.Function, constructorDescription))
-            {
-                // 创建functionData， 并改变_currentFunctionStep的functionData
-                IFunctionData constructorData =
-                    _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(constructorDescription);
-                constructorStep.Function = constructorData;
-
-                // 删除functionStep里的instance
-                if (functionStep?.Function != null)
-                {
-                    TestflowDesigntimeSession.SetInstance("", functionStep);
-                }
-            }
-        }
-
         private void comboBox_Method_Validated(object sender, EventArgs e)
         {
             if (_internalOperation)
@@ -1367,11 +1304,6 @@ namespace TestFlow.DevSoftware
             ISequenceStep functionStep;
             ISequenceStep constructorStep;
             GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-            if (null != CurrentStep && null != functionStep && IsInstanceFunction(functionStep.Function) &&
-                string.IsNullOrWhiteSpace(comboBox_Constructor.Text))
-            {
-                comboBox_Constructor.Text = ExistingObjName;
-            }
             // 添加Parameter
             UpdateTDGVParameter();
             ShowStepInfo(CurrentStep);
@@ -1758,7 +1690,7 @@ namespace TestFlow.DevSoftware
                         {
                             TestflowDesigntimeSession.SetInstance(value, functionStep);
                         }
-                        currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
+                        currentCell.Value = variable?.Name ?? string.Empty;
                     }
                     else
                     {
@@ -1779,7 +1711,7 @@ namespace TestFlow.DevSoftware
                     IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
                     TestflowDesigntimeSession.SetReturn(value, functionStep);
                     SetVariableType(functionStep.Function.ReturnType.Type, value, variable);
-                    currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
+                    currentCell.Value = variable?.Name ?? string.Empty;
                 }
                 else
                 {
@@ -1832,7 +1764,7 @@ namespace TestFlow.DevSoftware
                 TestflowDesigntimeSession.SetParameterValue(paramName, variable?.Name ?? string.Empty,
                     ParameterType.Value, step);
                 SetVariableType(argument.Type, value, variable);
-                currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
+                currentCell.Value = variable?.Name ?? string.Empty;
             }
             else
             {
@@ -1889,7 +1821,7 @@ namespace TestFlow.DevSoftware
             int index = 0;
             foreach (IVariable variable in variables)
             {
-                contextMenuStrip_varList.Items.Add(Utility.GetShowVariableName(variable));
+                contextMenuStrip_varList.Items.Add(variable?.Name??string.Empty);
                 contextMenuStrip_varList.Items[index].MouseDown += SetCellVariableValue;
                 contextMenuStrip_varList.Items[index].Click += SetCellVariableValue;
                 index++;
@@ -2076,7 +2008,7 @@ namespace TestFlow.DevSoftware
             IFunctionData function = (functionStep == null)
                 ? (constructorStep.Function)
                 : (functionStep.Function);
-            if (null == function || null == function.ClassType || string.IsNullOrWhiteSpace(function.MethodName))
+            if (function?.ClassType == null || string.IsNullOrWhiteSpace(function.MethodName))
             {
                 ClearSettings();
                 return;
@@ -2090,7 +2022,7 @@ namespace TestFlow.DevSoftware
 
             ShowClasses(function.ClassType);
 
-            ShowConstructorsAndMethods(functionStep?.Function, constructorStep?.Function);
+            ShowConstructorsAndMethods(function);
 
             UpdateTDGVParameter();
         }
@@ -2143,7 +2075,6 @@ namespace TestFlow.DevSoftware
             comboBox_RootClass.Text = "";
             comboBox_Method.DataSource = null;
             comboBox_Method.Text = "";
-            comboBox_Constructor.DataSource = null;
             comboBox_Method.Text = "";
             _paramTable.Clear();
         }
@@ -2227,49 +2158,19 @@ namespace TestFlow.DevSoftware
             return str[str.Length - 1];
         }
 
-        private void ShowConstructorsAndMethods(IFunctionData selectedMethod = null, IFunctionData selectedConstructor = null)
+        private void ShowConstructorsAndMethods(IFunctionData selectedFunction = null)
         {
             List<string> methodNames = new List<string>();
-            List<string> constructorNames = new List<string>();
-            constructorNames.Add("");
-            
-            constructorNames.Add(ExistingObjName);
             int methodIndex = -1;
-            int constructorIndex = -1;
             foreach (IFuncInterfaceDescription function in _currentClassDescription.Functions)
             {
-                //构造函数
-                if (function.FuncType == FunctionType.Constructor || function.FuncType == FunctionType.StructConstructor)
-                {
-                    constructorNames.Add(GetConstructorSignature(function));
-                }
-                else
-                {
-                    methodNames.Add(GetMethodSignature(function));
-                }
-
-                #region 选中已有的method和constructor
-                if (IsFunctionCreatedFromDescription(selectedMethod, function))
+                methodNames.Add(GetMethodSignature(function));
+                // 选中已有的method和constructor
+                if (IsFunctionCreatedFromDescription(selectedFunction, function))
                 {
                     methodIndex = methodNames.Count - 1;
                 }
-                if (IsFunctionCreatedFromDescription(selectedConstructor, function))
-                {
-                    constructorIndex = constructorNames.Count - 1;
-                }
-                #endregion
             }
-
-            #region 判断 <Existing Object>
-
-            ISequenceStep constructorStep;
-            ISequenceStep functionStep;
-            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-            if (functionStep?.Function != null && functionStep.Function.Instance != "")
-            {
-                constructorIndex = constructorNames.IndexOf(ExistingObjName);
-            }
-            #endregion
 
             comboBox_Method.DataSource = methodNames;
             if (methodNames.Count > 0 && methodIndex != -1)
@@ -2280,31 +2181,6 @@ namespace TestFlow.DevSoftware
             {
                 comboBox_Method.Text = "";
                 comboBox_Method.SelectedIndex = -1;     //SelectedValue = null
-            }
-
-            comboBox_Constructor.DataSource = constructorNames;
-            if (constructorNames.Count > 0 && methodIndex != -1)
-            {
-                comboBox_Constructor.SelectedIndex = constructorIndex;
-            }
-            else
-            {
-                comboBox_Constructor.Text = "";
-                comboBox_Constructor.SelectedIndex = -1;    //SelectedValue = null
-            }
-
-
-            // Static Constructor
-            if (_currentClassDescription.IsStatic)
-            {
-                comboBox_Constructor.BackColor = Color.Gray;
-                comboBox_Constructor.Enabled = false;
-            }
-            else
-            {
-                comboBox_Constructor.BackColor = Color.White;
-                comboBox_Constructor.Enabled = true;
-                comboBox_Constructor.DataSource = constructorNames;
             }
         }
 
@@ -2326,7 +2202,7 @@ namespace TestFlow.DevSoftware
             #region 构造函数instance
             if (functionData.Type == FunctionType.Constructor || functionData.Type == FunctionType.StructConstructor)
             {
-                string instance = Utility.GetShowVariableName(functionData.Instance, step);
+                string instance = functionData.Instance;
                 _paramTable.Rows.Add(new object[] { null, "Return Value", $"Object({ functionData.ClassType.Namespace}.{functionData.ClassType.Name})", "Out", instance });
             }
 
@@ -2335,50 +2211,53 @@ namespace TestFlow.DevSoftware
             #region 返回值
             if (functionData.ReturnType != null)
             {
-                string returnValue = Utility.GetShowVariableName(functionData.Return, step);
+                string returnValue = functionData.Return;
                 _paramTable.Rows.Add(new object[] { null, "Return Value", functionData.ReturnType.Type.Name, "Out", returnValue });
             }
 
             #endregion
 
             #region 参数
-            for (int n = 0; n < ((functionData.Parameters == null) ? 0 : (functionData.Parameters.Count)); n++)
+
+            IParameterDataCollection parameters = functionData.Parameters;
+            if (null != parameters)
             {
-                IArgument parameterType = functionData.ParameterType[n];
-                IParameterData parameterData = functionData.Parameters[n];
-                string modifier = parameterType.Modifier.ToString();
-                // 如果参数值为变量类型，则处理该变量显示值
-                string paramValue = parameterData.ParameterType == ParameterType.Variable
-                    ? Utility.GetShowVariableName(parameterData.Value, step)
-                    : parameterData.Value;
-                int rowIndex = _paramTable.Rows.Add(new object[] { null, parameterType.Name, parameterType.Type.Name, modifier.Equals("None") ? "In" : modifier, paramValue });
-
-                // 该步骤是为了添加参数的Assembly到接口加载模块
-                IAssemblyInfo assemblyInfo;
-                _globalInfo.TestflowEntity.ComInterfaceManager.GetClassDescriptionByType(parameterType.Type,
-                    out assemblyInfo);
-
-                // 枚举特殊处理
-                if (parameterType.VariableType == VariableType.Enumeration)
+                for (int n = 0; n < parameters.Count; n++)
                 {
-                    string[] enumItems = null;
-                    try
+                    IArgument parameterType = functionData.ParameterType[n];
+                    IParameterData parameterData = parameters[n];
+                    string modifier = parameterType.Modifier.ToString();
+                    // 如果参数值为变量类型，则处理该变量显示值
+                    string paramValue = parameterData.Value;
+                    int rowIndex = _paramTable.Rows.Add(new object[] { null, parameterType.Name, parameterType.Type.Name, modifier.Equals("None") ? "In" : modifier, paramValue });
+
+                    // 该步骤是为了添加参数的Assembly到接口加载模块
+                    IAssemblyInfo assemblyInfo;
+                    _globalInfo.TestflowEntity.ComInterfaceManager.GetClassDescriptionByType(parameterType.Type,
+                        out assemblyInfo);
+
+                    // 枚举特殊处理
+                    if (parameterType.VariableType == VariableType.Enumeration)
                     {
-                        enumItems = _globalInfo.TestflowEntity.ComInterfaceManager.GetEnumItems(parameterType.Type);
-                    }
-                    catch (ApplicationException ex)
-                    {
-                        Logger.Print(ex, ex.Message, LogLevel.Warn);
-                    }
-                    // 如果当前程序集包含该枚举的定义，则显示为下拉框，否则不作为
-                    if (null != enumItems && enumItems.Length > 0)
-                    {
-                        DataGridViewComboBoxCell enumCell = new DataGridViewComboBoxCell();
-                        enumCell.DataSource = enumItems;
-                        _paramTable.Rows[rowIndex].Cells["ParameterValue"] = enumCell;
-                        if (!string.IsNullOrEmpty(parameterData.Value))
+                        string[] enumItems = null;
+                        try
                         {
-                            enumCell.Value = parameterData.Value;
+                            enumItems = _globalInfo.TestflowEntity.ComInterfaceManager.GetEnumItems(parameterType.Type);
+                        }
+                        catch (ApplicationException ex)
+                        {
+                            Logger.Print(ex, ex.Message, LogLevel.Warn);
+                        }
+                        // 如果当前程序集包含该枚举的定义，则显示为下拉框，否则不作为
+                        if (null != enumItems && enumItems.Length > 0)
+                        {
+                            DataGridViewComboBoxCell enumCell = new DataGridViewComboBoxCell();
+                            enumCell.DataSource = enumItems;
+                            _paramTable.Rows[rowIndex].Cells["ParameterValue"] = enumCell;
+                            if (!string.IsNullOrEmpty(parameterData.Value))
+                            {
+                                enumCell.Value = parameterData.Value;
+                            }
                         }
                     }
                 }
@@ -2388,35 +2267,32 @@ namespace TestFlow.DevSoftware
 
         private void UpdateTDGVParameter()
         {
-            ISequenceStep constructorStep;
-            ISequenceStep functionStep;
-            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-            #region 构造函数
-            if (!string.IsNullOrWhiteSpace(comboBox_Constructor.Text))
+            IFunctionData functionData = CurrentStep.Function;
+
+            // 包含ConstructorStep
+            if (functionData.Type == FunctionType.Constructor || functionData.Type == FunctionType.StructConstructor)
             {
-                // 包含ConstructorStep
-                if (!comboBox_Constructor.Text.Equals(ExistingObjName) && null != constructorStep?.Function)
-                {
-                    _paramTable.AddParent($"{ _currentClassDescription.ClassType.Namespace}.{ _currentClassDescription.ClassType.Name}", "Constructor");
-                    ShowReturnAndParameters(constructorStep, constructorStep.Function);
-                }
-                else if (comboBox_Constructor.SelectedValue.Equals(ExistingObjName) && null != functionStep?.Function)
+                _paramTable.AddParent(
+                    $"{_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name}",
+                    "Constructor");
+                ShowReturnAndParameters(CurrentStep, functionData);
+            }
+            else
+            {
+                if (IsInstanceFunction(functionData))
                 {
                     _paramTable.AddParent(ExistingObjParent, "Constructor");
-                    string instanceValue = Utility.GetShowVariableName(functionStep.Function.Instance,
-                        functionStep);
+                    string instanceValue = functionData.Instance;
                     _paramTable.Rows.Add(new object[] { null, ExistingObjParent,
                     $"Object({_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name})", "In",
                                                         instanceValue});
                 }
-            }
-            #endregion
-
-            // 方法显示
-            if (!string.IsNullOrWhiteSpace(comboBox_Method.Text) && null != functionStep)
-            {
-                _paramTable.AddParent($"{comboBox_Method.SelectedValue}", "Method");
-                ShowReturnAndParameters(functionStep, functionStep.Function);
+                // 方法显示
+                if (!string.IsNullOrWhiteSpace(comboBox_Method.Text) && null != CurrentStep)
+                {
+                    _paramTable.AddParent($"{comboBox_Method.SelectedValue}", "Method");
+                    ShowReturnAndParameters(CurrentStep, functionData);
+                }
             }
         }
 
