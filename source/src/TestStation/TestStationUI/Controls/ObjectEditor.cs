@@ -321,5 +321,11 @@ namespace TestFlow.DevSoftware.Controls
             }
             dataGridView_element.Rows.RemoveAt(currentRow.Index);
         }
+
+        private void ObjectEditor_Load(object sender, EventArgs e)
+        {
+            comboBox_recordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
+            comboBox_recordLevel.Text = _variable.ReportRecordLevel.ToString();
+        }
     }
 }

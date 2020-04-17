@@ -1,4 +1,4 @@
-﻿namespace TestFlow.DevSoftware
+﻿namespace TestFlow.DevSoftware.Controls
 {
     partial class ValueEditor
     {
@@ -59,7 +59,7 @@
             this.CancelButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CancelButton.Location = new System.Drawing.Point(215, 231);
+            this.CancelButton.Location = new System.Drawing.Point(204, 105);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(58, 21);
             this.CancelButton.TabIndex = 21;
@@ -73,7 +73,7 @@
             this.OkButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.OkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.OkButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.OkButton.Location = new System.Drawing.Point(151, 231);
+            this.OkButton.Location = new System.Drawing.Point(140, 105);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(58, 21);
             this.OkButton.TabIndex = 20;
@@ -85,7 +85,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(283, 262);
+            this.ClientSize = new System.Drawing.Size(283, 143);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.OkButton);
             this.Controls.Add(this.TypeLabel);
@@ -94,6 +94,7 @@
             this.Name = "ValueEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ValueEditor";
+            this.Load += new System.EventHandler(this.ValueEditor_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

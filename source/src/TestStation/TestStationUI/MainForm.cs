@@ -902,7 +902,7 @@ namespace TestFlow.DevSoftware
             // Testflow: AddVariable
             IVariable variable = TestflowDesigntimeSession.AddVariable(parent, variableName, "", VaraibleTable.RowCount - 1);
             variable.VariableType = (isObject) ? VariableType.Class : VariableType.Undefined;
-
+            variable.Type = _interfaceManger.GetTypeByName("Double", "System");
             // 判断Object
             if (isObject)
             {
@@ -1062,13 +1062,13 @@ namespace TestFlow.DevSoftware
                     case "":
                         return;
                     case "Numeric":
-                        editor = new NumericEditor(value);
+                        editor = new NumericEditor(variable);
                         break;
                     case "String":
-                        editor = new StringEditor(value);
+                        editor = new StringEditor(variable);
                         break;
                     case "Boolean":
-                        editor = new BooleanEditor(value);
+                        editor = new BooleanEditor(variable);
                         break;
                     case "Object":
                         if (!IsSystemVariable(variable.Name))
@@ -1081,11 +1081,7 @@ namespace TestFlow.DevSoftware
                 {
                     //显示用户编辑Numeric Form
                     editor.ShowDialog(this);
-                    if (editor._valueChanged)
-                    {
-                        varaibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value = editor._value;
-                        TestflowDesigntimeSession.SetVariableValue(variable, editor._value);
-                    }
+                    varaibleTable.Rows[e.RowIndex].Cells["VariableValue"].Value = variable.Value;
                     editor.Dispose();
                 }
                 else
@@ -2963,6 +2959,8 @@ namespace TestFlow.DevSoftware
                 _testflowRuntimeService.Load(runtimeSequenceGroup);
                 _globalInfo.TestflowEntity.EngineController.ConfigData.SetProperty("TestName", SequenceGroup.Name);
 
+                _eventController = new EventController(_globalInfo, SequenceGroup, this);
+                _eventController.RegisterEvents();
                 // 添加事件
                 tabCon_Seq.SelectedIndex = 0;
                 ResetRuntimeStatus();
@@ -3607,6 +3605,7 @@ namespace TestFlow.DevSoftware
         private TreeNode _lastSelectStepNode;
         private Color _selectedColor = Color.DeepSkyBlue;
         private Color _nonSelectedColor = Color.FromArgb(0, 0, 0, 0);
+        private EventController _eventController;
 
         private void treeView_stepView_AfterSelect(object sender, TreeViewEventArgs e)
         {

@@ -15,28 +15,25 @@ namespace TestFlow.DevSoftware.Common
     {
         private ReaderWriterLockSlim _writerLock;
 
-        private SequenceMaintainer _seqMaintainer;
-
         private readonly Dictionary<string, string> _variableValue;
         private readonly Dictionary<int, IList<StepResultInfo>> _stepResults;
 
-        public ResultMaintainer(ISequenceGroup sequenceData, SequenceMaintainer sequenceMaintainer)
+        public ResultMaintainer(ISequenceGroup sequenceData)
         {
             _variableValue = new Dictionary<string, string>(100);
             _stepResults = new Dictionary<int, IList<StepResultInfo>>(10);
             _writerLock = new ReaderWriterLockSlim();
-            _seqMaintainer = sequenceMaintainer;
             GenerateResultStructure(sequenceData);
         }
 
         private void GenerateResultStructure(ISequenceGroup sequenceData)
         {
-            AddVariable(sequenceData.Variables, Constants.SequenceGroupIndex);
-            AddVariable(sequenceData.SetUp.Variables, -1);
-            AddVariable(sequenceData.TearDown.Variables, -2);
+            AddVariable(sequenceData.Variables);
+            AddVariable(sequenceData.SetUp.Variables);
+            AddVariable(sequenceData.TearDown.Variables);
             foreach (ISequence sequence in sequenceData.Sequences)
             {
-                AddVariable(sequence.Variables, sequence.Index);
+                AddVariable(sequence.Variables);
             }
             AddStepInfo(sequenceData.SetUp);
             AddStepInfo(sequenceData.TearDown);
@@ -46,25 +43,16 @@ namespace TestFlow.DevSoftware.Common
             }
         }
 
-        private void AddVariable(IVariableCollection variables, int seqIndex)
+        private void AddVariable(IVariableCollection variables)
         {
             foreach (IVariable variable in variables)
             {
-                string runVariableName = _seqMaintainer.GetRuntimeVariable(seqIndex, variable.Name);
+                string runVariableName = variable.Name;
                 string value = variable.Value ?? string.Empty;
                 if (!_variableValue.ContainsKey(runVariableName))
                 {
                     _variableValue.Add(runVariableName, value);
                 }
-            }
-            if (seqIndex == Constants.SequenceGroupIndex)
-            {
-                return;
-            }
-            IEnumerable<string> expVariables = _seqMaintainer.GetExpVariables(seqIndex);
-            foreach (string expVariable in expVariables)
-            {
-                _variableValue.Add(expVariable, string.Empty);
             }
         }
 
@@ -80,7 +68,6 @@ namespace TestFlow.DevSoftware.Common
                     null != (limitStep = step.SubSteps.FirstOrDefault(item => item.Name.StartsWith(Constants.LimitStepPrefix))))
                 {
                     limitVariable = limitStep.Function.Parameters[3].Value;
-                    limitVariable = _seqMaintainer.GetRuntimeVariable(sequence.Index, limitVariable);
                 }
                 stepResultInfos.Add(new StepResultInfo(string.Empty, limitVariable, sequence.Index));
             }
@@ -100,9 +87,9 @@ namespace TestFlow.DevSoftware.Common
                         ? Constants.SequenceGroupIndex
                         : ((ISequence) variable.Parent).Index;
                     string value = keyValuePair.Value;
-                    string rawVarName = _seqMaintainer.GetRawVariable(seqIndex, variable.Name);
+//                    string rawVarName = _seqMaintainer.GetRawVariable(seqIndex, variable.Name);
                     // 返回原始变量名到变量值的映射
-                    watchDatas.Add(rawVarName, value);
+//                    watchDatas.Add(rawVarName, value);
                     _variableValue[variable.Name] = value;
                 }
             }

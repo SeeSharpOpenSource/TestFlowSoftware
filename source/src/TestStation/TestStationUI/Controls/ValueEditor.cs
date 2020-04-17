@@ -1,32 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Testflow.Data;
+using Testflow.Data.Sequence;
 
-namespace TestFlow.DevSoftware
+namespace TestFlow.DevSoftware.Controls
 {
     public partial class ValueEditor : Form
     {
         public string _value;
         public bool _valueChanged;
 
-        public ValueEditor(string value)
+        protected IVariable Variable;
+
+        private void ValueEditor_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        public ValueEditor()
         {
             InitializeComponent();
-            this._value = value;
-            this._valueChanged = false;
         }
 
         #region 无视，继承需要
-        private ValueEditor()
+        protected ValueEditor(IVariable variable)
         {
+            Variable = variable;
             InitializeComponent();
+            this._value = variable.Value ?? string.Empty;
+            this._valueChanged = false;
         }
+
         #endregion
 
         protected virtual void OkButton_Click(object sender, EventArgs e)
@@ -38,5 +42,6 @@ namespace TestFlow.DevSoftware
         {
             this.Close();
         }
+
     }
 }

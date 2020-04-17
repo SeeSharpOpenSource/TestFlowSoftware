@@ -5,127 +5,163 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Testflow.Data;
+using Testflow.Data.Sequence;
+using Testflow.Modules;
+using TestFlow.DevSoftware.Controls;
+using TestFlow.SoftDevCommon;
 
 namespace TestFlow.DevSoftware
 {
     public partial class NumericEditor : ValueEditor
     {
-        public NumericEditor(string value) : base(value)
+        public NumericEditor(IVariable variable) : base(variable)
         {
             InitializeComponent();
-
-            #region Get Type and Digits
-            string[] arr = value.Split('.');
-            if(arr.Length == 1)
-            {
-                TypecomboBox.Text = "Integer";
-                ValuetextBox.Text = value;
-                FormattedNumbertextBox.Text = value;
-            }
-            else
-            {
-                TypecomboBox.Text = "Real";
-                DigitNumber.Value = Convert.ToDecimal(arr[1].Length);
-                ValuetextBox.Text = Double.Parse(value).ToString();
-                FormattedNumbertextBox.Text = value;
-            }
-            #endregion
+            ValuetextBox.Text = string.IsNullOrWhiteSpace(Variable.Value) ? "0" : Variable.Value;
         }
 
-        #region Display Number
-        private string DisplayInteger(int value)
-        {
-            return value.ToString();
-        }
-
-        private string DisplayReal(double value, int digits)
-        {
-            return value.ToString($"f{digits}");
-        }
-        #endregion
-
-        #region 事件
         private void ValuetextBox_TextChanged(object sender, EventArgs e)
         {
-            #region 空值
-            if (ValuetextBox.Text == "")
-            {
-                FormattedNumbertextBox.Text = "";
-                return;
-            }
-            #endregion
-
-            switch (TypecomboBox.SelectedItem.ToString())
-            {
-                case "Real":
-                    double valueDouble;
-                    if (!Double.TryParse(ValuetextBox.Text, out valueDouble))
-                    {
-                        MessageBox.Show("Not a real number.");
-                        valueDouble = 0;
-                        ValuetextBox.Text = base._value;
-                    }
-                    FormattedNumbertextBox.Text = DisplayReal(valueDouble, Convert.ToInt32(DigitNumber.Value));
-                    break;
-
-                case "Integer":
-                    int valueInt;
-                    if (!Int32.TryParse(ValuetextBox.Text, out valueInt))
-                    {
-                        MessageBox.Show("Not an Integer.");
-                        valueInt = 0;
-                        ValuetextBox.Text = (0).ToString();
-                    }
-                    FormattedNumbertextBox.Text = DisplayInteger(valueInt);
-                    break;
-            }
         }
-
-        private void DigitNumber_ValueChanged(object sender, EventArgs e)
-        {
-            #region 空值
-            if (ValuetextBox.Text == "")
-            {
-                FormattedNumbertextBox.Text = "";
-                return;
-            }
-            #endregion
-
-            FormattedNumbertextBox.Text = DisplayReal(Double.Parse(ValuetextBox.Text), Convert.ToInt32(DigitNumber.Value));
-        }
-
-        private void TypecomboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (TypecomboBox.SelectedItem.ToString())
-            {
-                case "Real":
-                    ValuetextBox.Text = (0).ToString();
-                    DigitNumber.Value = 4;
-                    DigitNumber.ReadOnly = false;
-                    DigitNumber.Enabled = true;
-                    FormattedNumbertextBox.Text = DisplayReal(0, 4);
-                    break;
-                case "Integer":
-                    ValuetextBox.Text = (0).ToString();
-                    DigitNumber.Value = 0;
-                    DigitNumber.ReadOnly = true;
-                    DigitNumber.Enabled = false;
-                    FormattedNumbertextBox.Text = DisplayInteger(0);
-                    break;
-            }
-        }
-        #endregion
 
         protected override void OkButton_Click(object sender, EventArgs e)
         {
-            string newValue = FormattedNumbertextBox.Text;
-            if (!newValue.Equals(base._value))
+            try
             {
-                base._value = FormattedNumbertextBox.Text;
-                base._valueChanged = true;
+                CheckValue(ValuetextBox.Text, TypecomboBox.SelectedIndex);
+                ITypeData typeData = GetTypeData(TypecomboBox.SelectedIndex);
+                Variable.Type = typeData;
+                Variable.Value = ValuetextBox.Text;
             }
-
+            catch (ApplicationException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
             base.OkButton_Click(sender, e);
+        }
+
+        private void CheckValue(string text, int selectedIndex)
+        {
+            bool isLegalValue = false;
+            switch (selectedIndex)
+            {
+                case 0:
+                    double doubleValue;
+                    isLegalValue = double.TryParse(text, out doubleValue);
+                    break;
+                case 1:
+                    float floatValue;
+                    isLegalValue = float.TryParse(text, out floatValue);
+                    break;
+                case 2:
+                    int intValue;
+                    isLegalValue = int.TryParse(text, out intValue);
+                    break;
+                case 3:
+                    uint uintValue;
+                    isLegalValue = uint.TryParse(text, out uintValue);
+                    break;
+                case 4:
+                    short shortValue;
+                    isLegalValue = short.TryParse(text, out shortValue);
+                    break;
+                case 5:
+                    ushort ushortValue;
+                    isLegalValue = ushort.TryParse(text, out ushortValue);
+                    break;
+                case 6:
+                    byte byteValue;
+                    isLegalValue = byte.TryParse(text, out byteValue);
+                    break;
+                case 7:
+                    char charValue;
+                    isLegalValue = char.TryParse(text, out charValue);
+                    break;
+            }
+            if (!isLegalValue)
+            {
+                throw new ApplicationException("Invalid variable value.");
+            }
+        }
+
+        private void NumericEditor_Load(object sender, EventArgs e)
+        {
+            comboBox_recordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
+            comboBox_recordLevel.Text = Variable.ReportRecordLevel.ToString();
+            int selectedIndex = 0;
+            switch (Variable.Type.Name)
+            {
+                case "Double":
+                    selectedIndex = 0;
+                    break;
+                case "Single":
+                    selectedIndex = 1;
+                    break;
+                case "Int32":
+                    selectedIndex = 2;
+                    break;
+                case "UInt32":
+                    selectedIndex = 3;
+                    break;
+                case "Int16":
+                    selectedIndex = 4;
+                    break;
+                case "UInt16":
+                    selectedIndex = 5;
+                    break;
+                case "Byte":
+                    selectedIndex = 6;
+                    break;
+                case "Char":
+                    selectedIndex = 7;
+                    break;
+            }
+            TypecomboBox.SelectedIndex = selectedIndex;
+        }
+
+        private ITypeData GetTypeData(int index)
+        {
+            GlobalInfo globalInfo = GlobalInfo.GetInstance();
+            IComInterfaceManager interfaceManager = globalInfo.TestflowEntity.ComInterfaceManager;
+
+            string typeName = GetTypeName(index);
+            return interfaceManager.GetTypeByName(typeName, "System");
+        }
+
+        private string GetTypeName(int selectedIndex)
+        {
+            string typeName = string.Empty;
+            switch (selectedIndex)
+            {
+                case 0:
+                    typeName = "Double";
+                    break;
+                case 1:
+                    typeName = "Single";
+                    break;
+                case 2:
+                    typeName = "Int32";
+                    break;
+                case 3:
+                    typeName = "UInt32";
+                    break;
+                case 4:
+                    typeName = "Int16";
+                    break;
+                case 5:
+                    typeName = "UInt16";
+                    break;
+                case 6:
+                    typeName = "Byte";
+                    break;
+                case 7:
+                    typeName = "Char";
+                    break;
+            }
+            return typeName;
         }
     }
 }

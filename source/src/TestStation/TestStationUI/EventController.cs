@@ -10,6 +10,7 @@ using Testflow.Data.Sequence;
 using Testflow.Modules;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
+using Testflow.Utility.Utils;
 using TestFlow.DevSoftware.Common;
 using TestFlow.SoftDevCommon;
 using TestFlow.SoftDSevCommon;
@@ -20,32 +21,24 @@ namespace TestFlow.DevSoftware
     {
         private readonly GlobalInfo _globalInfo;
         private readonly MainForm _mainform;
-        private readonly SequenceMaintainer _seqMaintainer;
         private volatile string _serialNumber;
         private ResultMaintainer _resultMaintainer;
-        private ISequenceGroup rawSequence;
+        private ISequenceGroup _sequenceData;
         private int _uutIndex;
 
-        public EventController(GlobalInfo globalInfo, ISequenceGroup sequenceData, 
-            MainForm mainform, SequenceMaintainer seqMaintainer)
+        public EventController(GlobalInfo globalInfo, ISequenceGroup sequenceDataData, 
+            MainForm mainform)
         {
             _globalInfo = globalInfo;
             this._mainform = mainform;
-            this._seqMaintainer = seqMaintainer;
-            _currentSequence = null;
             DataCache = null;
             _serialNumber = string.Empty;
-            rawSequence = sequenceData;
-            _resultMaintainer = new ResultMaintainer(sequenceData, _seqMaintainer);
+            _sequenceData = sequenceDataData;
+            _resultMaintainer = new ResultMaintainer(sequenceDataData);
             _uutIndex = -1;
         }
 
         public RuntimeDataCache DataCache { get; set; }
-
-        public string ReportDir { get; private set; }
-
-        private volatile ISequence _currentSequence;
-        public ISequence CurrentSequence => _currentSequence;
 
         public void RegisterEvents()
         {
@@ -72,18 +65,16 @@ namespace TestFlow.DevSoftware
             {
                 IVariable variable = keyValuePair.Key;
                 string value = keyValuePair.Value;
-                int sequenceIndex = ((ISequence) variable.Parent)?.Index ?? Constants.SequenceGroupIndex;
-                string variableName = _seqMaintainer.GetRawVariable(sequenceIndex, variable.Name);
+                string variableName = variable.Name;
                 watchDatas.Add(variableName, value);
             }
 
-            ISequenceStep step = _seqMaintainer.GetStepByRawStack(information.BreakPoint.ToString());
+            ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, information.BreakPoint);
             if (null == step)
             {
                 return;
             }
             ISequence sequence = (ISequence)step.Parent;
-            ResultState result = ResultState.NA;
             IList<ResultState> results;
             IList<string> variables;
             _resultMaintainer.GetResultsAndVariables(sequence.Index, out results, out variables);
@@ -93,7 +84,7 @@ namespace TestFlow.DevSoftware
             }));
         }
 
-        public void TestGenStart(ITestGenerationInfo generationInfo)
+        private void TestGenStart(ITestGenerationInfo generationInfo)
         {
             _mainform.Invoke(new Action(() =>
             {
@@ -101,17 +92,25 @@ namespace TestFlow.DevSoftware
             }));
         }
 
-        public void TestGenOver(ITestGenerationInfo generationInfo)
+        private void TestGenOver(ITestGenerationInfo generationInfo)
         {
             _mainform.Invoke(new Action(() =>
             {
-                if (generationInfo.GenerationInfos[0].Status == GenerationStatus.Success)
+                ISessionGenerationInfo sessionGenerationInfo = generationInfo.GenerationInfos[0];
+                if (sessionGenerationInfo.Status == GenerationStatus.Success)
                 {
                     _mainform.AppendOutput("Test generation success.");
                 }
                 else
                 {
                     _mainform.AppendOutput("Test generation failed.");
+                    if (string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo) &&
+                        null != sessionGenerationInfo.ErrorStack)
+                    {
+                        ISequenceStep errorStep = SequenceUtils.GetStepFromStack(_sequenceData,
+                            sessionGenerationInfo.ErrorStack);
+                        _mainform.AppendOutput($"ErrorStep:{errorStep.Name}  ErrorInfo:{sessionGenerationInfo.ErrorInfo}");
+                    }
                     _mainform.RunningOver();
                 }
             }));
@@ -119,19 +118,8 @@ namespace TestFlow.DevSoftware
         
         private void SequenceStarted(ISequenceTestResult statistics)
         {
-            string printInfo;
-            if (statistics.SequenceIndex == -1)
-            {
-                printInfo = "ProcessSetUp started.";
-            }
-            else if (statistics.SequenceIndex == -2)
-            {
-                printInfo = "ProcessCleanUp started.";
-            }
-            else
-            {
-                printInfo = "MainSequence started.";
-            }
+            ISequence sequence = SequenceUtils.GetSequence(_sequenceData, 0, statistics.SequenceIndex);
+            string printInfo = $"{sequence.Name} started.";
             _mainform.Invoke(new Action(() =>
             {
                 _mainform.AppendOutput(printInfo);
@@ -148,69 +136,64 @@ namespace TestFlow.DevSoftware
                     printInfos.Add(failedInfo.Message);
                 }
             }
-            ICallStack currentStack = GetCurrentStack(statusinfo);
-            string stackStr = currentStack.ToString();
-            if (stackStr.Equals(_seqMaintainer.MainStartStack))
-            {
-                _resultMaintainer.ResetUutResult();
-            }
-            ISequenceStep step = _seqMaintainer.GetStepByRawStack(stackStr);
-            ISequence currentSequence = null != step ? Utility.GetParentSequence(step) : null;
-            _currentSequence = currentSequence;
-            if (null == currentSequence)
-            {
-                return;
-            }
-            ISequenceStep rawStep = _seqMaintainer.GetStepByStack(currentStack);
-            bool isLimitStep = rawStep.Function?.ClassType.Name.Equals("Limit") ?? false;
-            IDictionary<string, string> watchDatas = _resultMaintainer.UpdateResult(statusinfo,currentStack, step, isLimitStep);
-            string serialNumber;
-            int uutIndex;
-            _resultMaintainer.GetSerialNumber(out serialNumber, out uutIndex);
-            if (!serialNumber.Equals(_serialNumber))
-            {
-                _serialNumber = serialNumber;
-                printInfos.Add($"Serial Number:{_serialNumber}");
-            }
-            if (uutIndex > _uutIndex)
-            {
-                Thread.VolatileWrite(ref _uutIndex, uutIndex);
-            }
-            bool isPreUutStack = Utility.IsPreUutStack(stackStr, _seqMaintainer.MainStartStack);
-            bool isPostUutStack = Utility.IsPostUutStack(stackStr, _seqMaintainer.PostStartStack);
-            bool isMainStack = !isPostUutStack && !isPreUutStack && currentStack.Sequence == 0;
-            ISequenceStepCollection mainSeqSteps = rawSequence.Sequences[1].Steps;
-            int sequenceIndex = currentSequence.Index;
-            if (isPreUutStack)
-            {
-                step = mainSeqSteps.Count > 0 ? mainSeqSteps[0] : null;
-                sequenceIndex = 1;
-            }
-            else if (isPostUutStack)
-            {
-                step = mainSeqSteps.Count > 0 ? mainSeqSteps[mainSeqSteps.Count - 1] : null;
-                sequenceIndex = 1;
-            }
-            else if (currentSequence.Index < 0)
-            {
-                step = null;
-                sequenceIndex = 1;
-            }
-            IList<ResultState> stepResults;
-            IList<string> sequenceVariableValues;
-            _resultMaintainer.GetResultsAndVariables(sequenceIndex, out stepResults, out sequenceVariableValues);
-            _mainform.Invoke(new Action(() =>
-            {
-                if (printInfos.Count > 0)
-                {
-                    _mainform.AppendOutput(string.Join(Environment.NewLine, printInfos));
-                }
-                _mainform.RefreshVariableValues(watchDatas);
-                if (null != step)
-                {
-                    _mainform.RefreshStepResult(step, stepResults, sequenceVariableValues);
-                }
-            }));
+//            ICallStack currentStack = GetCurrentStack(statusinfo);
+//            string stackStr = currentStack.ToString();
+//            if (stackStr.Equals(_seqMaintainer.MainStartStack))
+//            {
+//                _resultMaintainer.ResetUutResult();
+//            }
+//            ISequenceStep step = _seqMaintainer.GetStepByRawStack(stackStr);
+//            ISequence currentSequence = null != step ? Utility.GetParentSequence(step) : null;
+//            _currentSequence = currentSequence;
+//            if (null == currentSequence)
+//            {
+//                return;
+//            }
+//            ISequenceStep rawStep = _seqMaintainer.GetStepByStack(currentStack);
+//            bool isLimitStep = rawStep.Function?.ClassType.Name.Equals("Limit") ?? false;
+//            IDictionary<string, string> watchDatas = _resultMaintainer.UpdateResult(statusinfo,currentStack, step, isLimitStep);
+//            string serialNumber;
+//            int uutIndex;
+//            _resultMaintainer.GetSerialNumber(out serialNumber, out uutIndex);
+//            if (uutIndex > _uutIndex)
+//            {
+//                Thread.VolatileWrite(ref _uutIndex, uutIndex);
+//            }
+//            bool isPreUutStack = Utility.IsPreUutStack(stackStr, _seqMaintainer.MainStartStack);
+//            bool isPostUutStack = Utility.IsPostUutStack(stackStr, _seqMaintainer.PostStartStack);
+//            bool isMainStack = !isPostUutStack && !isPreUutStack && currentStack.Sequence == 0;
+//            ISequenceStepCollection mainSeqSteps = _sequenceData.Sequences[1].Steps;
+//            int sequenceIndex = currentSequence.Index;
+//            if (isPreUutStack)
+//            {
+//                step = mainSeqSteps.Count > 0 ? mainSeqSteps[0] : null;
+//                sequenceIndex = 1;
+//            }
+//            else if (isPostUutStack)
+//            {
+//                step = mainSeqSteps.Count > 0 ? mainSeqSteps[mainSeqSteps.Count - 1] : null;
+//                sequenceIndex = 1;
+//            }
+//            else if (currentSequence.Index < 0)
+//            {
+//                step = null;
+//                sequenceIndex = 1;
+//            }
+//            IList<ResultState> stepResults;
+//            IList<string> sequenceVariableValues;
+//            _resultMaintainer.GetResultsAndVariables(sequenceIndex, out stepResults, out sequenceVariableValues);
+//            _mainform.Invoke(new Action(() =>
+//            {
+//                if (printInfos.Count > 0)
+//                {
+//                    _mainform.AppendOutput(string.Join(Environment.NewLine, printInfos));
+//                }
+//                _mainform.RefreshVariableValues(watchDatas);
+//                if (null != step)
+//                {
+//                    _mainform.RefreshStepResult(step, stepResults, sequenceVariableValues);
+//                }
+//            }));
         }
 
         private ICallStack GetCurrentStack(IRuntimeStatusInfo statusinfo)

@@ -28,42 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.Label DigitsLabel;
-            System.Windows.Forms.Label FormattedNumberLabel;
             this.ValuetextBox = new System.Windows.Forms.TextBox();
-            this.DigitNumber = new System.Windows.Forms.NumericUpDown();
             this.TypecomboBox = new System.Windows.Forms.ComboBox();
-            this.FormattedNumbertextBox = new System.Windows.Forms.TextBox();
-            DigitsLabel = new System.Windows.Forms.Label();
-            FormattedNumberLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.DigitNumber)).BeginInit();
+            this.label_recordLevel = new System.Windows.Forms.Label();
+            this.comboBox_recordLevel = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // CancelButton
             // 
             this.CancelButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.CancelButton.Location = new System.Drawing.Point(213, 94);
             // 
             // OkButton
             // 
             this.OkButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            // 
-            // DigitsLabel
-            // 
-            DigitsLabel.AutoSize = true;
-            DigitsLabel.Location = new System.Drawing.Point(12, 115);
-            DigitsLabel.Name = "DigitsLabel";
-            DigitsLabel.Size = new System.Drawing.Size(173, 12);
-            DigitsLabel.TabIndex = 38;
-            DigitsLabel.Text = "Number of Fractional Digits:";
-            // 
-            // FormattedNumberLabel
-            // 
-            FormattedNumberLabel.AutoSize = true;
-            FormattedNumberLabel.Location = new System.Drawing.Point(150, 11);
-            FormattedNumberLabel.Name = "FormattedNumberLabel";
-            FormattedNumberLabel.Size = new System.Drawing.Size(107, 12);
-            FormattedNumberLabel.TabIndex = 35;
-            FormattedNumberLabel.Text = "Formatted Number:";
+            this.OkButton.Location = new System.Drawing.Point(149, 94);
             // 
             // ValuetextBox
             // 
@@ -73,68 +52,60 @@
             this.ValuetextBox.TabIndex = 40;
             this.ValuetextBox.TextChanged += new System.EventHandler(this.ValuetextBox_TextChanged);
             // 
-            // DigitNumber
-            // 
-            this.DigitNumber.Location = new System.Drawing.Point(205, 114);
-            this.DigitNumber.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.DigitNumber.Name = "DigitNumber";
-            this.DigitNumber.Size = new System.Drawing.Size(62, 21);
-            this.DigitNumber.TabIndex = 39;
-            this.DigitNumber.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.DigitNumber.ValueChanged += new System.EventHandler(this.DigitNumber_ValueChanged);
-            // 
             // TypecomboBox
             // 
             this.TypecomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.TypecomboBox.FormattingEnabled = true;
             this.TypecomboBox.Items.AddRange(new object[] {
-            "Real",
-            "Integer"});
+            "Double",
+            "Float",
+            "Int",
+            "UInt",
+            "Short",
+            "UShort",
+            "Byte",
+            "Char"});
             this.TypecomboBox.Location = new System.Drawing.Point(151, 64);
             this.TypecomboBox.Name = "TypecomboBox";
             this.TypecomboBox.Size = new System.Drawing.Size(118, 20);
             this.TypecomboBox.TabIndex = 37;
-            this.TypecomboBox.SelectedIndexChanged += new System.EventHandler(this.TypecomboBox_SelectedIndexChanged);
             // 
-            // FormattedNumbertextBox
+            // label_recordLevel
             // 
-            this.FormattedNumbertextBox.Location = new System.Drawing.Point(150, 31);
-            this.FormattedNumbertextBox.Name = "FormattedNumbertextBox";
-            this.FormattedNumbertextBox.ReadOnly = true;
-            this.FormattedNumbertextBox.Size = new System.Drawing.Size(117, 21);
-            this.FormattedNumbertextBox.TabIndex = 36;
-            this.FormattedNumbertextBox.Text = "10.0000";
+            this.label_recordLevel.AutoSize = true;
+            this.label_recordLevel.Location = new System.Drawing.Point(147, 9);
+            this.label_recordLevel.Name = "label_recordLevel";
+            this.label_recordLevel.Size = new System.Drawing.Size(83, 12);
+            this.label_recordLevel.TabIndex = 42;
+            this.label_recordLevel.Text = "Record Level:";
+            // 
+            // comboBox_recordLevel
+            // 
+            this.comboBox_recordLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_recordLevel.FormattingEnabled = true;
+            this.comboBox_recordLevel.Location = new System.Drawing.Point(149, 31);
+            this.comboBox_recordLevel.Name = "comboBox_recordLevel";
+            this.comboBox_recordLevel.Size = new System.Drawing.Size(120, 20);
+            this.comboBox_recordLevel.TabIndex = 41;
             // 
             // NumericEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(283, 262);
+            this.ClientSize = new System.Drawing.Size(283, 124);
+            this.Controls.Add(this.label_recordLevel);
+            this.Controls.Add(this.comboBox_recordLevel);
             this.Controls.Add(this.ValuetextBox);
-            this.Controls.Add(this.DigitNumber);
-            this.Controls.Add(DigitsLabel);
             this.Controls.Add(this.TypecomboBox);
-            this.Controls.Add(this.FormattedNumbertextBox);
-            this.Controls.Add(FormattedNumberLabel);
             this.Name = "NumericEditor";
             this.Text = "NumericEditor";
+            this.Load += new System.EventHandler(this.NumericEditor_Load);
             this.Controls.SetChildIndex(this.TypeLabel, 0);
             this.Controls.SetChildIndex(this.OkButton, 0);
             this.Controls.SetChildIndex(this.CancelButton, 0);
-            this.Controls.SetChildIndex(FormattedNumberLabel, 0);
-            this.Controls.SetChildIndex(this.FormattedNumbertextBox, 0);
             this.Controls.SetChildIndex(this.TypecomboBox, 0);
-            this.Controls.SetChildIndex(DigitsLabel, 0);
-            this.Controls.SetChildIndex(this.DigitNumber, 0);
             this.Controls.SetChildIndex(this.ValuetextBox, 0);
-            ((System.ComponentModel.ISupportInitialize)(this.DigitNumber)).EndInit();
+            this.Controls.SetChildIndex(this.comboBox_recordLevel, 0);
+            this.Controls.SetChildIndex(this.label_recordLevel, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,8 +114,8 @@
         #endregion
 
         protected System.Windows.Forms.TextBox ValuetextBox;
-        private System.Windows.Forms.NumericUpDown DigitNumber;
         private System.Windows.Forms.ComboBox TypecomboBox;
-        private System.Windows.Forms.TextBox FormattedNumbertextBox;
+        private System.Windows.Forms.Label label_recordLevel;
+        private System.Windows.Forms.ComboBox comboBox_recordLevel;
     }
 }
