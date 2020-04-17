@@ -118,7 +118,7 @@ namespace TestStation.Controls
 
                 #region DrawString
                 Point stringLoc = new Point(loc.X, loc.Y + (e.RowBounds.Height - this.FontHeight) / 2);
-                e.Graphics.DrawString(parent.Text, this.Font, new SolidBrush(Color.Red), stringLoc);
+                e.Graphics.DrawString(parent.Text, this.Font, new SolidBrush(Color.GreenYellow), stringLoc);
                 #endregion
 
                 e.PaintCells(headRect, DataGridViewPaintParts.ContentForeground | DataGridViewPaintParts.Background);
