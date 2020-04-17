@@ -1,4 +1,4 @@
-﻿namespace TestStation.Authentication
+﻿namespace TestFlow.DevSoftware.Authentication
 {
     partial class LoginForm
     {

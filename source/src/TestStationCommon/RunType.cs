@@ -1,4 +1,4 @@
-﻿namespace TestStation.Common
+﻿namespace TestFlow.SoftDevCommon
 {
     /// <summary>
     /// OI的运行方式

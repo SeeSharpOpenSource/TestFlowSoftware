@@ -11,9 +11,10 @@ using Newtonsoft.Json;
 using Testflow.Data;
 using Testflow.Data.Description;
 using Testflow.Modules;
-using TestStation.Common;
+using TestFlow.DevSoftware.Common;
+using TestFlow.SoftDevCommon;
 
-namespace TestStation.Controls
+namespace TestFlow.DevSoftware.Controls
 {
     public partial class ArrayDataEditor : Form
     {

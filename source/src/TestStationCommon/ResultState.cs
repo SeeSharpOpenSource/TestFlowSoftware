@@ -1,4 +1,4 @@
-﻿namespace TestStation.Common
+﻿namespace TestFlow.SoftDevCommon
 {
     public enum ResultState
     {

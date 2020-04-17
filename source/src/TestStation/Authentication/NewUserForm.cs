@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TestStation.Authentication.Data;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public partial class NewUserForm : Form
     {

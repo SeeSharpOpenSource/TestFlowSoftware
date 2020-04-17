@@ -8,9 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TestStation.Common;
+using TestFlow.DevSoftware.Common;
+using TestFlow.SoftDevCommon;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     public partial class ConfigureForm : Form
     {

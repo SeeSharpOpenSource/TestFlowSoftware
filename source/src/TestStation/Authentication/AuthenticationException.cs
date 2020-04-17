@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public class AuthenticationException : ApplicationException
     {

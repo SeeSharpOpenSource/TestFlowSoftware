@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public partial class FixPasswordForm : Form
     {

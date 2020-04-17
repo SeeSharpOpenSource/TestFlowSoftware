@@ -1,4 +1,4 @@
-﻿namespace TestStation.Controls
+﻿namespace TestFlow.DevSoftware.Controls
 {
     partial class SimpleClassEditor
     {

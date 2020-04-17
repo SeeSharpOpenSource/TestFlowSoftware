@@ -9,9 +9,10 @@ using Testflow.Modules;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
 using Testflow.Usr;
-using TestStation.Common;
+using TestFlow.DevSoftware.Common;
+using TestFlow.SoftDevCommon;
 
-namespace TestStation.Runtime
+namespace TestFlow.DevSoftware.Runtime
 {
     public partial class RuntimeStatusForm : Form
     {

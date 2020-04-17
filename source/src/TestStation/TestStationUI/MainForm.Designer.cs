@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     partial class MainForm
     {
@@ -474,7 +474,7 @@ namespace TestStation
             // 
             // startToolStripMenuItem1
             // 
-            this.startToolStripMenuItem1.Image = global::TestStation.Properties.Resources.start;
+            this.startToolStripMenuItem1.Image = global::TestFlow.DevSoftware.Properties.Resources.start;
             this.startToolStripMenuItem1.Name = "startToolStripMenuItem1";
             this.startToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
             this.startToolStripMenuItem1.Text = "Start";
@@ -482,7 +482,7 @@ namespace TestStation
             // 
             // suspendToolStripMenuItem
             // 
-            this.suspendToolStripMenuItem.Image = global::TestStation.Properties.Resources.suspend;
+            this.suspendToolStripMenuItem.Image = global::TestFlow.DevSoftware.Properties.Resources.suspend;
             this.suspendToolStripMenuItem.Name = "suspendToolStripMenuItem";
             this.suspendToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.suspendToolStripMenuItem.Text = "Suspend";
@@ -490,7 +490,7 @@ namespace TestStation
             // 
             // stopToolStripMenuItem2
             // 
-            this.stopToolStripMenuItem2.Image = global::TestStation.Properties.Resources.stop;
+            this.stopToolStripMenuItem2.Image = global::TestFlow.DevSoftware.Properties.Resources.stop;
             this.stopToolStripMenuItem2.Name = "stopToolStripMenuItem2";
             this.stopToolStripMenuItem2.Size = new System.Drawing.Size(126, 22);
             this.stopToolStripMenuItem2.Text = "Stop";
@@ -600,7 +600,7 @@ namespace TestStation
             // toolStripButton_Suspend
             // 
             this.toolStripButton_Suspend.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Suspend.Image = global::TestStation.Properties.Resources.suspend;
+            this.toolStripButton_Suspend.Image = global::TestFlow.DevSoftware.Properties.Resources.suspend;
             this.toolStripButton_Suspend.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Suspend.Name = "toolStripButton_Suspend";
             this.toolStripButton_Suspend.Size = new System.Drawing.Size(24, 24);
@@ -610,7 +610,7 @@ namespace TestStation
             // toolStripButton_Stop
             // 
             this.toolStripButton_Stop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Stop.Image = global::TestStation.Properties.Resources.stop;
+            this.toolStripButton_Stop.Image = global::TestFlow.DevSoftware.Properties.Resources.stop;
             this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Stop.Name = "toolStripButton_Stop";
             this.toolStripButton_Stop.Size = new System.Drawing.Size(24, 24);

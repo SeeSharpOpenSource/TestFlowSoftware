@@ -1,4 +1,4 @@
-﻿namespace TestStation.Report
+﻿namespace TestFlow.DevSoftware.Report
 {
     public enum ReportType
     {

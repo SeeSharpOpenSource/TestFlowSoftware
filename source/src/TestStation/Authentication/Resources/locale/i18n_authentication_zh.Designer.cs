@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestStation.Authentication.Resources.locale {
+namespace TestFlow.DevSoftware.Authentication.Resources.locale {
     using System;
     
     

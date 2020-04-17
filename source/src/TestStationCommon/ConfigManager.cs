@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using SeeSharpTools.JY.File;
+using SeeSharpTools.JY.Report;
 
-namespace TestStation.Common
+namespace TestFlow.SoftDevCommon
 {
     public class ConfigManager
     {
@@ -19,7 +20,7 @@ namespace TestStation.Common
             string testflowHome = Environment.GetEnvironmentVariable("TESTFLOW_HOME");
             if (string.IsNullOrWhiteSpace(testflowHome) || !Directory.Exists(testflowHome))
             {
-                Log.Print(LogLevel.FATAL, "Invalid testflow home.");
+                Logger.Print("Invalid testflow home.", LogLevel.Fatal);
                 throw new ApplicationException("Invalid testflow home.");
             }
             if (!testflowHome.EndsWith(Path.DirectorySeparatorChar.ToString()))

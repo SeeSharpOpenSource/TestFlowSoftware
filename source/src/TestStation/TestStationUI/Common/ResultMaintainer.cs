@@ -6,8 +6,10 @@ using System.Threading;
 using Testflow.Data.Sequence;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Common
+namespace TestFlow.DevSoftware.Common
 {
     public class ResultMaintainer : IDisposable
     {

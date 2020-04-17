@@ -9,9 +9,9 @@ using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using TestStation.Authentication.Data;
+using TestFlow.DevSoftware.Authentication.Data;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     internal class DataBaseProxy : IDisposable
     {

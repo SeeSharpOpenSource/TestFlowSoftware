@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public enum UserGroup
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Testflow.Data.Sequence;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     /// <summary>
     /// 判断类型

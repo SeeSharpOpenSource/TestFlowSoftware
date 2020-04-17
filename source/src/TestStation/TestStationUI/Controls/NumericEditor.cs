@@ -6,9 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
-    public partial class NumericEditor : TestStation.ValueEditor
+    public partial class NumericEditor : ValueEditor
     {
         public NumericEditor(string value) : base(value)
         {

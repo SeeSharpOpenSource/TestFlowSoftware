@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     partial class AboutForm : Form
     {

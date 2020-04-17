@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestStation.Authentication.Properties {
+namespace TestFlow.DevSoftware.Authentication.Properties {
     using System;
     
     

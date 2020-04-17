@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using Testflow.Data;
 using Testflow.Data.Description;
 using Testflow.Data.Sequence;
 using Testflow.Modules;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Common
+namespace TestFlow.SoftDevCommon
 {
     public static class Utility
     {

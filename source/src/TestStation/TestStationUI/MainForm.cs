@@ -15,24 +15,23 @@ using Testflow.Data;
 using Testflow.Runtime.Data;
 using System.IO;
 using Testflow.Modules;
-using TestStation.Controls;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using EasyTest.ModelManage;
-using TestStation.Authentication;
-using TestStation.Common;
-using TestStation.OperationPanel;
-using TestStation.ParameterChecker;
-using TestStation.Properties;
-using TestStation.Report;
-using TestStation.Runtime;
+using SeeSharpTools.JY.Report;
+using TestFlow.DevSoftware.Common;
+using TestFlow.DevSoftware.Controls;
+using TestFlow.DevSoftware.ParameterChecker;
+using TestFlow.DevSoftware.Runtime;
+using TestFlow.DevSoftware.OperationPanel;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 using TestStationLimit;
-using LogLevel = TestStation.Common.LogLevel;
+using LogLevel = SeeSharpTools.JY.Report.LogLevel;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     public partial class MainForm : Form
     {
@@ -643,9 +642,9 @@ namespace TestStation
                 {
                     RunSequence();
                 }
-                catch (AuthenticationException ex)
+                catch (ApplicationException ex)
                 {
-                    Log.Print(LogLevel.ERROR, ex.Message);
+                    Logger.Print(ex, ex.Message, LogLevel.Error);
                     ShowMessage(ex.Message, "Run Sequence", MessageBoxIcon.Error);
                 }
             }
@@ -2367,7 +2366,7 @@ namespace TestStation
                     }
                     catch (ApplicationException ex)
                     {
-                        Log.Print(LogLevel.WARN, ex.Message);
+                        Logger.Print(ex, ex.Message, LogLevel.Warn);
                     }
                     // 如果当前程序集包含该枚举的定义，则显示为下拉框，否则不作为
                     if (null != enumItems && enumItems.Length > 0)
@@ -2978,7 +2977,7 @@ namespace TestStation
             }
             catch (ApplicationException ex)
             {
-                Log.Print(LogLevel.ERROR, ex.Message);
+                Logger.Print(ex, ex.Message, LogLevel.Error);
                 ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
                 viewController_Main.State = RunState.RunIdle.ToString();
             }
@@ -3082,7 +3081,7 @@ namespace TestStation
                 }
                 catch (TestflowException ex)
                 {
-                    Log.Print(LogLevel.ERROR, ex.Message);
+                    Logger.Print(ex, ex.Message, LogLevel.Error);
                     ShowMessage(ex.Message, "Runtime", MessageBoxIcon.Error);
                 }
             }
@@ -3342,42 +3341,11 @@ namespace TestStation
         {
             viewController_Main.State = RunState.RunOver.ToString();
             viewController_Main.State = RunState.EditIdle.ToString();
-            // TODO 释放OI面板
-//            if (!_operationPanel.FormUnavaiable)
-//            {
-//                _operationPanel.BeginInvoke(new Action(() =>
-//                {
-//                    Thread.Sleep(200);
-//                    _operationPanel.Close();
-//                }));
-//            }
-        }
-
-        internal void PrintUutResults(IList<ProductTestResult> results)
-        {
-//            int passedCount = results.Count(item => item.Result == ResultState.Pass);
-//            StringBuilder reportValue = new StringBuilder(textBoxReport.Text.Length + 200);
-//
-//            reportValue.Append($"Total UUT counts:    {results.Count}");
-//            reportValue.Append(Environment.NewLine);
-//            reportValue.Append($"Passed UUT counts:   {passedCount}");
-//            reportValue.Append(Environment.NewLine);
-//            reportValue.Append($"Failed UUT counts:   {results.Count - passedCount}");
-//            reportValue.Append(Environment.NewLine);
-//            reportValue.Append(Environment.NewLine);
-//            reportValue.Append(textBoxReport.Text);
-//            textBoxReport.Text = reportValue.ToString();
-            tabCon_Step.SelectedTab = RuntimeStatusTab;
         }
 
         internal void PrintUutResult(string uutResult)
         {
             textBoxReport.Text = uutResult;
-//            textBoxReport.AppendText(uutResult);
-//            textBoxReport.AppendText(Environment.NewLine);
-//            // 滚动到最下面
-//            textBoxReport.Select(this.textBox_output.TextLength - 1, 0);//光标定位到文本最后
-//            textBoxReport.ScrollToCaret();//滚动到光标处
         }
 
         public void BreakPointHittedAction(ISequenceStep step, IList<ResultState> stepResult, IList<string> variables,

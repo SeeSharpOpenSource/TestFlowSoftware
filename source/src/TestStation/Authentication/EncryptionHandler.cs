@@ -1,8 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using TestFlow.DevSoftware.Authentication.Data;
 using TestStation.Authentication.Data;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     internal static class EncryptionHandler
     {

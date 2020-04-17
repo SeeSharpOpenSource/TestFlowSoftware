@@ -5,8 +5,9 @@ using System.Threading;
 using SeeSharpTools.JY.File;
 using Testflow;
 using Testflow.Data.Sequence;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Common
+namespace TestFlow.SoftDevCommon
 {
     public class RuntimeDataCache
     {

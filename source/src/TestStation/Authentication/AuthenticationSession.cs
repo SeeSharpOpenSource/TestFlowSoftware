@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public sealed class AuthenticationSession
     {

@@ -10,17 +10,17 @@ using Testflow.Data.Sequence;
 using Testflow.Modules;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
-using TestStation.Common;
-using TestStation.Report;
+using TestFlow.DevSoftware.Common;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     internal class EventController : IDisposable
     {
         private readonly GlobalInfo _globalInfo;
         private readonly MainForm _mainform;
         private readonly SequenceMaintainer _seqMaintainer;
-        private TestTraceCreator _testTraceCreator;
         private volatile string _serialNumber;
         private ResultMaintainer _resultMaintainer;
         private ISequenceGroup rawSequence;
@@ -34,8 +34,6 @@ namespace TestStation
             this._seqMaintainer = seqMaintainer;
             _currentSequence = null;
             DataCache = null;
-            _testTraceCreator = new TestTraceCreator(_globalInfo, _seqMaintainer);
-            _testTraceCreator.PrintOver += ReportPrintOver;
             _serialNumber = string.Empty;
             rawSequence = sequenceData;
             _resultMaintainer = new ResultMaintainer(sequenceData, _seqMaintainer);
@@ -45,8 +43,6 @@ namespace TestStation
         public RuntimeDataCache DataCache { get; set; }
 
         public string ReportDir { get; private set; }
-
-        public string CurrentReport => _testTraceCreator.CurrentReport;
 
         private volatile ISequence _currentSequence;
         public ISequence CurrentSequence => _currentSequence;
@@ -243,11 +239,6 @@ namespace TestStation
             if (statistics.SequenceIndex == -1)
             {
                 printInfo = "ProcessSetUp over.";
-                if (statistics.ResultState == RuntimeState.Over || statistics.ResultState == RuntimeState.Success)
-                {
-                    _testTraceCreator.Start(DataCache);
-                    this.ReportDir = _testTraceCreator.ReportDir;
-                }
             }
             else if (statistics.SequenceIndex == -2)
             {
@@ -263,7 +254,6 @@ namespace TestStation
 
         private void TestInstanceOver(IList<ITestResultCollection> statistics)
         {
-            _testTraceCreator.Stop();
             UnRegisterEvent();
             _mainform.Invoke(new Action(() =>
             {
@@ -273,10 +263,6 @@ namespace TestStation
 
         private void ReportPrintOver()
         {
-            _mainform.Invoke(new Action(() =>
-            {
-                _mainform.PrintUutResults(_testTraceCreator.PruductTestResults);
-            }));
         }
 
         public void UnRegisterEvent()
@@ -295,11 +281,6 @@ namespace TestStation
 
         public void Dispose()
         {
-            while (!_testTraceCreator.Over)
-            {
-                Thread.Yield();
-            }
-            _testTraceCreator.Dispose();
         }
     }
 }

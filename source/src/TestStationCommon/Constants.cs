@@ -1,4 +1,4 @@
-﻿namespace TestStation.Common
+﻿namespace TestFlow.SoftDSevCommon
 {
     public static class Constants
     {

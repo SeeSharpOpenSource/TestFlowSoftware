@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{88BCEA91-2775-4120-8617-B680F947F6BD}</ProjectGuid>
+    <ProjectGuid>{D7525B62-79EA-4FF4-9340-94F7EC6ADC5C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestStation.OperationPanel</RootNamespace>
-    <AssemblyName>OperationPanel</AssemblyName>
+    <RootNamespace>TestFlow.OperationPanelInvoker</RootNamespace>
+    <AssemblyName>OperationPanelInvoker</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,19 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libCommon">
-      <HintPath>..\Reference\libCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="SeeSharpTools.JY.File">
-      <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.File.dll</HintPath>
-    </Reference>
-    <Reference Include="SeeSharpTools.JY.GUI">
-      <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.GUI.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,18 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StatusMaintain\EventController.cs" />
-    <Compile Include="SizeAdapter.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TestStationCommon\TestStationCommon.csproj">
-      <Project>{be2c410d-ee30-4400-968d-b1bfea448165}</Project>
-      <Name>TestStationCommon</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

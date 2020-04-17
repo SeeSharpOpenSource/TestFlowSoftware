@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TestStation.Common;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Report
+namespace TestFlow.DevSoftware.Report
 {
     public class ProductTestResult
     {

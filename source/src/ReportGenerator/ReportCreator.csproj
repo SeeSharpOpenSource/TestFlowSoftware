@@ -63,10 +63,6 @@
       <Project>{be2c410d-ee30-4400-968d-b1bfea448165}</Project>
       <Name>TestStationCommon</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TestStation\Authentication\Authentication.csproj">
-      <Project>{76b872d2-32ef-492f-90e6-1e8b5da1817c}</Project>
-      <Name>Authentication</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

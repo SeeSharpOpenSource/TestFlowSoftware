@@ -6,9 +6,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
-    public partial class BooleanEditor : TestStation.ValueEditor
+    public partial class BooleanEditor : ValueEditor
     {
         public BooleanEditor(string value) : base(value)
         {

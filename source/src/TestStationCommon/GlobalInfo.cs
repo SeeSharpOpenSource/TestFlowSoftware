@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using SeeSharpTools.JY.Report;
 using Testflow;
 using Testflow.Loader;
 
-namespace TestStation.Common
+namespace TestFlow.SoftDevCommon
 {
     public class GlobalInfo
     {
@@ -76,7 +77,7 @@ namespace TestStation.Common
             TestflowHome = Environment.GetEnvironmentVariable("TESTFLOW_HOME");
             if (string.IsNullOrWhiteSpace(TestflowHome) || !Directory.Exists(TestflowHome))
             {
-                Log.Print(LogLevel.FATAL, "Invalid testflow home.");
+                Logger.Print("Invalid testflow home.", LogLevel.Fatal);
                 throw new ApplicationException("Invalid testflow home.");
             }
             if (!TestflowHome.EndsWith(Path.DirectorySeparatorChar.ToString()))

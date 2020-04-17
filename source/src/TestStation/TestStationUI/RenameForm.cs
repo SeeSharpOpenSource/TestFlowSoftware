@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Testflow.Data.Sequence;
 
-namespace TestStation
+namespace TestFlow.DevSoftware
 {
     public partial class RenameForm : Form
     {
@@ -19,6 +19,7 @@ namespace TestStation
         {
             InitializeComponent();
             textBox_name.Text = target.Name;
+            _target = target;
         }
 
         private void button_confirm_Click(object sender, EventArgs e)

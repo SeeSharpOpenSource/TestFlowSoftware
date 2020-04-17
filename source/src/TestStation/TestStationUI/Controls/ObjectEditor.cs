@@ -9,7 +9,7 @@ using Testflow.Data.Description;
 using Testflow.Data.Sequence;
 using Testflow.Modules;
 
-namespace TestStation.Controls
+namespace TestFlow.DevSoftware.Controls
 {
     public partial class ObjectEditor : Form
     {

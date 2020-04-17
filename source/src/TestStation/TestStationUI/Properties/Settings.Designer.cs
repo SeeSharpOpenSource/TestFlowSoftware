@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestStation.Properties {
+namespace TestFlow.DevSoftware.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

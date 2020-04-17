@@ -7,7 +7,7 @@
     <ProjectGuid>{A07D8F70-12AA-4720-886A-D7BE2C0CB30E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestStation</RootNamespace>
+    <RootNamespace>TestFlow.DevSoftware</RootNamespace>
     <AssemblyName>TestFlow</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -68,6 +68,9 @@
     </Reference>
     <Reference Include="SeeSharpTools.JY.GUI">
       <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.GUI.dll</HintPath>
+    </Reference>
+    <Reference Include="SeeSharpTools.JY.Report">
+      <HintPath>..\..\Reference\SeeSharpTools.JY.Report.dll</HintPath>
     </Reference>
     <Reference Include="SeeSharpTools.JY.ThreadSafeQueue">
       <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.ThreadSafeQueue.dll</HintPath>
@@ -168,8 +171,6 @@
       <DependentUpon>ErrorInfoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EventController.cs" />
-    <Compile Include="FileTypeRegInfo.cs" />
-    <Compile Include="FileTypeRegister.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -304,17 +305,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ModelManage\ModelManage.csproj">
-      <Project>{e0021a41-2ec0-436f-8210-840eac926644}</Project>
-      <Name>ModelManage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ParameterChecker\ParameterChecker.csproj">
       <Project>{28e0fe09-2ef3-41fe-8788-35870c601f1b}</Project>
       <Name>ParameterChecker</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ReportGenerator\ReportCreator.csproj">
-      <Project>{5a02b988-12c4-4b3a-a3e1-aa47e355ce63}</Project>
-      <Name>ReportCreator</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TestStationCommon\TestStationCommon.csproj">
       <Project>{be2c410d-ee30-4400-968d-b1bfea448165}</Project>
@@ -323,10 +316,6 @@
     <ProjectReference Include="..\..\TestStationUi\OperationPanel.csproj">
       <Project>{88bcea91-2775-4120-8617-b680f947f6bd}</Project>
       <Name>OperationPanel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Authentication\Authentication.csproj">
-      <Project>{76b872d2-32ef-492f-90e6-1e8b5da1817c}</Project>
-      <Name>Authentication</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLib\TestStationLimit\TestStationLimit.csproj">
       <Project>{9ec9428b-47ce-48ee-813a-d9c5dc1afbd3}</Project>

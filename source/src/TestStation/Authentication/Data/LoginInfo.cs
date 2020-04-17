@@ -1,4 +1,4 @@
-﻿namespace TestStation.Authentication.Data
+﻿namespace TestFlow.DevSoftware.Authentication.Data
 {
     internal class LoginInfo
     {

@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace TestStation.OperationPanel
+namespace TestFlow.DevSoftware.OperationPanel
 {
     internal class SizeAdapter
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Testflow.Data.Sequence;
 
-namespace TestStation.ParameterChecker
+namespace TestFlow.DevSoftware.ParameterChecker
 {
     public static class SequenceGroupChecker
     {

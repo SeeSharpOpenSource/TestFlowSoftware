@@ -1,4 +1,4 @@
-﻿namespace TestStation.Common
+﻿namespace TestFlow.DevSoftware.Common
 {
     public enum WorkMode
     {

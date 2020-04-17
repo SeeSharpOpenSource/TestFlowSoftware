@@ -6,9 +6,10 @@ using Newtonsoft.Json;
 using Testflow.Data;
 using Testflow.Data.Sequence;
 using Testflow.Runtime.Data;
-using TestStation.Common;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Report.ReportCreator
+namespace TestFlow.DevSoftware.Report.ReportCreator
 {
     public abstract class ReportCreatorBase : IDisposable
     {

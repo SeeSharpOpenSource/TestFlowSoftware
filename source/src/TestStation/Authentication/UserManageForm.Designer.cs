@@ -1,4 +1,4 @@
-﻿namespace TestStation.Authentication
+﻿namespace TestFlow.DevSoftware.Authentication
 {
     partial class UserManageForm
     {
@@ -180,7 +180,7 @@
             // 
             this.Column_picture.Frozen = true;
             this.Column_picture.HeaderText = "用户头像";
-            this.Column_picture.Image = global::TestStation.Authentication.Properties.Resources.管理员;
+            this.Column_picture.Image = global::TestFlow.DevSoftware.Authentication.Properties.Resources.管理员;
             this.Column_picture.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Stretch;
             this.Column_picture.Name = "Column_picture";
             this.Column_picture.ReadOnly = true;

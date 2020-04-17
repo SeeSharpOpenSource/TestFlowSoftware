@@ -6,9 +6,11 @@ using Testflow.Data;
 using Testflow.Data.Sequence;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
-using TestStation.Common;
+using Testflow.Usr;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Report.ReportCreator
+namespace TestFlow.DevSoftware.Report.ReportCreator
 {
     public class TxtReportCreator : ReportCreatorBase
     {
@@ -452,7 +454,7 @@ namespace TestStation.Report.ReportCreator
             }
             catch (IOException ex)
             {
-                Log.Print(LogLevel.WARN, $"Delete report {_currentReportPath} failed.{ex.Message}");
+                Logger.Print(LogLevel.WARN, $"Delete report {_currentReportPath} failed.{ex.Message}");
             }
         }
     }

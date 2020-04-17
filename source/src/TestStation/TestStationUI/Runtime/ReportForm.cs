@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace TestStation.Runtime
+namespace TestFlow.DevSoftware.Runtime
 {
     public partial class ReportForm : Form
     {

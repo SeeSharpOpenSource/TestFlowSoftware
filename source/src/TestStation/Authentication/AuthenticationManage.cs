@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Testflow.Utility.I18nUtil;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public static class AuthenticationManage
     {

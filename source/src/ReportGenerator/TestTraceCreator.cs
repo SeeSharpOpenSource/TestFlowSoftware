@@ -6,10 +6,10 @@ using System.Threading;
 using Newtonsoft.Json;
 using Testflow.Data.Sequence;
 using Testflow.Runtime.Data;
-using TestStation.Common;
-using TestStation.Report.ReportCreator;
+using TestFlow.DevSoftware.Report.ReportCreator;
+using TestFlow.SoftDevCommon;
 
-namespace TestStation.Report
+namespace TestFlow.DevSoftware.Report
 {
     public class TestTraceCreator : IDisposable
     {

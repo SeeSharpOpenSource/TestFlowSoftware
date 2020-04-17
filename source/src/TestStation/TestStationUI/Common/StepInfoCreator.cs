@@ -3,8 +3,10 @@ using System.Linq;
 using System.Text;
 using Testflow.Data;
 using Testflow.Data.Sequence;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.Common
+namespace TestFlow.DevSoftware.Common
 {
     internal static class StepInfoCreator
     {

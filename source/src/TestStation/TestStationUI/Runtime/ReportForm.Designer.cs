@@ -1,4 +1,4 @@
-﻿namespace TestStation.Runtime
+﻿namespace TestFlow.DevSoftware.Runtime
 {
     partial class ReportForm
     {

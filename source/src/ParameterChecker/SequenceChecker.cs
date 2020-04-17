@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Testflow.Data;
 using Testflow.Data.Sequence;
-using TestStation.Common;
+using TestFlow.SoftDevCommon;
+using TestFlow.SoftDSevCommon;
 
-namespace TestStation.ParameterChecker
+namespace TestFlow.DevSoftware.ParameterChecker
 {
     public class SequenceChecker
     {

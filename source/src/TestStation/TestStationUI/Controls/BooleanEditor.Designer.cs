@@ -1,4 +1,4 @@
-﻿namespace TestStation
+﻿namespace TestFlow.DevSoftware
 {
     partial class BooleanEditor
     {

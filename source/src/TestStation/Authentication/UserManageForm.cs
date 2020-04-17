@@ -8,9 +8,10 @@ using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TestFlow.DevSoftware.Authentication.Data;
 using TestStation.Authentication.Data;
 
-namespace TestStation.Authentication
+namespace TestFlow.DevSoftware.Authentication
 {
     public partial class UserManageForm : Form
     {

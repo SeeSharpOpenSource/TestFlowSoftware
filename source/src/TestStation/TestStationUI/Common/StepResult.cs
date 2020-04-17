@@ -1,6 +1,7 @@
 ﻿using Testflow.Data.Sequence;
+using TestFlow.SoftDevCommon;
 
-namespace TestStation.Common
+namespace TestFlow.DevSoftware.Common
 {
     public class StepResultInfo
     {
