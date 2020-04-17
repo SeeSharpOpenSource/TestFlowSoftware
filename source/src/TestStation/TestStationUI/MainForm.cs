@@ -2097,10 +2097,13 @@ namespace TestStation
             ISequenceStep step = FindSelectedStep(treeView_stepView.SelectedNode);
             if (null == step)
             {
-//                tabControl_settings.Enabled = false;
-//                tabControl_settings.SelectedIndex = 0;
                 ClearSettings();
+                tabControl_settings.Visible = false;
                 return;
+            }
+            if (!tabControl_settings.Visible)
+            {
+                tabControl_settings.Visible = true;
             }
             TabPage currentTab = tabControl_settings.SelectedTab;
             if (currentTab != tabPage_runtimeInfo && null != CurrentStep)
@@ -2657,6 +2660,7 @@ namespace TestStation
             UpdateToolStripButtonsState();
             treeView_sequenceTree.SelectedNode = treeView_sequenceTree.Nodes[0].Nodes[0];
             treeView_stepView.SelectedNode = null;
+            UpdateSettings();
         }
 
         private void UpdateToolStripButtonsState()
