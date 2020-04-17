@@ -1297,68 +1297,27 @@ namespace TestFlow.DevSoftware
             _internalOperation = true;
             // 清空Parameter
             _paramTable.Clear();
-
             // 根据用户选择的方法，初始化FunctionStep
-            InitializeFunctionStep();
-            // 如果是实例方法且未配置Constructor，则修改Constructor为ExistingObject
-            ISequenceStep functionStep;
-            ISequenceStep constructorStep;
-            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
+            InitializeFunction();
             // 添加Parameter
             UpdateTDGVParameter();
             ShowStepInfo(CurrentStep);
             _internalOperation = false;
         }
 
-        private void InitializeFunctionStep()
+        private void InitializeFunction()
         {
             ISequenceStep currentStep = CurrentStep;
             if (null == currentStep)
             {
                 return;
             }
-            ISequenceStep functionStep;
-            ISequenceStep constructorStep;
-            GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
-            // Static Class, remove Constructor
-            if (_currentClassDescription.IsStatic && constructorStep != null)
-            {
-                TestflowDesigntimeSession.RemoveSequenceStep(currentStep, constructorStep);
-            }
-
-            // 判断空选项
-            if (string.IsNullOrWhiteSpace(comboBox_Method.Text))
-            {
-                if (functionStep != null)
-                {
-                    TestflowDesigntimeSession.RemoveSequenceStep(currentStep, functionStep);
-                }
-                return;
-            }
-            // 如果FunctionStep不存在则创建
-            if (functionStep == null)
-            {
-                //添加在constructorStep后面
-                functionStep = TestflowDesigntimeSession.AddSequenceStep(currentStep, Constants.MethodStepName,
-                    "Method", (constructorStep == null) ? 1 : 2);
-            }
 
             IFuncInterfaceDescription funcDescription =
                     _currentClassDescription.Functions.FirstOrDefault(
                         item => GetMethodSignature(item).Equals(comboBox_Method.Text));
             //_currentFunctionStep没有方法 或 新的funcDescription
-            if (functionStep.Function == null ||
-                !IsFunctionCreatedFromDescription(functionStep.Function, funcDescription))
-            {
-                //创建functionData， 并改变_currentFunctionStep的functionData
-                IFunctionData functionData = _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(funcDescription);
-                functionStep.Function = functionData;
-            }
-            //Instance是constructorStep的instance
-            if (!string.IsNullOrWhiteSpace(constructorStep?.Function.Instance))
-            {
-                functionStep.Function.Instance = constructorStep.Function.Instance;
-            }
+            currentStep.Function = _globalInfo.TestflowEntity.SequenceManager.CreateFunctionData(funcDescription);
         }
 
         private bool IsInstanceFunction(IFunctionData function)
@@ -2284,7 +2243,7 @@ namespace TestFlow.DevSoftware
                     _paramTable.AddParent(ExistingObjParent, "Constructor");
                     string instanceValue = functionData.Instance;
                     _paramTable.Rows.Add(new object[] { null, ExistingObjParent,
-                    $"Object({_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name})", "In",
+                    $"{_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name}", "In",
                                                         instanceValue});
                 }
                 // 方法显示
