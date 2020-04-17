@@ -161,10 +161,10 @@ namespace TestFlow.DevSoftware
 
         #region 界面初始化
         
-        public MainForm(string sequencePath)
+        public MainForm(string sequencePath, GlobalInfo globalInfo)
         {
+            _globalInfo = globalInfo;
             #region Testflow：模块与服务初始化
-            _globalInfo = GlobalInfo.GetInstance();
             _globalInfo.PrintInfo = this.PrintInfo;
             _globalInfo.PrintUutResult = PrintUutResult;
             _testflowDesigntimeService = _globalInfo.TestflowEntity.DesignTimeService;
