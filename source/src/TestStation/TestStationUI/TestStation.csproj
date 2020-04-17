@@ -261,6 +261,9 @@
     <EmbeddedResource Include="RenameForm.resx">
       <DependentUpon>RenameForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Runtime\RuntimeStatusForm.resx">
+      <DependentUpon>RuntimeStatusForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\MainForm.datasource" />
     <None Include="Properties\Settings.settings">

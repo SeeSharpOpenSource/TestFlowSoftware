@@ -2619,8 +2619,9 @@ namespace TestStation
             // Sequence UI
             tabCon_Seq.SelectedIndex = 0;
             ShowSequences(SequenceGroup);
-
             EnableAllEditControl();
+            treeView_sequenceTree.SelectedNode = treeView_sequenceTree.Nodes[0].Nodes[0];
+            treeView_stepView.SelectedNode = null;
         }
 
         // 载入序列
@@ -2654,6 +2655,8 @@ namespace TestStation
             EnableAllEditControl();
             tabCon_Step.SelectedTab = tabPage_stepData;
             UpdateToolStripButtonsState();
+            treeView_sequenceTree.SelectedNode = treeView_sequenceTree.Nodes[0].Nodes[0];
+            treeView_stepView.SelectedNode = null;
         }
 
         private void UpdateToolStripButtonsState()
@@ -3528,7 +3531,6 @@ namespace TestStation
                 _lastSelectSeqNode.ForeColor = _nonSelectedColor;
                 _lastSelectSeqNode = null;
             }
-
             ISequence selectedSequence = FindSelectedSequence(e.Node);
             if (selectedSequence != CurrentSeq)
             {
@@ -3543,6 +3545,7 @@ namespace TestStation
                 ShowSteps(CurrentSeq);
             }
             CreateDGVVariable(1);
+            UpdateSettings();
             _internalOperation = false;
         }
 
