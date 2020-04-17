@@ -1,15 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using System.Runtime.InteropServices;
-using System.Drawing;
-using TestStation.Common;
 
-namespace TestStation
+namespace EasyTestDeploy
 {
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("注册文件类型信息...");
+            string filePath = args[0];
+            if (filePath.Contains("\""))
+            {
+                filePath = filePath.Replace("\"", "");
+            }
+            if (filePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                filePath = filePath.Substring(0, filePath.Length - 1);
+            }
+            RegistryFile(filePath);
+        }
+
+        /// <summary>
+        /// 注册文件信息
+        /// </summary>
+        private static void RegistryFile(string installPath)
+        {
+            //后缀文件信息
+            FileTypeRegInfo ftri = new FileTypeRegInfo();
+            ftri.ExtendName = ".tfseq";
+            ftri.Description = "Test Sequence File项目文件";
+            ftri.IcoPath = installPath + "\\JXI_b.png";
+            ftri.ExePath = installPath + "\\EasyTest.exe";
+
+            try
+            {
+                //注册文件类型
+                FileTypeRegister.RegisterFileType(ftri);
+                Console.WriteLine("注册文件类型成功");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"注册文件类型信息失败：{ex.Message}");
+                Log.LogEnable = true;
+                Log.Print(LogLevel.ERROR, $"Failed to register file type:{ex.Message}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 注册信息
+    /// </summary>
+    public class FileTypeRegInfo
+    {
+        // <summary>
+        /// 目标类型文件的扩展名
+        /// </summary>
+        public string ExtendName;  //".xcf"
+
+        /// <summary>
+        /// 目标文件类型说明
+        /// </summary>
+        public string Description; //"XCodeFactory项目文件"
+
+        /// <summary>
+        /// 目标类型文件关联的图标
+        /// </summary>
+        public string IcoPath;
+
+        /// <summary>
+        /// 打开目标类型文件的应用程序
+        /// </summary>
+        public string ExePath;
+
+        public FileTypeRegInfo()
+        {
+        }
+
+        public FileTypeRegInfo(string extendName)
+        {
+            this.ExtendName = extendName;
+        }
+    }
+
     /// <summary>
     /// FileTypeRegister 用于注册自定义的文件类型。
     /// </summary>
@@ -21,11 +99,9 @@ namespace TestStation
         /// </summary>        
         public static void RegisterFileType(FileTypeRegInfo regInfo)
         {
-            if (FileTypeRegistered(regInfo.ExtendName))
-            {
-                return;
-            }
-
+            RemoveIfRegistered(regInfo.ExtendName);
+            string openValueFormat = "\"{0}\" \"%1\"";
+            string openValue = string.Format(openValueFormat, regInfo.ExePath);
             string relationName = regInfo.ExtendName.Substring(1, regInfo.ExtendName.Length - 1).ToUpper() + "_FileType";
             RegistryKey registryKey = Registry.ClassesRoot.CreateSubKey(regInfo.ExtendName);
             if (registryKey != null && registryKey.OpenSubKey("shell") != null &&
@@ -37,7 +113,7 @@ namespace TestStation
 
                 Log.LogEnable = true;
                 Log.Print(LogLevel.ERROR, "1");
-                if (Object.Equals(varValue, regInfo.ExePath + " %1"))
+                if (Object.Equals(varValue, openValue))
                 {
                     Log.LogEnable = true;
                     Log.Print(LogLevel.ERROR, "2");
@@ -55,12 +131,12 @@ namespace TestStation
 
             // 设置默认图标
             RegistryKey iconKey = registryKey.CreateSubKey("DefaultIcon");
-            iconKey.SetValue("", regInfo.IcoPath);           
+            iconKey.SetValue("", regInfo.IcoPath);
             //设置默认打开程序路径
             registryKey = registryKey.CreateSubKey("shell\\open\\command");
             //其中" %1"表示将被双击的文件的路径传给目标应用程序，这样在双击a.xcf文件时，XCodeFactory才知道要打开哪个文件
-            Log.Print(LogLevel.DEBUG, "DoubleClick "+regInfo.ExePath);
-            registryKey.SetValue("", regInfo.ExePath + " %1");
+            Log.Print(LogLevel.DEBUG, "DoubleClick " + regInfo.ExePath);
+            registryKey.SetValue("", openValue);
             Log.LogEnable = true;
             Log.Print(LogLevel.ERROR, "3");
             registryKey.Close();
@@ -79,15 +155,17 @@ namespace TestStation
             //relationKey.Close();
         }
 
+        public static void DeleteRegistry()
+        {
+
+        }
+
         /// <summary>
         /// GetFileTypeRegInfo 得到指定文件类型关联信息
         /// </summary>        
         public static FileTypeRegInfo GetFileTypeRegInfo(string extendName)
         {
-            if (!FileTypeRegistered(extendName))
-            {
-                return null;
-            }
+            RemoveIfRegistered(extendName);
 
             FileTypeRegInfo regInfo = new FileTypeRegInfo(extendName);
 
@@ -112,11 +190,7 @@ namespace TestStation
         /// </summary>    
         public static bool UpdateFileTypeRegInfo(FileTypeRegInfo regInfo)
         {
-            if (!FileTypeRegistered(regInfo.ExtendName))
-            {
-                return false;
-            }
-
+            RemoveIfRegistered(regInfo.ExtendName);
 
             string extendName = regInfo.ExtendName;
             string relationName = extendName.Substring(1, extendName.Length - 1).ToUpper() + "_FileType";
@@ -139,17 +213,15 @@ namespace TestStation
         /// <summary>
         /// FileTypeRegistered 指定文件类型是否已经注册
         /// </summary>        
-        public static bool FileTypeRegistered(string extendName)
+        private static void RemoveIfRegistered(string extendName)
         {
             RegistryKey softwareKey = Registry.ClassesRoot.OpenSubKey(extendName);
             if (softwareKey != null)
             {
-                return true;
+                //删除
+                Registry.ClassesRoot.DeleteSubKeyTree(extendName, false);
             }
-
-            return false;
         }
         #endregion
     }
 }
-

@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TestStation.Common
+namespace EasyTestDeploy
 {
     /// <summary>
     /// 日志打印类，用于在程序逻辑中打印一些日记记录到文件，方便调试程序，
     /// 同时客户使用时如果遇到问题，也可以使能日志打印的功能，方便定位错误的原因
     /// </summary>
     public static class Log
-    {       
+    {
         /// <summary>
         /// 使能日志打印功能
         /// </summary>
@@ -41,7 +44,7 @@ namespace TestStation.Common
                     }
                     _tskWriteFile = null;
                 }
-            }  
+            }
         }
         private static bool _logEnable;
 
@@ -60,7 +63,7 @@ namespace TestStation.Common
             }
         }
         private static LogLevel _logLevel;
-       
+
         private static Queue _logMsgQ;//用于日志消息缓存的队列，首次调用时初始化
         private static Task _tskWriteFile;//异步写日志
         private static bool _writting;//写日志标志位
@@ -141,22 +144,13 @@ namespace TestStation.Common
                     DateTime t = DateTime.Now;
                     //指定日志文件的目录
                     string fname = "";
-                    string testflowHome = Environment.GetEnvironmentVariable("TESTFLOW_HOME");
-                    if (!string.IsNullOrWhiteSpace(testflowHome) &&
-                        testflowHome.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                    {
-                        testflowHome = testflowHome.Substring(0, testflowHome.Length - 1);
-                    }
-                    string currentDirectory = string.IsNullOrWhiteSpace(testflowHome)
-                        ? Directory.GetCurrentDirectory()
-                        : testflowHome;
                     if (Environment.OSVersion.ToString().Contains("Unix"))
                     {
-                        fname = currentDirectory + "/" + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+                        fname = Directory.GetCurrentDirectory() + "/" + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
                     }
                     else
                     {
-                        fname = currentDirectory + "\\" + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+                        fname = Directory.GetCurrentDirectory() + "\\" + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
                     }
                     //string fname = Directory.GetCurrentDirectory() + "\\"
                     //               + t.Year.ToString("D04") + t.Month.ToString("D02") + t.Day.ToString("D02") + ".log";
@@ -178,16 +172,16 @@ namespace TestStation.Common
                         if (Environment.OSVersion.ToString().Contains("Unix"))
                         {
                             File.Move(
-                           currentDirectory + "/" + DateTime.Now.ToString("yyyy-MM-dd") + ".log",
-                           currentDirectory + "/" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log");
+                           Directory.GetCurrentDirectory() + "/" + DateTime.Now.ToString("yyyy-MM-dd") + ".log",
+                           Directory.GetCurrentDirectory() + "/" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log");
                         }
                         else
                         {
                             File.Move(
-                           currentDirectory + "\\" + DateTime.Now.ToString("yyyy-MM-dd") + ".log",
-                           currentDirectory + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log");
+                           Directory.GetCurrentDirectory() + "\\" + DateTime.Now.ToString("yyyy-MM-dd") + ".log",
+                           Directory.GetCurrentDirectory() + "\\" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log");
                         }
-                      
+
                         //File.Move(
                         //   Directory.GetCurrentDirectory() + "\\" + t.Year.ToString("D04") + t.Month.ToString("D02") +
                         //   t.Day.ToString("D02") + ".log",
@@ -209,7 +203,7 @@ namespace TestStation.Common
                         sw.Write(s_t + "\r\n");
                     }
                 }
-                catch 
+                catch
                 {
 
                 }
@@ -257,5 +251,4 @@ namespace TestStation.Common
         /// </summary>
         FATAL
     }
-
 }
