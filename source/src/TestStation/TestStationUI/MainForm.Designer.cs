@@ -156,6 +156,8 @@ namespace TestStation
             this.textBox_output = new System.Windows.Forms.TextBox();
             this.tabCon_Step = new System.Windows.Forms.TabControl();
             this.tabPage_stepData = new System.Windows.Forms.TabPage();
+            this.button_expand = new System.Windows.Forms.Button();
+            this.button_collapse = new System.Windows.Forms.Button();
             this.treeView_stepView = new System.Windows.Forms.TreeView();
             this.RuntimeStatusTab = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -168,14 +170,9 @@ namespace TestStation
             this.StatusUseValue = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel_userGroupLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel_userGroup = new System.Windows.Forms.ToolStripStatusLabel();
-            this.StatusMsg = new System.Windows.Forms.ToolStripStatusLabel();
-            this.StatusDataL = new System.Windows.Forms.ToolStripStatusLabel();
-            this.StatusDate = new System.Windows.Forms.ToolStripStatusLabel();
-            this.StatusTimeL = new System.Windows.Forms.ToolStripStatusLabel();
-            this.StatusTime = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel_stateLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel_stateValue = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar_progress = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel_stateValue = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel_stateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
             this.labelTestRunning = new System.Windows.Forms.Label();
             this.labelTestGen = new System.Windows.Forms.Label();
@@ -1440,6 +1437,8 @@ namespace TestStation
             // 
             // tabPage_stepData
             // 
+            this.tabPage_stepData.Controls.Add(this.button_expand);
+            this.tabPage_stepData.Controls.Add(this.button_collapse);
             this.tabPage_stepData.Controls.Add(this.treeView_stepView);
             this.tabPage_stepData.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPage_stepData.Location = new System.Drawing.Point(4, 22);
@@ -1448,6 +1447,32 @@ namespace TestStation
             this.tabPage_stepData.TabIndex = 2;
             this.tabPage_stepData.Text = "Step";
             this.tabPage_stepData.UseVisualStyleBackColor = true;
+            // 
+            // button_expand
+            // 
+            this.button_expand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_expand.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button_expand.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button_expand.Location = new System.Drawing.Point(841, 23);
+            this.button_expand.Name = "button_expand";
+            this.button_expand.Size = new System.Drawing.Size(65, 20);
+            this.button_expand.TabIndex = 2;
+            this.button_expand.Text = "Expand";
+            this.button_expand.UseVisualStyleBackColor = true;
+            this.button_expand.Click += new System.EventHandler(this.button_expand_Click);
+            // 
+            // button_collapse
+            // 
+            this.button_collapse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_collapse.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button_collapse.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button_collapse.Location = new System.Drawing.Point(841, 2);
+            this.button_collapse.Name = "button_collapse";
+            this.button_collapse.Size = new System.Drawing.Size(65, 20);
+            this.button_collapse.TabIndex = 1;
+            this.button_collapse.Text = "Collapse";
+            this.button_collapse.UseVisualStyleBackColor = true;
+            this.button_collapse.Click += new System.EventHandler(this.button_collapse_Click);
             // 
             // treeView_stepView
             // 
@@ -1536,19 +1561,15 @@ namespace TestStation
             this.StatusUseValue,
             this.toolStripStatusLabel_userGroupLabel,
             this.toolStripStatusLabel_userGroup,
-            this.StatusMsg,
-            this.StatusDataL,
-            this.StatusDate,
-            this.StatusTimeL,
-            this.StatusTime,
-            this.toolStripStatusLabel_stateLabel,
+            this.toolStripProgressBar_progress,
             this.toolStripStatusLabel_stateValue,
-            this.toolStripProgressBar_progress});
+            this.toolStripStatusLabel_stateLabel});
+            this.statusStripButton.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.statusStripButton.Location = new System.Drawing.Point(0, 711);
             this.statusStripButton.Name = "statusStripButton";
             this.statusStripButton.Size = new System.Drawing.Size(1284, 31);
             this.statusStripButton.TabIndex = 7;
-            this.statusStripButton.Text = "statusStrip1";
+            this.statusStripButton.Text = "statusStrip_main";
             // 
             // toolStripStatusLabel1
             // 
@@ -1584,58 +1605,10 @@ namespace TestStation
             this.toolStripStatusLabel_userGroup.Size = new System.Drawing.Size(150, 26);
             this.toolStripStatusLabel_userGroup.Text = "UseValue";
             // 
-            // StatusMsg
+            // toolStripProgressBar_progress
             // 
-            this.StatusMsg.Name = "StatusMsg";
-            this.StatusMsg.Size = new System.Drawing.Size(600, 26);
-            this.StatusMsg.Text = "                                                                                 " +
-    "                                                                   ";
-            // 
-            // StatusDataL
-            // 
-            this.StatusDataL.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.StatusDataL.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
-            this.StatusDataL.Name = "StatusDataL";
-            this.StatusDataL.Size = new System.Drawing.Size(51, 26);
-            this.StatusDataL.Spring = true;
-            this.StatusDataL.Text = "Date:";
-            // 
-            // StatusDate
-            // 
-            this.StatusDate.AutoSize = false;
-            this.StatusDate.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
-            this.StatusDate.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
-            this.StatusDate.Name = "StatusDate";
-            this.StatusDate.Size = new System.Drawing.Size(71, 26);
-            this.StatusDate.Text = "2019-07-16";
-            // 
-            // StatusTimeL
-            // 
-            this.StatusTimeL.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.StatusTimeL.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
-            this.StatusTimeL.Name = "StatusTimeL";
-            this.StatusTimeL.Size = new System.Drawing.Size(51, 26);
-            this.StatusTimeL.Spring = true;
-            this.StatusTimeL.Text = "Time:";
-            // 
-            // StatusTime
-            // 
-            this.StatusTime.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
-            this.StatusTime.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
-            this.StatusTime.Name = "StatusTime";
-            this.StatusTime.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.StatusTime.Size = new System.Drawing.Size(51, 26);
-            this.StatusTime.Spring = true;
-            this.StatusTime.Text = "08:36:12";
-            // 
-            // toolStripStatusLabel_stateLabel
-            // 
-            this.toolStripStatusLabel_stateLabel.AutoSize = false;
-            this.toolStripStatusLabel_stateLabel.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.toolStripStatusLabel_stateLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
-            this.toolStripStatusLabel_stateLabel.Name = "toolStripStatusLabel_stateLabel";
-            this.toolStripStatusLabel_stateLabel.Size = new System.Drawing.Size(77, 26);
-            this.toolStripStatusLabel_stateLabel.Text = "State:";
+            this.toolStripProgressBar_progress.Name = "toolStripProgressBar_progress";
+            this.toolStripProgressBar_progress.Size = new System.Drawing.Size(150, 25);
             // 
             // toolStripStatusLabel_stateValue
             // 
@@ -1645,10 +1618,14 @@ namespace TestStation
             this.toolStripStatusLabel_stateValue.Name = "toolStripStatusLabel_stateValue";
             this.toolStripStatusLabel_stateValue.Size = new System.Drawing.Size(80, 26);
             // 
-            // toolStripProgressBar_progress
+            // toolStripStatusLabel_stateLabel
             // 
-            this.toolStripProgressBar_progress.Name = "toolStripProgressBar_progress";
-            this.toolStripProgressBar_progress.Size = new System.Drawing.Size(100, 25);
+            this.toolStripStatusLabel_stateLabel.AutoSize = false;
+            this.toolStripStatusLabel_stateLabel.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabel_stateLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
+            this.toolStripStatusLabel_stateLabel.Name = "toolStripStatusLabel_stateLabel";
+            this.toolStripStatusLabel_stateLabel.Size = new System.Drawing.Size(77, 26);
+            this.toolStripStatusLabel_stateLabel.Text = "State:";
             // 
             // splitContainerMain
             // 
@@ -2078,10 +2055,6 @@ namespace TestStation
         private System.Windows.Forms.ToolStripStatusLabel StatusUseValue;
         private System.Windows.Forms.TextBox textBoxReport;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.ToolStripStatusLabel StatusDataL;
-        private System.Windows.Forms.ToolStripStatusLabel StatusDate;
-        private System.Windows.Forms.ToolStripStatusLabel StatusTimeL;
-        private System.Windows.Forms.ToolStripStatusLabel StatusTime;
         private System.Windows.Forms.SplitContainer splitContainerMain;
         private System.Windows.Forms.SplitContainer splitContainer_MainFrame;
         private System.Windows.Forms.SplitContainer splitContainer_sequenceAndVar;
@@ -2089,7 +2062,6 @@ namespace TestStation
         private System.Windows.Forms.Label labelProject;
         private System.Windows.Forms.TabControl tabCon_Variable;
         private System.Windows.Forms.TabPage globalVariableTab;
-        private System.Windows.Forms.ToolStripStatusLabel StatusMsg;
         private System.Windows.Forms.Label label_loopTimesConfig;
         private System.Windows.Forms.Label label_loopTypeConfig;
        #endregion
@@ -2202,6 +2174,8 @@ namespace TestStation
         private ToolStripMenuItem tryFinallyBlockToolStripMenuItem;
         private ToolStripMenuItem gotoToolStripMenuItem;
         private ToolStripMenuItem tryFinallyToolStripMenuItem;
+        private Button button_collapse;
+        private Button button_expand;
     }
 }
 

@@ -191,8 +191,6 @@ namespace TestStation
 
             CheckForIllegalCrossThreadCalls = false;//多线程check使能
 
-            
-
             // TestStationLimit.dll加载
             _interfaceManger.GetComponentInterface(Environment.GetEnvironmentVariable("TESTFLOW_WORKSPACE") + @"\TestStationLimit.dll");
             
@@ -212,6 +210,10 @@ namespace TestStation
 
             // dgv_GlobalVariable初始化
             CreateDGVVariable(0);
+
+            toolStripProgressBar_progress.Alignment = ToolStripItemAlignment.Right;
+            toolStripStatusLabel_stateLabel.Alignment = ToolStripItemAlignment.Right;
+            toolStripStatusLabel_stateValue.Alignment = ToolStripItemAlignment.Right;
         }
 
         private void CreateDGVVariable(int tabNumber)
@@ -3766,6 +3768,16 @@ namespace TestStation
                     selectedStep.RetryCounter.PassTimes = (int)numericUpDown_passTimes.Value;
                     break;
             }
+        }
+
+        private void button_collapse_Click(object sender, EventArgs e)
+        {
+            treeView_stepView.CollapseAll();
+        }
+
+        private void button_expand_Click(object sender, EventArgs e)
+        {
+            treeView_stepView.ExpandAll();
         }
     }
 }
