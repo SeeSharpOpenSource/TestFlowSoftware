@@ -1471,8 +1471,8 @@ namespace TestFlow.DevSoftware
             variableForm.ShowDialog(this);
             if (!variableForm.IsCancelled)
             {
-                SetParamValue(true, e.RowIndex, ParamTableValueCol);
                 _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = variableForm.ParamValue;
+                SetParamValue(true, e.RowIndex, ParamTableValueCol);
             }
             variableForm.Dispose();
         }
@@ -1732,7 +1732,7 @@ namespace TestFlow.DevSoftware
                     }
                     IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
                     TestflowDesigntimeSession.SetInstance(value, functionStep);
-                    SetVariableType(functionStep.Function.ClassType, variable);
+                    SetVariableType(functionStep.Function.ClassType, value, variable);
                 }
                 else
                 {
@@ -1753,7 +1753,7 @@ namespace TestFlow.DevSoftware
                     {
                         IVariable variable = GetAvailableVariable(currentStep, value, constructorStep.Function.ClassType);
                         TestflowDesigntimeSession.SetInstance(value, constructorStep);
-                        SetVariableType(constructorStep.Function.ClassType, variable);
+                        SetVariableType(constructorStep.Function.ClassType, value, variable);
                         if (null != functionStep)
                         {
                             TestflowDesigntimeSession.SetInstance(value, functionStep);
@@ -1777,8 +1777,8 @@ namespace TestFlow.DevSoftware
                         return;
                     }
                     IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
-                    TestflowDesigntimeSession.SetReturn(variable?.Name ?? string.Empty, functionStep);
-                    SetVariableType(functionStep.Function.ReturnType.Type, variable);
+                    TestflowDesigntimeSession.SetReturn(value, functionStep);
+                    SetVariableType(functionStep.Function.ReturnType.Type, value, variable);
                     currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
                 }
                 else
@@ -1788,13 +1788,18 @@ namespace TestFlow.DevSoftware
             }
         }
 
-        private void SetVariableType(ITypeData paramType, IVariable variable)
+        private void SetVariableType(ITypeData paramType, string paramValue, IVariable variable)
         {
-            if (null != variable.Type)
+            ITypeData originalType = variable.Type;
+            // 如果参数值不等于变量(即使用变量属性)、变量不是自动类型且变量已配置类型、原始变量类型不为空且新的类型是变量原类型的基类，则不修改变量类型
+            if (!variable.Name.Equals(paramValue) || (!variable.AutoType && null != originalType) ||
+                (null != originalType && _globalInfo.TestflowEntity.ComInterfaceManager.IsDerivedFrom(originalType, paramType)) ||
+                IsSystemVariable(variable.Name))
             {
                 return;
             }
             variable.Type = paramType;
+            UpdateSingleVariable(variable, variable.Parent is ISequenceGroup);
         }
 
         private void SetStepParamValue(ISequenceStep step, string paramName, string value, DataGridViewCell currentCell, bool setByFx)
@@ -1817,7 +1822,7 @@ namespace TestFlow.DevSoftware
                 // 检查变量是否存在
                 IVariable variable = GetAvailableVariable(step, variableName, null);
                 TestflowDesigntimeSession.SetParameterValue(paramName, value, paramType, step);
-                SetVariableType(argument.Type, variable);
+                SetVariableType(argument.Type, value, variable);
             }
             // 如果参数为类类型或者有ref或者out的参数且不是json字符串，则需要使用变量传递
             else if ((argument.VariableType == VariableType.Class || argument.VariableType == VariableType.Struct ||
@@ -1826,7 +1831,7 @@ namespace TestFlow.DevSoftware
                 IVariable variable = GetAvailableVariable(step, value, argument.Type);
                 TestflowDesigntimeSession.SetParameterValue(paramName, variable?.Name ?? string.Empty,
                     ParameterType.Value, step);
-                SetVariableType(argument.Type, variable);
+                SetVariableType(argument.Type, value, variable);
                 currentCell.Value = (null != variable) ? Utility.GetShowVariableName(variable) : string.Empty;
             }
             else
@@ -1857,8 +1862,9 @@ namespace TestFlow.DevSoftware
             }
         }
 
-        private IVariable GetAvailableVariable(ISequenceStep step, string variableName, ITypeData type)
+        private IVariable GetAvailableVariable(ISequenceStep step, string paramValue, ITypeData type)
         {
+            string variableName = Utility.GetVariableName(paramValue);
             IVariable variable = Utility.GetVariable(variableName, step);
             if (null != variable)
             {
