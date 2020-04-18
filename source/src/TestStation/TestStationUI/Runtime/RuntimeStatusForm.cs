@@ -111,7 +111,7 @@ namespace TestFlow.DevSoftware.Runtime
 //                {
 //                    watchData.Add(keyValuePair.Key.Value, keyValuePair.Value);
 //                }
-//                Invoke(new Action(() => { _mainForm.RefreshVariableValues(watchData); }));
+//                Invoke(new Action(() => { _mainForm.UpdateVariableValues(watchData); }));
 //            }
         }
 

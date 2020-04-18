@@ -117,7 +117,6 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Common\ResultMaintainer.cs" />
     <Compile Include="Common\StepInfoCreator.cs" />
     <Compile Include="Common\StepResult.cs" />
     <Compile Include="Common\WorkMode.cs" />

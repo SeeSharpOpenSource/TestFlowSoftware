@@ -478,7 +478,7 @@ namespace TestFlow.DevSoftware
                 sequenceName = $"Sequence{index++}";
             } while (SequenceGroup.Sequences.Any(item => item.Name.Equals(sequenceName)));
             TestflowDesigntimeSession.AddSequence(sequenceName, "", SequenceGroup.Sequences.Count);
-            TreeNode currentNode = FindTreeNode(CurrentSeq);
+            TreeNode currentNode = FindSequenceNode(CurrentSeq.Index);
             currentNode.Parent.Nodes.Add(sequenceName);
         }
 
@@ -3023,7 +3023,7 @@ namespace TestFlow.DevSoftware
             }
         }
 
-        public void RefreshVariableValues(IDictionary<string, string> values)
+        public void UpdateVariableValues(IDictionary<string, string> values)
         {
             if (null == values)
             {
@@ -3037,12 +3037,6 @@ namespace TestFlow.DevSoftware
                     row.Cells[1].Value = values[varName];
                 }
             }
-        }
-
-        public void RefreshStepResult(ISequenceStep step, IList<ResultState> stepResult, IList<string> variables)
-        {
-            UpdateCurrentSequence(step);
-            ShowStepResults(step, stepResult, variables);
         }
 
         private void UpdateCurrentSequence(ISequenceStep step)
@@ -3063,56 +3057,57 @@ namespace TestFlow.DevSoftware
             }
         }
 
-        private void ShowStepResults(ISequenceStep step, IList<ResultState> stepResults, IList<string> variables)
+        public void ShowStepResults(ICallStack stepStack, StepResult stepResults, IDictionary<string, string> variables)
         {
-//            DataGridView stepTable = _stepTable;
-//            int stepIndex = step.Index;
-//            for (int i = 0; i < stepTable.RowCount; i++)
-//            {
-//                string variableValue = variables[i];
-//                DataGridViewCell dataCell = stepTable.Rows[i].Cells[StepTableDataCol];
-//                if (!variableValue.Equals(dataCell.Value.ToString()))
-//                {
-//                    dataCell.Value = variableValue;
-//                }
-//                ResultState stepResult = stepResults[i];
-//                DataGridViewCell resultCell = stepTable.Rows[i].Cells[StepTableResultCol];
-//                string state = resultCell.Value.ToString();
-//                string newState = stepResult != ResultState.NA ? stepResult.ToString() : string.Empty;
-//                if (state.Equals(newState))
-//                {
-//                    continue;
-//                }
-//                resultCell.Value = newState;
-//                
-//                switch (stepResult)
-//                {
-//                    case ResultState.NA:
-//                        resultCell.Style.BackColor = NAColor;
-//                        break;
-//                    case ResultState.Running:
-//                        resultCell.Style.BackColor = RunningColor;
-//                        break;
-//                    case ResultState.Skip:
-//                        resultCell.Style.BackColor = SkipColor;
-//                        break;
-//                    case ResultState.Pass:
-//                        resultCell.Style.BackColor = PassColor;
-//                        break;
-//                    case ResultState.Fail:
-//                        resultCell.Style.BackColor = FailedColor;
-//                        break;
-//                    case ResultState.Error:
-//                        resultCell.Style.BackColor = FailedColor;
-//                        break;
-//                    case ResultState.Done:
-//                        resultCell.Style.BackColor = PassColor;
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//            stepTable.CurrentCell = stepTable.Rows[stepIndex].Cells[StepTableNameCol];
+            ShowCurrentStep(stepStack, stepResults);
+            if (null != variables && variables.Count > 0)
+            {
+                UpdateVariableValues(variables);
+            }
+        }
+
+        private void ShowCurrentStep(ICallStack stepStack, StepResult stepResults)
+        {
+            TreeNode sequenceNode = FindSequenceNode(stepStack.Sequence);
+            treeView_sequenceTree.SelectedNode = sequenceNode;
+            TreeNode stepNode = FindStepNode(stepStack);
+            if(null == stepNode)
+            {
+                return;
+            }
+            Color currentColor = Color.Red;
+            switch (stepResults)
+            {
+                case StepResult.NotAvailable:
+                case StepResult.RetryFailed:
+                    currentColor = Color.Coral;
+                    break;
+                case StepResult.Skip:
+                case StepResult.Pass:
+                    currentColor = Color.GreenYellow;
+                    break;
+                case StepResult.Failed:
+                case StepResult.Abort:
+                case StepResult.Error:
+                case StepResult.Timeout:
+                    currentColor = Color.Red;
+                    break;
+                case StepResult.Over:
+                    break;
+            }
+            stepNode.BackColor = currentColor;
+        }
+
+        private void ShowVariableValues(IDictionary<string, string> variableValues)
+        {
+            foreach (DataGridViewRow rowData in dataGridView_variableValues.Rows)
+            {
+                string variableName = rowData.Cells[0].Value.ToString();
+                if (variableValues.ContainsKey(variableName))
+                {
+                    rowData.Cells[1].Value = variableValues[variableName];
+                }
+            }
         }
 
         private ISequence GetSequence(ISequenceStep step)
@@ -3187,12 +3182,10 @@ namespace TestFlow.DevSoftware
             textBoxReport.Text = uutResult;
         }
 
-        public void BreakPointHittedAction(ISequenceStep step, IList<ResultState> stepResult, IList<string> variables,
-            IDictionary<string, string> watchData)
+        public void BreakPointHittedAction(ICallStack stepStack, StepResult stepResult, IDictionary<string, string> watchData)
         {
             viewController_Main.State = "RunBlock";
-            RefreshStepResult(step, stepResult, variables);
-            RefreshVariableValues(watchData);
+            ShowStepResults(stepStack, stepResult, watchData);
         }
 
         #endregion
@@ -3229,8 +3222,7 @@ namespace TestFlow.DevSoftware
         {
             ISequenceGroup sequenceGroup = SequenceGroup;
             ISequence selectedSequence = FindSelectedSequence(treeView_sequenceTree.SelectedNode);
-            if (null == selectedSequence || selectedSequence.Index == CommonConst.SetupIndex ||
-                selectedSequence.Index == CommonConst.TeardownIndex)
+            if (null == selectedSequence || selectedSequence.Index == CommonConst.SetupIndex || selectedSequence.Index == CommonConst.TeardownIndex)
             {
                 return;
             }
@@ -3258,23 +3250,37 @@ namespace TestFlow.DevSoftware
             return treeView_sequenceTree.Nodes[0].Nodes[0];
         }
 
-        private TreeNode FindTreeNode(ISequence sequence)
+        private TreeNode FindSequenceNode(int sequenceIndex)
         {
             TreeNode parentNode = treeView_sequenceTree.Nodes[0].Nodes[0];
             TreeNode seqNode;
-            if (sequence.Index == CommonConst.SetupIndex)
+            if (sequenceIndex == CommonConst.SetupIndex)
             {
                 seqNode = parentNode.Nodes[0];
             }
-            else if (sequence.Index == CommonConst.TeardownIndex)
+            else if (sequenceIndex == CommonConst.TeardownIndex)
             {
                 seqNode = parentNode.Nodes[1];
             }
             else
             {
-                seqNode = parentNode.Nodes[sequence.Index + 2];
+                seqNode = parentNode.Nodes[sequenceIndex + 2];
             }
             return seqNode;
+        }
+
+        private TreeNode FindStepNode(ICallStack step)
+        {
+            TreeNode node = treeView_stepView.Nodes[0];
+            foreach (int stepIndex in step.StepStack)
+            {
+                if (node.Nodes.Count <= stepIndex)
+                {
+                    return null;
+                }
+                node = node.Nodes[stepIndex];
+            }
+            return node;
         }
 
         private ISequence FindSelectedSequence(TreeNode node)
@@ -3456,6 +3462,7 @@ namespace TestFlow.DevSoftware
             if (null != _lastSelectStepNode)
             {
                 _lastSelectStepNode.ForeColor = _nonSelectedColor;
+                _lastSelectStepNode.BackColor = treeView_stepView.Nodes[0].BackColor;
                 _lastSelectStepNode = null;
             }
             ISequenceStep selectedStep = FindSelectedStep(e.Node);
@@ -3490,11 +3497,9 @@ namespace TestFlow.DevSoftware
                 return;
             }
             int index = 1;
-            ISequenceStepCollection sameLevelSteps = selectedStep.Parent is ISequence
-                ? ((ISequence) selectedStep.Parent).Steps
-                : ((ISequenceStep) selectedStep.Parent).SubSteps;
+            ISequenceStepCollection sameLevelSteps = selectedStep.Parent is ISequence ? ((ISequence) selectedStep.Parent).Steps : ((ISequenceStep) selectedStep.Parent).SubSteps;
             string newName = renameForm.Name;
-            while(sameLevelSteps.Any(item => item.Name.Equals(newName)))
+            while (sameLevelSteps.Any(item => item.Name.Equals(newName)))
             {
                 newName = $"{renameForm.Name}{index++}";
             }
@@ -3533,10 +3538,8 @@ namespace TestFlow.DevSoftware
                 return;
             }
             selectedStep.Behavior = (RunBehavior) Enum.Parse(typeof (RunBehavior), comboBox_runType.Text);
-            selectedStep.AssertFailedAction =
-                (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_asserFailedAction.Text);
-            selectedStep.InvokeErrorAction =
-                (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_invokeFailedAction.Text);
+            selectedStep.AssertFailedAction = (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_asserFailedAction.Text);
+            selectedStep.InvokeErrorAction = (FailedAction) Enum.Parse(typeof (FailedAction), comboBox_invokeFailedAction.Text);
             selectedStep.RecordStatus = checkBox_RecordStatus.Checked;
             ISequenceManager sequenceManager = _globalInfo.TestflowEntity.SequenceManager;
             switch (LoopTypecomboBox.Text)
@@ -3560,7 +3563,7 @@ namespace TestFlow.DevSoftware
                     }
                     selectedStep.LoopCounter.CounterEnabled = true;
                     selectedStep.LoopCounter.CounterEnabled = true;
-                    selectedStep.LoopCounter.MaxValue = (int)LoopTimesnumericUpDown.Value;
+                    selectedStep.LoopCounter.MaxValue = (int) LoopTimesnumericUpDown.Value;
                     break;
                 case "PassTimes":
                     LoopTimesnumericUpDown.Enabled = false;
@@ -3572,8 +3575,8 @@ namespace TestFlow.DevSoftware
                         selectedStep.RetryCounter = sequenceManager.CreateRetryCounter();
                     }
                     selectedStep.RetryCounter.RetryEnabled = true;
-                    selectedStep.RetryCounter.MaxRetryTimes = (int)numericUpDown_retryTime.Value;
-                    selectedStep.RetryCounter.PassTimes = (int)numericUpDown_passTimes.Value;
+                    selectedStep.RetryCounter.MaxRetryTimes = (int) numericUpDown_retryTime.Value;
+                    selectedStep.RetryCounter.PassTimes = (int) numericUpDown_passTimes.Value;
                     break;
             }
         }

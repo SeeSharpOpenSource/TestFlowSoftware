@@ -71,8 +71,6 @@ namespace TestFlow.SoftDevCommon
             TestflowEntity.Initialize();
             TestflowEntity.DesigntimeInitialize();
             RunState = RunState.NotAvailable;
-            this.ConfigManager = new ConfigManager();
-            this.ConfigManager.LoadConfigData();
             this.BreakIfFailed = true;
             TestflowHome = Environment.GetEnvironmentVariable("TESTFLOW_HOME");
             if (string.IsNullOrWhiteSpace(TestflowHome) || !Directory.Exists(TestflowHome))

@@ -22,7 +22,6 @@ namespace TestFlow.DevSoftware
         private readonly GlobalInfo _globalInfo;
         private readonly MainForm _mainform;
         private volatile string _serialNumber;
-        private ResultMaintainer _resultMaintainer;
         private ISequenceGroup _sequenceData;
         private int _uutIndex;
 
@@ -34,7 +33,6 @@ namespace TestFlow.DevSoftware
             DataCache = null;
             _serialNumber = string.Empty;
             _sequenceData = sequenceDataData;
-            _resultMaintainer = new ResultMaintainer(sequenceDataData);
             _uutIndex = -1;
         }
 
@@ -59,29 +57,30 @@ namespace TestFlow.DevSoftware
 
         private void BreakPointHitted(IDebuggerHandle debuggerhandle, IDebugInformation information)
         {
-
-            Dictionary<string, string> watchDatas = new Dictionary<string, string>(information.WatchDatas.Count);
-            foreach (KeyValuePair<IVariable, string> keyValuePair in information.WatchDatas)
-            {
-                IVariable variable = keyValuePair.Key;
-                string value = keyValuePair.Value;
-                string variableName = variable.Name;
-                watchDatas.Add(variableName, value);
-            }
-
+            Dictionary<string, string> watchDatas = GetWatchData(information.WatchDatas);
             ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, information.BreakPoint);
             if (null == step)
             {
                 return;
             }
-            ISequence sequence = (ISequence)step.Parent;
-            IList<ResultState> results;
-            IList<string> variables;
-            _resultMaintainer.GetResultsAndVariables(sequence.Index, out results, out variables);
             _mainform.Invoke(new Action(() =>
             {
-                _mainform.BreakPointHittedAction(step, results, variables, watchDatas);
+                _mainform.BreakPointHittedAction(information.BreakPoint, StepResult.NotAvailable, watchDatas);
             }));
+        }
+
+        private static Dictionary<string, string> GetWatchData(IDictionary<IVariable, string> watchData)
+        {
+            Dictionary<string, string> watchDatas = null;
+            if (watchData?.Count > 0)
+            {
+                watchDatas = new Dictionary<string, string>(watchData.Count);
+                foreach (KeyValuePair<IVariable, string> keyValuePair in watchData)
+                {
+                    watchDatas.Add(keyValuePair.Key.Name, keyValuePair.Value);
+                }
+            }
+            return watchDatas;
         }
 
         private void TestGenStart(ITestGenerationInfo generationInfo)
@@ -133,67 +132,21 @@ namespace TestFlow.DevSoftware
             {
                 foreach (IFailedInfo failedInfo in statusinfo.FailedInfos.Values)
                 {
-                    printInfos.Add(failedInfo.Message);
+                    ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, failedInfo.StackTrace);
+                    printInfos.Add($"Step <{step.Name}> failed: {failedInfo.Message}");
                 }
             }
-//            ICallStack currentStack = GetCurrentStack(statusinfo);
-//            string stackStr = currentStack.ToString();
-//            if (stackStr.Equals(_seqMaintainer.MainStartStack))
-//            {
-//                _resultMaintainer.ResetUutResult();
-//            }
-//            ISequenceStep step = _seqMaintainer.GetStepByRawStack(stackStr);
-//            ISequence currentSequence = null != step ? Utility.GetParentSequence(step) : null;
-//            _currentSequence = currentSequence;
-//            if (null == currentSequence)
-//            {
-//                return;
-//            }
-//            ISequenceStep rawStep = _seqMaintainer.GetStepByStack(currentStack);
-//            bool isLimitStep = rawStep.Function?.ClassType.Name.Equals("Limit") ?? false;
-//            IDictionary<string, string> watchDatas = _resultMaintainer.UpdateResult(statusinfo,currentStack, step, isLimitStep);
-//            string serialNumber;
-//            int uutIndex;
-//            _resultMaintainer.GetSerialNumber(out serialNumber, out uutIndex);
-//            if (uutIndex > _uutIndex)
-//            {
-//                Thread.VolatileWrite(ref _uutIndex, uutIndex);
-//            }
-//            bool isPreUutStack = Utility.IsPreUutStack(stackStr, _seqMaintainer.MainStartStack);
-//            bool isPostUutStack = Utility.IsPostUutStack(stackStr, _seqMaintainer.PostStartStack);
-//            bool isMainStack = !isPostUutStack && !isPreUutStack && currentStack.Sequence == 0;
-//            ISequenceStepCollection mainSeqSteps = _sequenceData.Sequences[1].Steps;
-//            int sequenceIndex = currentSequence.Index;
-//            if (isPreUutStack)
-//            {
-//                step = mainSeqSteps.Count > 0 ? mainSeqSteps[0] : null;
-//                sequenceIndex = 1;
-//            }
-//            else if (isPostUutStack)
-//            {
-//                step = mainSeqSteps.Count > 0 ? mainSeqSteps[mainSeqSteps.Count - 1] : null;
-//                sequenceIndex = 1;
-//            }
-//            else if (currentSequence.Index < 0)
-//            {
-//                step = null;
-//                sequenceIndex = 1;
-//            }
-//            IList<ResultState> stepResults;
-//            IList<string> sequenceVariableValues;
-//            _resultMaintainer.GetResultsAndVariables(sequenceIndex, out stepResults, out sequenceVariableValues);
-//            _mainform.Invoke(new Action(() =>
-//            {
-//                if (printInfos.Count > 0)
-//                {
-//                    _mainform.AppendOutput(string.Join(Environment.NewLine, printInfos));
-//                }
-//                _mainform.RefreshVariableValues(watchDatas);
-//                if (null != step)
-//                {
-//                    _mainform.RefreshStepResult(step, stepResults, sequenceVariableValues);
-//                }
-//            }));
+            ICallStack currentStack = GetCurrentStack(statusinfo);
+            StepResult result = statusinfo.StepResults[currentStack];
+            Dictionary<string, string> watchData = GetWatchData(statusinfo.WatchDatas);
+            _mainform.Invoke(new Action(() =>
+            {
+                if (printInfos.Count > 0)
+                {
+                    _mainform.AppendOutput(string.Join(Environment.NewLine, printInfos));
+                }
+                _mainform.ShowStepResults(currentStack, result, watchData);
+            }));
         }
 
         private ICallStack GetCurrentStack(IRuntimeStatusInfo statusinfo)
