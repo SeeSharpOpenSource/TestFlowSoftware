@@ -28,6 +28,7 @@ using TestFlow.DevSoftware.Runtime;
 using TestFlow.DevSoftware.OperationPanel;
 using TestFlow.SoftDevCommon;
 using TestFlow.SoftDSevCommon;
+using TestFlow.Software.OperationPanel;
 using TestStationLimit;
 using LogLevel = SeeSharpTools.JY.Report.LogLevel;
 
@@ -122,6 +123,7 @@ namespace TestFlow.DevSoftware
 
         private readonly GlobalInfo _globalInfo; //GlobalInfo是Runner的包装层
         private readonly IDesignTimeService _testflowDesigntimeService;
+        private OperationPanelInvoker _oiInvoker;
 
         private IDesignTimeSession TestflowDesigntimeSession
         {
@@ -2799,9 +2801,11 @@ namespace TestFlow.DevSoftware
                 _testflowRuntimeService.Initialize();
                 _testflowRuntimeService.Load(runtimeSequenceGroup);
                 _globalInfo.TestflowEntity.EngineController.ConfigData.SetProperty("TestName", SequenceGroup.Name);
-
                 _eventController = new EventController(_globalInfo, SequenceGroup, this);
                 _eventController.RegisterEvents();
+                // 显示OperationPanel
+                _oiInvoker = new OperationPanelInvoker(_globalInfo, runtimeSequenceGroup);
+                _oiInvoker.Initialize();
                 // 添加事件
                 tabCon_Seq.SelectedIndex = 0;
                 ResetRuntimeStatus();
