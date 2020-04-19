@@ -20,6 +20,7 @@ namespace TestFlow.DevSoftware.Runtime
 
         private DateTime[] _startTimes;
         private MainForm _mainForm;
+        private ISequenceGroup _sequenceGroup;
 
         public RuntimeStatusForm(MainForm parentForm)
         {
@@ -94,7 +95,7 @@ namespace TestFlow.DevSoftware.Runtime
             PrintWatchData(statistics.WatchData);
             string runtimeHash = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("RuntimeHash");
             string reportPath = GetReportPath();
-            _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt);
+            _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt, _sequenceGroup);
             Invoke(new Action(() =>
             {
                 ReportForm reportForm = new ReportForm(reportPath);
@@ -199,18 +200,18 @@ namespace TestFlow.DevSoftware.Runtime
         public void LoadSequence(ISequenceGroup sequenceData)
         {
             dataGridView_status.Rows.Clear();
-            ISequenceGroup sequenceGroup = sequenceData;
+            _sequenceGroup = sequenceData;
 
-            label_nameValue.Text = sequenceGroup.Name;
+            label_nameValue.Text = _sequenceGroup.Name;
             textBox_testInstanceName.Text = label_nameValue.Text;
 
             string[] columnData = new string[ColumnCount];
-            LoadSequenceData(sequenceGroup.SetUp, columnData);
-            foreach (ISequence sequence in sequenceGroup.Sequences)
+            LoadSequenceData(_sequenceGroup.SetUp, columnData);
+            foreach (ISequence sequence in _sequenceGroup.Sequences)
             {
                 LoadSequenceData(sequence, columnData);
             }
-            LoadSequenceData(sequenceGroup.TearDown, columnData);
+            LoadSequenceData(_sequenceGroup.TearDown, columnData);
             _startTimes = new DateTime[dataGridView_status.RowCount];
             for (int i = 0; i < _startTimes.Length; i++)
             {
