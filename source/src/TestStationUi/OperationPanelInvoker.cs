@@ -54,7 +54,7 @@ namespace TestFlow.Software.OperationPanel
 
         private bool InitOperationPanel()
         {
-            if (null == _operationPanelInfo)
+            if (string.IsNullOrWhiteSpace(_operationPanelInfo?.Assembly?.Path))
             {
                 return false;
             }
