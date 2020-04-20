@@ -215,6 +215,8 @@ namespace TestFlow.DevSoftware
             toolStripProgressBar_progress.Alignment = ToolStripItemAlignment.Right;
             toolStripStatusLabel_stateLabel.Alignment = ToolStripItemAlignment.Right;
             toolStripStatusLabel_stateValue.Alignment = ToolStripItemAlignment.Right;
+
+            UpdateTabControlSetting(false);
         }
 
         private void CreateDGVVariable(int tabNumber)
@@ -1994,13 +1996,10 @@ namespace TestFlow.DevSoftware
             if (null == step)
             {
                 ClearSettings();
-                tabControl_settings.Visible = false;
+                UpdateTabControlSetting(false);
                 return;
             }
-            if (!tabControl_settings.Visible)
-            {
-                tabControl_settings.Visible = true;
-            }
+            UpdateTabControlSetting(true);
             TabPage currentTab = tabControl_settings.SelectedTab;
             if (currentTab != tabPage_runtimeInfo && null != CurrentStep)
             {
@@ -2014,10 +2013,7 @@ namespace TestFlow.DevSoftware
                     UpdateModule();
                 }
             }
-            if (null != SequenceGroup && !tabControl_settings.Visible)
-            {
-                tabControl_settings.Visible = true;
-            }
+            UpdateTabControlSetting(null != SequenceGroup);
         }
 
         private void ClearSettings()
@@ -2355,7 +2351,7 @@ namespace TestFlow.DevSoftware
             treeView_sequenceTree.ContextMenuStrip = contextMenuStrip_sequence;
             treeView_stepView.ContextMenuStrip = cMS_DgvStep;
             // 隐藏运行时变量值窗体
-            splitContainer_runtime.Panel1Collapsed = true;
+//            splitContainer_runtime.Panel1Collapsed = true;
             // step表格只读，且不响应值变更事件
             treeView_stepView.AfterSelect += treeView_stepView_AfterSelect;
 
@@ -2378,7 +2374,7 @@ namespace TestFlow.DevSoftware
             treeView_sequenceTree.ContextMenuStrip = null;
             treeView_stepView.ContextMenuStrip = null;
             // 显示运行时变量值窗体
-            splitContainer_runtime.Panel1Collapsed = false;
+//            splitContainer_runtime.Panel1Collapsed = false;
             // step表格只读，且不响应值变更事件
             treeView_stepView.AfterSelect -= treeView_stepView_AfterSelect;
 
@@ -2884,7 +2880,7 @@ namespace TestFlow.DevSoftware
             _start = false;
             _globalInfo.TestflowEntity.EngineController.AbortRuntime(0);
 
-            tabControl_settings.Visible = true;
+            UpdateTabControlSetting(true);
             // tabControl_setting.SelectedTab = tabControl_setting.TabPages[1]; ;
 
             toolStripButton_New.Enabled = true;
@@ -3474,13 +3470,13 @@ namespace TestFlow.DevSoftware
             if (null != selectedStep)
             {
                 ShowStepInfo(selectedStep);
-                tabControl_settings.Visible = true;
+                UpdateTabControlSetting(true);
                 _lastSelectStepNode = e.Node;
                 _lastSelectStepNode.ForeColor = _selectedColor;
             }
             else
             {
-                tabControl_settings.Visible = false;
+                UpdateTabControlSetting(false);
                 tabControl_settings.SelectedIndex = 0;
             }
             UpdateSettings();
@@ -3532,6 +3528,20 @@ namespace TestFlow.DevSoftware
             }
             selectedSeq.Name = newName;
             treeView_sequenceTree.SelectedNode.Text = newName;
+        }
+
+        private void UpdateTabControlSetting(bool showEditPages)
+        {
+            if (tabControl_settings.TabPages.Count > 1 && !showEditPages)
+            {
+                tabControl_settings.TabPages.Remove(tabpage_Module);
+                tabControl_settings.TabPages.Remove(tabpage_Properties);
+            }
+            else if (tabControl_settings.TabPages.Count <= 1 && showEditPages)
+            {
+                tabControl_settings.TabPages.Insert(0, tabpage_Properties);
+                tabControl_settings.TabPages.Insert(1, tabpage_Module );
+            }
         }
 
         private void SetStepProperties()
