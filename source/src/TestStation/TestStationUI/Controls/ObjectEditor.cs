@@ -113,7 +113,7 @@ namespace TestFlow.DevSoftware.Controls
             else if (!variableType.Equals("Boolean[]") && !(dataGridView_element.Columns[0] is DataGridViewTextBoxColumn))
             {
                 dataGridView_element.Columns.Clear();
-                DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
+                DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
                 column.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
                 column.HeaderText = "Value";
                 column.Name = "Column_value";
