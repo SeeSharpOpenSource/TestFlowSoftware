@@ -61,7 +61,7 @@ namespace TestFlow.DevSoftware.Controls
         {
             _internalOperation = true;
             dataGridView_elements.Rows.Clear();
-            int index = 1;
+            int index = 0;
             foreach (string element in _elements)
             {
                 dataGridView_elements.Rows.Add(index.ToString(), element);
