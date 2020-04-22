@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using Testflow.Data;
 using Testflow.Data.Sequence;
 using Testflow.Modules;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
 using Testflow.Utility.Utils;
-using TestFlow.DevSoftware.Common;
 using TestFlow.SoftDevCommon;
-using TestFlow.SoftDSevCommon;
 
 namespace TestFlow.DevSoftware
 {
@@ -128,7 +120,7 @@ namespace TestFlow.DevSoftware
         private void StatusReceived(IRuntimeStatusInfo statusinfo)
         {
             List<string> printInfos = new List<string>(5);
-            if (statusinfo.FailedInfos.Count > 0)
+            if (statusinfo.FailedInfos?.Count > 0)
             {
                 foreach (IFailedInfo failedInfo in statusinfo.FailedInfos.Values)
                 {
