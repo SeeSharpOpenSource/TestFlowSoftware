@@ -59,7 +59,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OiSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OiSelectionForm.Designer.cs">
+      <DependentUpon>OiSelectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OperationPanelInvoker.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SizeAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -71,6 +82,21 @@
       <Project>{be2c410d-ee30-4400-968d-b1bfea448165}</Project>
       <Name>TestStationCommon</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestStation\ExternalLib\WinformCommonOi\WinformCommonOi.csproj">
+      <Project>{f4578605-19fe-4441-94b0-6d0a75defb3a}</Project>
+      <Name>WinformCommonOi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OiSelectionForm.resx">
+      <DependentUpon>OiSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

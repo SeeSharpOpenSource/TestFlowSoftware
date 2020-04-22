@@ -3604,5 +3604,23 @@ namespace TestFlow.DevSoftware
         {
             treeView_stepView.ExpandAll();
         }
+
+        private void configOIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (null == SequenceGroup)
+            {
+                return;
+            }
+            try
+            {
+                OiSelectionForm oiSelectionForm = new OiSelectionForm(SequenceGroup.Info.OperationPanelInfo, _globalInfo);
+                oiSelectionForm.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                Logger.Print(ex, ex.Message, LogLevel.Warn);
+                ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
+            }
+        }
     }
 }

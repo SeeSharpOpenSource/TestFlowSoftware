@@ -200,6 +200,7 @@ namespace TestFlow.DevSoftware
             this.insertSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_ActionMenu.SuspendLayout();
             this.toolStrip_QuickMenu.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -441,7 +442,8 @@ namespace TestFlow.DevSoftware
             // 
             this.configureToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.configureToolStripMenuItem,
-            this.selectModelToolStripMenuItem});
+            this.selectModelToolStripMenuItem,
+            this.configOIToolStripMenuItem});
             this.configureToolStripMenuItem1.Name = "configureToolStripMenuItem1";
             this.configureToolStripMenuItem1.Size = new System.Drawing.Size(77, 21);
             this.configureToolStripMenuItem1.Text = "Configure";
@@ -1897,6 +1899,13 @@ namespace TestFlow.DevSoftware
             this.renameSequenceToolStripMenuItem.Text = "Rename Sequence";
             this.renameSequenceToolStripMenuItem.Click += new System.EventHandler(this.renameSequenceToolStripMenuItem_Click);
             // 
+            // configOIToolStripMenuItem
+            // 
+            this.configOIToolStripMenuItem.Name = "configOIToolStripMenuItem";
+            this.configOIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.configOIToolStripMenuItem.Text = "Config OI";
+            this.configOIToolStripMenuItem.Click += new System.EventHandler(this.configOIToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2144,6 +2153,7 @@ namespace TestFlow.DevSoftware
         private ToolStripMenuItem tryFinallyToolStripMenuItem;
         private Button button_collapse;
         private Button button_expand;
+        private ToolStripMenuItem configOIToolStripMenuItem;
     }
 }
 
