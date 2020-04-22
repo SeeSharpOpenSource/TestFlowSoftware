@@ -38,22 +38,16 @@ namespace TestFlow.Software.OperationPanel
             _originalParamValue = _oiInfo.Parameters;
             _globalInfo = globalInfo;
             _filteredClasses = new List<IClassInterfaceDescription>(20);
-            if (null != oiInfo.OperationPanelClass)
+            if (null == oiInfo.Assembly)
+            {
+                string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
+                label_assemblyPath.Text = commonOiPath;
+            }
+            else
             {
                 label_assemblyPath.Text = oiInfo.Assembly.Path;
-                try
-                {
-                    InitClasses();
-                    if (_filteredClasses.Any(item => item.ClassType.Equals(oiInfo.OperationPanelClass)))
-                    {
-                        comboBox_classes.Text = oiInfo.OperationPanelClass.Name;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
+            ShowCurrentAssemblyAndClassInfo();
 
         }
 
@@ -78,6 +72,11 @@ namespace TestFlow.Software.OperationPanel
                 return;
             }
             label_assemblyPath.Text = openFileDialog_assembly.FileName;
+            ShowCurrentAssemblyAndClassInfo();
+        }
+
+        private void ShowCurrentAssemblyAndClassInfo()
+        {
             try
             {
                 InitClasses();

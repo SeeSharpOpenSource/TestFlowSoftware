@@ -41,7 +41,7 @@
             // 
             // button_selectAssembly
             // 
-            this.button_selectAssembly.Location = new System.Drawing.Point(331, 35);
+            this.button_selectAssembly.Location = new System.Drawing.Point(479, 35);
             this.button_selectAssembly.Name = "button_selectAssembly";
             this.button_selectAssembly.Size = new System.Drawing.Size(75, 23);
             this.button_selectAssembly.TabIndex = 0;
@@ -63,7 +63,7 @@
             this.label_assemblyPath.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_assemblyPath.Location = new System.Drawing.Point(91, 35);
             this.label_assemblyPath.Name = "label_assemblyPath";
-            this.label_assemblyPath.Size = new System.Drawing.Size(234, 23);
+            this.label_assemblyPath.Size = new System.Drawing.Size(382, 23);
             this.label_assemblyPath.TabIndex = 2;
             this.label_assemblyPath.Text = "AssemblyPath";
             this.label_assemblyPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -79,7 +79,7 @@
             // 
             // button_confirm
             // 
-            this.button_confirm.Location = new System.Drawing.Point(179, 126);
+            this.button_confirm.Location = new System.Drawing.Point(253, 123);
             this.button_confirm.Name = "button_confirm";
             this.button_confirm.Size = new System.Drawing.Size(75, 23);
             this.button_confirm.TabIndex = 6;
@@ -89,7 +89,7 @@
             // 
             // button_cancel
             // 
-            this.button_cancel.Location = new System.Drawing.Point(300, 126);
+            this.button_cancel.Location = new System.Drawing.Point(374, 123);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(75, 23);
             this.button_cancel.TabIndex = 7;
@@ -99,7 +99,7 @@
             // 
             // button_configOi
             // 
-            this.button_configOi.Location = new System.Drawing.Point(57, 126);
+            this.button_configOi.Location = new System.Drawing.Point(131, 123);
             this.button_configOi.Name = "button_configOi";
             this.button_configOi.Size = new System.Drawing.Size(75, 23);
             this.button_configOi.TabIndex = 8;
@@ -113,7 +113,7 @@
             this.comboBox_classes.FormattingEnabled = true;
             this.comboBox_classes.Location = new System.Drawing.Point(91, 84);
             this.comboBox_classes.Name = "comboBox_classes";
-            this.comboBox_classes.Size = new System.Drawing.Size(315, 20);
+            this.comboBox_classes.Size = new System.Drawing.Size(463, 20);
             this.comboBox_classes.TabIndex = 9;
             this.comboBox_classes.SelectedIndexChanged += new System.EventHandler(this.comboBox_classes_SelectedIndexChanged);
             // 
@@ -126,7 +126,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(432, 172);
+            this.ClientSize = new System.Drawing.Size(577, 172);
             this.Controls.Add(this.comboBox_classes);
             this.Controls.Add(this.button_configOi);
             this.Controls.Add(this.button_cancel);
