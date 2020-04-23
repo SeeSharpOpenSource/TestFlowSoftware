@@ -911,7 +911,7 @@ namespace TestFlow.DevSoftware
 
             // Testflow: AddVariable
             IVariable variable = TestflowDesigntimeSession.AddVariable(parent, variableName, "", VaraibleTable.RowCount - 1);
-            variable.VariableType = (isObject) ? VariableType.Class : VariableType.Undefined;
+            variable.VariableType = (isObject) ? VariableType.Class : VariableType.Value;
             variable.Type = _interfaceManger.GetTypeByName("Double", "System");
             // 判断Object
             if (isObject)
@@ -2269,6 +2269,18 @@ namespace TestFlow.DevSoftware
 
         private void viewController_Main_PostListeners(int oldState, int newState)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => { ViewStateChangedAction(oldState, newState); }));
+            }
+            else
+            {
+                ViewStateChangedAction(oldState, newState);
+            }
+        }
+
+        private void ViewStateChangedAction(int oldState, int newState)
+        {
             if (newState >= 0)
             {
                 toolStripStatusLabel_stateValue.Text = viewController_Main.StateNames[newState];
@@ -2297,15 +2309,16 @@ namespace TestFlow.DevSoftware
                 saveToolStripMenuItem1.Enabled = false;
                 SaveAsToolStripMenuItem1.Enabled = false;
                 // 运行菜单栏
-                toolStripButton_Run.Enabled = newState == (int) RunState.RunIdle || newState == (int) RunState.RunOver || newState == (int) RunState.RunBlock;
+                toolStripButton_Run.Enabled = newState == (int) RunState.RunIdle || newState == (int) RunState.RunOver ||
+                                              newState == (int) RunState.RunBlock;
                 startToolStripMenuItem1.Enabled = toolStripButton_Run.Enabled;
-                toolStripButton_Suspend.Enabled = newState == (int)RunState.Running;
+                toolStripButton_Suspend.Enabled = newState == (int) RunState.Running;
                 suspendToolStripMenuItem.Enabled = toolStripButton_Suspend.Enabled;
-                toolStripButton_Stop.Enabled = newState == (int)RunState.Running || newState == (int)RunState.RunProcessing;
+                toolStripButton_Stop.Enabled = newState == (int) RunState.Running || newState == (int) RunState.RunProcessing;
                 stopToolStripMenuItem2.Enabled = toolStripButton_Stop.Enabled;
                 bool uiNotBusy = newState != (int) RunState.EditProcess &&
-                               newState != (int) RunState.Running &&
-                               newState != (int)RunState.RunProcessing;
+                                 newState != (int) RunState.Running &&
+                                 newState != (int) RunState.RunProcessing;
                 configureToolStripMenuItem.Enabled = uiNotBusy;
                 selectModelToolStripMenuItem.Enabled = uiNotBusy;
 

@@ -53,8 +53,8 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             int index = 0;
             foreach (KeyValuePair<string, string> paramKeyValue in _parameters)
             {
-                rowIndex = rowIndex/2;
-                colIndex = rowIndex%2;
+                rowIndex = index / 2;
+                colIndex = index % 2;
                 index++;
                 IVariable variable = GetVariable(paramKeyValue.Value);
                 ConfigItem configItem = new ConfigItem(paramKeyValue.Key, variable,
