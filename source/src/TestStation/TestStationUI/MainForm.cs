@@ -644,7 +644,7 @@ namespace TestFlow.DevSoftware
                 viewController_Main.State = RunState.RunIdle.ToString();
                 try
                 {
-                    RunSequence();
+                    RunSequencePreProcess();
                 }
                 catch (ApplicationException ex)
                 {
@@ -983,21 +983,21 @@ namespace TestFlow.DevSoftware
                         //todo 做个numeric的东西
                         typeData = _testflowDesigntimeService.Components["mscorlib"].VariableTypes.FirstOrDefault(item => item.Name.Equals("Double"));
                         defaultValue = "0";
-                        variable.ReportRecordLevel = RecordLevel.Trace;
+//                        variable.ReportRecordLevel = RecordLevel.None;
                         break;
                     case "String":
                         typeData = _testflowDesigntimeService.Components["mscorlib"].VariableTypes.FirstOrDefault(item => item.Name.Equals("String"));
                         defaultValue = "";
-                        variable.ReportRecordLevel = RecordLevel.Trace;
+//                        variable.ReportRecordLevel = RecordLevel.Trace;
                         break;
                     case "Boolean":
                         typeData = _testflowDesigntimeService.Components["mscorlib"].VariableTypes.FirstOrDefault(item => item.Name.Equals("Boolean"));
                         defaultValue = false.ToString();
-                        variable.ReportRecordLevel = RecordLevel.Trace;
+//                        variable.ReportRecordLevel = RecordLevel.Trace;
                         break;
                     case "Object":
                         variable.VariableType = VariableType.Class;
-                        variable.ReportRecordLevel = RecordLevel.None;
+//                        variable.ReportRecordLevel = RecordLevel.None;
                         break;
                 }
 
@@ -2452,7 +2452,10 @@ namespace TestFlow.DevSoftware
             // Testflow: 创建新的TestProject => SequenceGroup => Setup/Cleanup, MainSequence
             _testflowDesigntimeService.Unload();
             _testflowDesigntimeService.Load("Test Project", "");
-            _testflowDesigntimeService.AddComponent(_interfaceManger.GetComponentDescriptions()[0]); //加载System.mscorlib
+            foreach (IComInterfaceDescription comInterfaceDescription in _interfaceManger.GetComponentDescriptions())
+            {
+                _testflowDesigntimeService.AddComponent(comInterfaceDescription);
+            }
             _testflowDesigntimeService.AddSequenceGroup(projectName, "");
 
             // Sequence UI
@@ -2472,6 +2475,10 @@ namespace TestFlow.DevSoftware
 
             _testflowDesigntimeService.Unload();
             _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description, loadedSequenceGroup);
+            foreach (IComInterfaceDescription comInterfaceDescription in _interfaceManger.GetComponentDescriptions())
+            {
+                _testflowDesigntimeService.AddComponent(comInterfaceDescription);
+            }
             labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
 
             #region 清空UI
@@ -2769,7 +2776,7 @@ namespace TestFlow.DevSoftware
 
         #region 序列运行
 
-        private void RunSequence()
+        private void RunSequencePreProcess()
         {
             // 序列未保存则弹出保存界面，如果保存失败或取消则返回不执行
             if (string.IsNullOrWhiteSpace(SequenceGroup.Info.SequenceGroupFile))
@@ -2800,8 +2807,6 @@ namespace TestFlow.DevSoftware
                 _eventController = new EventController(_globalInfo, SequenceGroup, this);
                 _eventController.RegisterEvents();
                 // 显示OperationPanel
-                _oiInvoker = new OperationPanelInvoker(_globalInfo, runtimeSequenceGroup);
-                _oiInvoker.Initialize();
                 // 添加事件
                 tabCon_Seq.SelectedIndex = 0;
                 ResetRuntimeStatus();
@@ -2811,6 +2816,42 @@ namespace TestFlow.DevSoftware
                 RuntimeStatusForm runtimeStatusForm = (RuntimeStatusForm)RuntimeStatusTab.Controls[0];
                 runtimeStatusForm.LoadSequence(runtimeSequenceGroup);
                 runtimeStatusForm.RegisterEvent();
+                _oiInvoker?.Dispose();
+                _oiInvoker = new OperationPanelInvoker(_globalInfo, runtimeSequenceGroup);
+                bool oiAvailable = _oiInvoker.Initialize();
+                // 如果OI可用，则使用OI的OIReady事件触发引擎开始运行
+                if (oiAvailable)
+                {
+                    _oiInvoker.RegeisterOiReadyEventAndStart(StartRunSequence);
+                }
+                else
+                {
+                    _testflowRuntimeService.Run();
+                    viewController_Main.State = RunState.Running.ToString();
+                }
+                
+            }
+            catch (ApplicationException ex)
+            {
+                Logger.Print(ex, ex.Message, LogLevel.Error);
+                ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
+                viewController_Main.State = RunState.RunIdle.ToString();
+            }
+        }
+
+        private void StartRunSequence(bool oiStart, string message)
+        {
+            if (!oiStart)
+            {
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    ShowMessage(message, "Error", MessageBoxIcon.Error);
+                }
+                viewController_Main.State = RunState.EditIdle.ToString();
+                return;
+            }
+            try
+            {
                 _testflowRuntimeService.Run();
                 viewController_Main.State = RunState.Running.ToString();
             }
@@ -3613,7 +3654,7 @@ namespace TestFlow.DevSoftware
             }
             try
             {
-                OiSelectionForm oiSelectionForm = new OiSelectionForm(SequenceGroup.Info.OperationPanelInfo, _globalInfo);
+                OiSelectionForm oiSelectionForm = new OiSelectionForm(SequenceGroup, _globalInfo);
                 oiSelectionForm.ShowDialog(this);
             }
             catch (Exception ex)

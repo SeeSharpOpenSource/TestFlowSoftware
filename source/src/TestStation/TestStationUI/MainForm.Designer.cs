@@ -34,9 +34,9 @@ namespace TestFlow.DevSoftware
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +63,7 @@ namespace TestFlow.DevSoftware
             this.configureToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.suspendToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -200,7 +201,6 @@ namespace TestFlow.DevSoftware
             this.insertSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.configOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_ActionMenu.SuspendLayout();
             this.toolStrip_QuickMenu.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -450,6 +450,7 @@ namespace TestFlow.DevSoftware
             // 
             // configureToolStripMenuItem
             // 
+            this.configureToolStripMenuItem.Enabled = false;
             this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
             this.configureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.configureToolStripMenuItem.Text = "Configure";
@@ -457,10 +458,18 @@ namespace TestFlow.DevSoftware
             // 
             // selectModelToolStripMenuItem
             // 
+            this.selectModelToolStripMenuItem.Enabled = false;
             this.selectModelToolStripMenuItem.Name = "selectModelToolStripMenuItem";
             this.selectModelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.selectModelToolStripMenuItem.Text = "Select Model";
             this.selectModelToolStripMenuItem.Click += new System.EventHandler(this.selectModelToolStripMenuItem_Click);
+            // 
+            // configOIToolStripMenuItem
+            // 
+            this.configOIToolStripMenuItem.Name = "configOIToolStripMenuItem";
+            this.configOIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.configOIToolStripMenuItem.Text = "Configure OI";
+            this.configOIToolStripMenuItem.Click += new System.EventHandler(this.configOIToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem1
             // 
@@ -1295,14 +1304,14 @@ namespace TestFlow.DevSoftware
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1317,8 +1326,8 @@ namespace TestFlow.DevSoftware
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle5;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1326,8 +1335,8 @@ namespace TestFlow.DevSoftware
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle6;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -1898,13 +1907,6 @@ namespace TestFlow.DevSoftware
             this.renameSequenceToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.renameSequenceToolStripMenuItem.Text = "Rename Sequence";
             this.renameSequenceToolStripMenuItem.Click += new System.EventHandler(this.renameSequenceToolStripMenuItem_Click);
-            // 
-            // configOIToolStripMenuItem
-            // 
-            this.configOIToolStripMenuItem.Name = "configOIToolStripMenuItem";
-            this.configOIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.configOIToolStripMenuItem.Text = "Config OI";
-            this.configOIToolStripMenuItem.Click += new System.EventHandler(this.configOIToolStripMenuItem_Click);
             // 
             // MainForm
             // 

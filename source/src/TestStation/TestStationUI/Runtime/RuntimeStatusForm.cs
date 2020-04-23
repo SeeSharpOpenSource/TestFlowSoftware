@@ -96,7 +96,7 @@ namespace TestFlow.DevSoftware.Runtime
             string runtimeHash = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("RuntimeHash");
             string reportPath = GetReportPath();
             _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt, _sequenceGroup);
-            Invoke(new Action(() =>
+            BeginInvoke(new Action(() =>
             {
                 ReportForm reportForm = new ReportForm(reportPath);
                 reportForm.ShowDialog(this);

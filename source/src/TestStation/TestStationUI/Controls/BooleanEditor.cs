@@ -29,7 +29,7 @@ namespace TestFlow.DevSoftware
                 base._valueChanged = true;
                 Variable.Value = newValue;
             }
-
+            Variable.ReportRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), comboBox_recordLevel.Text);
             base.OkButton_Click(sender, e);
         }
 

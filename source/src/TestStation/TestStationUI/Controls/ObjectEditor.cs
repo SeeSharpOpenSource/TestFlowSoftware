@@ -294,6 +294,7 @@ namespace TestFlow.DevSoftware.Controls
             {
                 string variableValue = GetVariableValue();
                 _variable.Value = variableValue;
+                _variable.ReportRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), comboBox_recordLevel.Text);
                 _isCancelled = false;
                 this.Close();
             }
