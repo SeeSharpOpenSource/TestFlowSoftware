@@ -28,26 +28,34 @@ namespace TestFlow.Software.OperationPanel
             this._eventActions = new List<Delegate>(10);
         }
 
-        public void Initialize()
+        public bool Initialize()
         {
             try
             {
                 bool oiInitSuccess = InitOperationPanel();
                 if (!oiInitSuccess)
                 {
-                    return;
+                    return false;
                 }
                 RegisterEvent();
                 _operationPanelThd = new Thread((state) =>
                 {
                     _operationPanel.ShowPanel(_sequenceData, _operationPanelInfo.Parameters);
                 });
+                _operationPanelThd.Start();
+                return true;
             }
             catch (ApplicationException ex)
             {
                 throw new ApplicationException($"Initialize operation panel failed:{ex.Message}");
             }
         }
+
+        public void RegeisterOiReadyEventAndStart(Action<bool, string> eventDelegate)
+        {
+            _operationPanel.OiReady += eventDelegate;
+        }
+
 
         private bool InitOperationPanel()
         {

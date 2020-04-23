@@ -19,6 +19,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
         {
             InitializeComponent();
             label_paramName.Text = paramName;
+            _variable = variable;
             if (null == variable && !string.IsNullOrWhiteSpace(constValue))
             {
                 textBox_value.Text = constValue;

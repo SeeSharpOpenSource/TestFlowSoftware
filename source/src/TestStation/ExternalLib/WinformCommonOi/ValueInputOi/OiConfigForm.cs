@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Testflow.Data.Sequence;
@@ -11,12 +12,11 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
     {
         private List<string> _variables;
         private Dictionary<string, string> _configData;
+        private IOperationPanelInfo _oiInfo;
 
         public OiConfigForm()
         {
             InitializeComponent();
-            Column_variableNmae.Items.AddRange(_variables);
-            _configData = null;
         }
 
         public void Initialize(ISequenceFlowContainer sequenceData)
@@ -25,6 +25,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             if (sequenceData is ISequenceGroup)
             {
                 variableCollection = ((ISequenceGroup) sequenceData).Variables;
+                _oiInfo = ((ISequenceGroup) sequenceData).Info.OperationPanelInfo;
             }
             else if (sequenceData is ITestProject)
             {
@@ -34,7 +35,17 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             {
                 throw new ApplicationException("Invalid sequence type.");
             }
-            _variables = new List<string>(variableCollection.Count);
+            _variables = new List<string>(from item in variableCollection select item.Name);
+            if (_variables?.Count > 0)
+            {
+                Column_variableName.Items.Add(string.Empty);
+                foreach (string variable in _variables)
+                {
+                    Column_variableName.Items.Add(variable);
+                }
+            }
+            _configData = null;
+            ShowParameter();
         }
 
         public string GetOiConfigData()
@@ -57,7 +68,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
 
         public void ShowDialog()
         {
-            this.ShowDialog();
+            base.ShowDialog();
         }
 
         private void button_confirm_Click(object sender, EventArgs e)
@@ -67,9 +78,14 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             {
                 string paramName = rowData.Cells[0].Value?.ToString();
                 string variableName = rowData.Cells[1].Value?.ToString();
-                if (null != paramName && null != variableName)
+                string constantValue = rowData.Cells[2].Value?.ToString();
+                if (null != paramName && !string.IsNullOrWhiteSpace(variableName))
                 {
                     _configData.Add(paramName, variableName);
+                }
+                else if (null != paramName && !string.IsNullOrWhiteSpace(constantValue))
+                {
+                    _configData.Add(paramName, constantValue);
                 }
             }
             this.Close();
@@ -77,7 +93,8 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
 
         private void button_cancel_Click(object sender, EventArgs e)
         {
-
+            _configData = null;
+            this.Close();
         }
 
         private void button_add_Click(object sender, EventArgs e)
@@ -93,6 +110,37 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
                 return;
             }
             dataGridView_paramconfig.Rows.RemoveAt(selectedRowIndex);
+        }
+
+        private void ShowParameter()
+        {
+            dataGridView_paramconfig.Rows.Clear();
+            if (string.IsNullOrWhiteSpace(_oiInfo?.Parameters))
+            {
+                return;
+            }
+            try
+            {
+                Dictionary<string, string> parameters =
+                    JsonConvert.DeserializeObject<Dictionary<string, string>>(_oiInfo.Parameters);
+                foreach (KeyValuePair<string, string> keyValuePair in parameters)
+                {
+                    // 配置项为变量
+                    if (_variables.Contains(keyValuePair.Value))
+                    {
+                        dataGridView_paramconfig.Rows.Add(keyValuePair.Key, keyValuePair.Value, "");
+                    }
+                    // 配置项为常量
+                    else
+                    {
+                        dataGridView_paramconfig.Rows.Add(keyValuePair.Key, "", keyValuePair.Value);
+                    }
+                }
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -34,7 +34,8 @@
             this.button_delete = new System.Windows.Forms.Button();
             this.button_add = new System.Windows.Forms.Button();
             this.Column_paramName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_variableNmae = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Column_variableName = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Column_constantValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_paramconfig)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,7 +47,8 @@
             this.dataGridView_paramconfig.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_paramconfig.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_paramName,
-            this.Column_variableNmae});
+            this.Column_variableName,
+            this.Column_constantValue});
             this.dataGridView_paramconfig.Location = new System.Drawing.Point(12, 79);
             this.dataGridView_paramconfig.Name = "dataGridView_paramconfig";
             this.dataGridView_paramconfig.RowHeadersVisible = false;
@@ -100,11 +102,17 @@
             this.Column_paramName.Name = "Column_paramName";
             this.Column_paramName.Width = 150;
             // 
-            // Column_variableNmae
+            // Column_variableName
             // 
-            this.Column_variableNmae.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column_variableNmae.HeaderText = "Variable Name(Constant Value)";
-            this.Column_variableNmae.Name = "Column_variableNmae";
+            this.Column_variableName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column_variableName.HeaderText = "Variable Name";
+            this.Column_variableName.Name = "Column_variableName";
+            // 
+            // Column_constantValue
+            // 
+            this.Column_constantValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column_constantValue.HeaderText = "ConstantValue";
+            this.Column_constantValue.Name = "Column_constantValue";
             // 
             // OiConfigForm
             // 
@@ -117,6 +125,7 @@
             this.Controls.Add(this.button_confirm);
             this.Controls.Add(this.dataGridView_paramconfig);
             this.Name = "OiConfigForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Operation Panel Configuration";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_paramconfig)).EndInit();
             this.ResumeLayout(false);
@@ -131,6 +140,7 @@
         private System.Windows.Forms.Button button_delete;
         private System.Windows.Forms.Button button_add;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_paramName;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Column_variableNmae;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Column_variableName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_constantValue;
     }
 }

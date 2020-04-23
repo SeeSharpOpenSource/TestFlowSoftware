@@ -56,8 +56,10 @@
             // 
             this.label_sequenceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_sequenceName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(35)))), ((int)(((byte)(25)))));
             this.label_sequenceName.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_sequenceName.Font = new System.Drawing.Font("SimHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_sequenceName.ForeColor = System.Drawing.Color.White;
             this.label_sequenceName.Location = new System.Drawing.Point(26, 23);
             this.label_sequenceName.Name = "label_sequenceName";
             this.label_sequenceName.Size = new System.Drawing.Size(739, 58);
@@ -130,6 +132,7 @@
             this.splitContainer_contents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer_contents.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer_contents.Location = new System.Drawing.Point(26, 95);
             this.splitContainer_contents.Name = "splitContainer_contents";
             // 
@@ -220,6 +223,7 @@
             this.Controls.Add(this.label_sequenceName);
             this.MinimumSize = new System.Drawing.Size(794, 493);
             this.Name = "RuntimeStatusForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Runtime Status";
             this.Load += new System.EventHandler(this.RuntimeStatusForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_sequenceView)).EndInit();

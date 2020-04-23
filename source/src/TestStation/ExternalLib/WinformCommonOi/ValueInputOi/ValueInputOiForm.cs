@@ -41,6 +41,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
         private void ValueInputOiForm_Load(object sender, EventArgs e)
         {
             label_sequenceName.Text = _sequenceData.Name;
+            this.Text = _sequenceData.Name;
             int rowCount = (_parameters.Count + 1)/2;
             if (rowCount > 1)
             {
@@ -58,6 +59,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
                 IVariable variable = GetVariable(paramKeyValue.Value);
                 ConfigItem configItem = new ConfigItem(paramKeyValue.Key, variable,
                     null != variable ? string.Empty : paramKeyValue.Value);
+                configItem.Show();
                 tableLayoutPanel_configItems.Controls.Add(configItem, colIndex, rowIndex);
             }
         }

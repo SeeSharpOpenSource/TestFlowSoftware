@@ -14,12 +14,14 @@ using Testflow.Data.Sequence;
 using Testflow.Modules;
 using TestFlow.SoftDevCommon;
 using TestFlow.Software.WinformCommonOi;
+using TestFlow.Software.WinformCommonOi.ValueInputOi;
 
 namespace TestFlow.Software.OperationPanel
 {
     public partial class OiSelectionForm : Form
     {
         private IOperationPanelInfo _oiInfo;
+        private ISequenceGroup _sequenceData;
         private GlobalInfo _globalInfo;
         private List<IClassInterfaceDescription> _filteredClasses;
         private Assembly _oiAssembly;
@@ -29,23 +31,25 @@ namespace TestFlow.Software.OperationPanel
         private ITypeData _originalTypeData;
         private string _originalParamValue;
 
-        public OiSelectionForm(IOperationPanelInfo oiInfo, GlobalInfo globalInfo)
+        public OiSelectionForm(ISequenceGroup sequenceGroup, GlobalInfo globalInfo)
         {
             InitializeComponent();
-            _oiInfo = oiInfo;
+            _sequenceData = sequenceGroup;
+            _oiInfo = sequenceGroup.Info.OperationPanelInfo;
             _originalAssemblyInfo = _oiInfo.Assembly;
             _originalTypeData = _oiInfo.OperationPanelClass;
             _originalParamValue = _oiInfo.Parameters;
             _globalInfo = globalInfo;
             _filteredClasses = new List<IClassInterfaceDescription>(20);
-            if (null == oiInfo.Assembly)
+            if (null == _oiInfo.Assembly)
             {
-                string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
+//                string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
+                string commonOiPath = "WinformCommonOi.dll";
                 label_assemblyPath.Text = commonOiPath;
             }
             else
             {
-                label_assemblyPath.Text = oiInfo.Assembly.Path;
+                label_assemblyPath.Text = _oiInfo.Assembly.Path;
             }
             ShowCurrentAssemblyAndClassInfo();
 
@@ -134,8 +138,8 @@ namespace TestFlow.Software.OperationPanel
             {
                 IClassInterfaceDescription selectedClass = _filteredClasses[comboBox_classes.SelectedIndex];
                 Type oiType = _oiAssembly.GetType($"{selectedClass.ClassType.Namespace}.{selectedClass.ClassType.Name}");
-                ConstructorInfo constructor = oiType.GetConstructor(new Type[0]);
                 object oiNstanceObj = Activator.CreateInstance(oiType);
+                ValueInputOperationPanel operationPanel = oiNstanceObj as ValueInputOperationPanel;
                 WinformOperationPanelBase oiInstance = oiNstanceObj as WinformOperationPanelBase;
                 button_configOi.Enabled = true;
                 _oiInfo.Assembly = _comDescription.Assembly;
@@ -171,6 +175,7 @@ namespace TestFlow.Software.OperationPanel
                 {
                     return;
                 }
+                configForm.Initialize(_sequenceData);
                 configForm.ShowDialog();
                 string configData = configForm.GetOiConfigData();
                 if (!string.IsNullOrWhiteSpace(configData))

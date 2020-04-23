@@ -118,6 +118,10 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
         {
             ICallStack currentStack = GetCurrentStack(runtimeInfo);
             ISequenceStep currentStep = SequenceUtils.GetStepFromStack((ISequenceGroup)SequenceData, currentStack);
+            if (null == currentStep)
+            {
+                return;
+            }
             if (runtimeInfo.StepResults.ContainsKey(currentStack))
             {
                 StepResult stepResult = runtimeInfo.StepResults[currentStack];

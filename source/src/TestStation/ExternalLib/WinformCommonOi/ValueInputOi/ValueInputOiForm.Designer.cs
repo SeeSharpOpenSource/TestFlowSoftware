@@ -64,8 +64,10 @@
             // 
             this.label_sequenceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_sequenceName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(35)))), ((int)(((byte)(25)))));
             this.label_sequenceName.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label_sequenceName.Font = new System.Drawing.Font("SimHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_sequenceName.ForeColor = System.Drawing.Color.White;
             this.label_sequenceName.Location = new System.Drawing.Point(12, 21);
             this.label_sequenceName.Name = "label_sequenceName";
             this.label_sequenceName.Size = new System.Drawing.Size(697, 58);
@@ -82,7 +84,7 @@
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.tableLayoutPanel_configItems);
             this.Name = "ValueInputOiForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ValueInputOiForm";
             this.Load += new System.EventHandler(this.ValueInputOiForm_Load);
             this.ResumeLayout(false);
