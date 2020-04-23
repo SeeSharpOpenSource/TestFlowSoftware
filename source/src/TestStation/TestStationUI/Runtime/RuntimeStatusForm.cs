@@ -93,14 +93,7 @@ namespace TestFlow.DevSoftware.Runtime
         private void SessionOver(ITestResultCollection statistics)
         {
             PrintWatchData(statistics.WatchData);
-            string runtimeHash = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("RuntimeHash");
-            string reportPath = GetReportPath();
-            _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt, _sequenceGroup);
-            BeginInvoke(new Action(() =>
-            {
-                ReportForm reportForm = new ReportForm(reportPath);
-                reportForm.ShowDialog(this);
-            }));
+            
         }
 
         private void PrintWatchData(IDictionary<IVariable, string> rawWatchDatta)
@@ -114,19 +107,6 @@ namespace TestFlow.DevSoftware.Runtime
 //                }
 //                Invoke(new Action(() => { _mainForm.UpdateVariableValues(watchData); }));
 //            }
-        }
-
-        private string GetReportPath()
-        {
-            string workspaceDir = _globalInfo.TestflowEntity.ConfigurationManager.ConfigData.GetProperty<string[]>("WorkspaceDir")[0];
-            string testName = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("TestName");
-            string filePath = $"{workspaceDir}{testName}.txt";
-            int index = 1;
-            while (File.Exists(filePath))
-            {
-                filePath = $"{workspaceDir}{testName}({index++}).txt";
-            }
-            return filePath;
         }
 
         private void SequenceStarted(ISequenceTestResult statistics)

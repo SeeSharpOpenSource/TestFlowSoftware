@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using Testflow.Data;
 using Testflow.Data.Sequence;
 using Testflow.Modules;
 using Testflow.Runtime;
 using Testflow.Runtime.Data;
 using Testflow.Utility.Utils;
+using TestFlow.DevSoftware.Runtime;
 using TestFlow.SoftDevCommon;
 
 namespace TestFlow.DevSoftware
@@ -183,10 +186,27 @@ namespace TestFlow.DevSoftware
         private void TestInstanceOver(IList<ITestResultCollection> statistics)
         {
             UnRegisterEvent();
+            string runtimeHash = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("RuntimeHash");
+            string reportPath = GetReportPath();
+            _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt, _sequenceData);
             _mainform.Invoke(new Action(() =>
             {
                 _mainform.RunningOver();
+                _mainform.PrintReport(reportPath);
             }));
+        }
+
+        private string GetReportPath()
+        {
+            string workspaceDir = _globalInfo.TestflowEntity.ConfigurationManager.ConfigData.GetProperty<string[]>("WorkspaceDir")[0];
+            string testName = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("TestName");
+            string filePath = $"{workspaceDir}{testName}.txt";
+            int index = 1;
+            while (File.Exists(filePath))
+            {
+                filePath = $"{workspaceDir}{testName}({index++}).txt";
+            }
+            return filePath;
         }
 
         private void ReportPrintOver()

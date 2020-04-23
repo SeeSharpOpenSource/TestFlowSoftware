@@ -161,9 +161,10 @@ namespace TestFlow.DevSoftware
             this.RuntimeStatusTab = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.textBoxReport = new System.Windows.Forms.TextBox();
-            this.panel_buttonPanel = new System.Windows.Forms.Panel();
+            this.tabPage_report = new System.Windows.Forms.TabPage();
             this.button_openReportDir = new System.Windows.Forms.Button();
             this.buttonOpenReport = new System.Windows.Forms.Button();
+            this.textBox_reportData = new System.Windows.Forms.TextBox();
             this.statusStripButton = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusUseValue = new System.Windows.Forms.ToolStripStatusLabel();
@@ -224,7 +225,7 @@ namespace TestFlow.DevSoftware
             this.tabPage_stepData.SuspendLayout();
             this.RuntimeStatusTab.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.panel_buttonPanel.SuspendLayout();
+            this.tabPage_report.SuspendLayout();
             this.statusStripButton.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -1409,6 +1410,7 @@ namespace TestFlow.DevSoftware
             // 
             this.tabCon_Step.Controls.Add(this.tabPage_stepData);
             this.tabCon_Step.Controls.Add(this.RuntimeStatusTab);
+            this.tabCon_Step.Controls.Add(this.tabPage_report);
             this.tabCon_Step.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabCon_Step.Location = new System.Drawing.Point(0, 0);
             this.tabCon_Step.Name = "tabCon_Step";
@@ -1481,7 +1483,6 @@ namespace TestFlow.DevSoftware
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.textBoxReport, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.panel_buttonPanel, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -1503,36 +1504,53 @@ namespace TestFlow.DevSoftware
             this.textBoxReport.Size = new System.Drawing.Size(892, 184);
             this.textBoxReport.TabIndex = 0;
             // 
-            // panel_buttonPanel
+            // tabPage_report
             // 
-            this.panel_buttonPanel.Controls.Add(this.button_openReportDir);
-            this.panel_buttonPanel.Controls.Add(this.buttonOpenReport);
-            this.panel_buttonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_buttonPanel.Location = new System.Drawing.Point(3, 3);
-            this.panel_buttonPanel.Name = "panel_buttonPanel";
-            this.panel_buttonPanel.Size = new System.Drawing.Size(892, 24);
-            this.panel_buttonPanel.TabIndex = 15;
+            this.tabPage_report.Controls.Add(this.button_openReportDir);
+            this.tabPage_report.Controls.Add(this.buttonOpenReport);
+            this.tabPage_report.Controls.Add(this.textBox_reportData);
+            this.tabPage_report.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_report.Name = "tabPage_report";
+            this.tabPage_report.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_report.Size = new System.Drawing.Size(908, 206);
+            this.tabPage_report.TabIndex = 3;
+            this.tabPage_report.Text = "Report";
+            this.tabPage_report.UseVisualStyleBackColor = true;
             // 
             // button_openReportDir
             // 
-            this.button_openReportDir.Location = new System.Drawing.Point(164, 2);
+            this.button_openReportDir.Location = new System.Drawing.Point(167, 3);
             this.button_openReportDir.Margin = new System.Windows.Forms.Padding(5, 3, 3, 3);
             this.button_openReportDir.Name = "button_openReportDir";
             this.button_openReportDir.Size = new System.Drawing.Size(160, 21);
-            this.button_openReportDir.TabIndex = 3;
+            this.button_openReportDir.TabIndex = 5;
             this.button_openReportDir.Text = "Open Report Directory";
             this.button_openReportDir.UseVisualStyleBackColor = true;
             this.button_openReportDir.Click += new System.EventHandler(this.button_openReportDir_Click);
             // 
             // buttonOpenReport
             // 
-            this.buttonOpenReport.Location = new System.Drawing.Point(0, 2);
+            this.buttonOpenReport.Location = new System.Drawing.Point(3, 3);
             this.buttonOpenReport.Name = "buttonOpenReport";
             this.buttonOpenReport.Size = new System.Drawing.Size(160, 21);
-            this.buttonOpenReport.TabIndex = 2;
+            this.buttonOpenReport.TabIndex = 4;
             this.buttonOpenReport.Text = "Open Report";
             this.buttonOpenReport.UseVisualStyleBackColor = true;
             this.buttonOpenReport.Click += new System.EventHandler(this.buttonOpenReport_Click);
+            // 
+            // textBox_reportData
+            // 
+            this.textBox_reportData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_reportData.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_reportData.Location = new System.Drawing.Point(3, 25);
+            this.textBox_reportData.Multiline = true;
+            this.textBox_reportData.Name = "textBox_reportData";
+            this.textBox_reportData.ReadOnly = true;
+            this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox_reportData.Size = new System.Drawing.Size(902, 178);
+            this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
             // 
@@ -1956,7 +1974,8 @@ namespace TestFlow.DevSoftware
             this.RuntimeStatusTab.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.panel_buttonPanel.ResumeLayout(false);
+            this.tabPage_report.ResumeLayout(false);
+            this.tabPage_report.PerformLayout();
             this.statusStripButton.ResumeLayout(false);
             this.statusStripButton.PerformLayout();
             this.splitContainerMain.Panel1.ResumeLayout(false);
@@ -2104,9 +2123,6 @@ namespace TestFlow.DevSoftware
         private ToolStripStatusLabel toolStripStatusLabel_userGroupLabel;
         private ToolStripStatusLabel toolStripStatusLabel_userGroup;
         private ToolStripMenuItem selectModelToolStripMenuItem;
-        private Panel panel_buttonPanel;
-        private Button button_openReportDir;
-        private Button buttonOpenReport;
         private TreeView treeView_sequenceTree;
         private TreeView treeView_stepView;
         private ContextMenuStrip contextMenuStrip_sequence;
@@ -2156,6 +2172,10 @@ namespace TestFlow.DevSoftware
         private Button button_collapse;
         private Button button_expand;
         private ToolStripMenuItem configOIToolStripMenuItem;
+        private TabPage tabPage_report;
+        private TextBox textBox_reportData;
+        private Button button_openReportDir;
+        private Button buttonOpenReport;
     }
 }
 

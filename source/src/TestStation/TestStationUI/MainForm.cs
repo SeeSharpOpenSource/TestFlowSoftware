@@ -797,34 +797,40 @@ namespace TestFlow.DevSoftware
 
         private void buttonOpenReport_Click(object sender, EventArgs e)
         {
-//            if (_eventController?.CurrentReport == null || !File.Exists(_eventController.CurrentReport))
-//            {
-//                return;
-//            }
-//            try
-//            {
-//                Process.Start("notepad.exe", _eventController.CurrentReport);
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Print(LogLevel.ERROR, ex.Message);
-//            }
+            if (_reportFilePath == null || !File.Exists(_reportFilePath))
+            {
+                return;
+            }
+            try
+            {
+                Process.Start("notepad.exe", _reportFilePath);
+            }
+            catch (Exception ex)
+            {
+                Logger.Print(ex, ex.Message, LogLevel.Error);
+            }
         }
 
         private void button_openReportDir_Click(object sender, EventArgs e)
         {
-//            if (_eventController?.ReportDir == null || !Directory.Exists(_eventController.ReportDir))
-//            {
-//                return;
-//            }
-//            try
-//            {
-//                Process.Start(_eventController.ReportDir);
-//            }
-//            catch (Exception ex)
-//            {
-//                Log.Print(LogLevel.ERROR, ex.Message);
-//            }
+            if (null == _reportFilePath || !_reportFilePath.Contains(Path.DirectorySeparatorChar))
+            {
+                return;
+            }
+            int endIndex = _reportFilePath.LastIndexOf(Path.DirectorySeparatorChar);
+            string reportFileDir = _reportFilePath.Substring(0, endIndex);
+            if (!Directory.Exists(reportFileDir))
+            {
+                return;
+            }
+            try
+            {
+                Process.Start(reportFileDir);
+            }
+            catch (Exception ex)
+            {
+                Logger.Print(ex, ex.Message, LogLevel.Error);
+            }
         }
 
         #region Variable相关事件
@@ -3216,6 +3222,30 @@ namespace TestFlow.DevSoftware
         {
             viewController_Main.State = RunState.RunOver.ToString();
             viewController_Main.State = RunState.EditIdle.ToString();
+        }
+
+        public void PrintReport(string reportPath)
+        {
+            _reportFilePath = reportPath;
+            StreamReader reader = null;
+            try
+            {
+                reader = new StreamReader(reportPath);
+                string lineData;
+                while (null != (lineData = reader.ReadLine()))
+                {
+                    textBox_reportData.AppendText(lineData);
+                    textBox_reportData.AppendText(Environment.NewLine);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message, "读取报表失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                reader?.Dispose();
+            }
         }
 
         internal void PrintUutResult(string uutResult)
