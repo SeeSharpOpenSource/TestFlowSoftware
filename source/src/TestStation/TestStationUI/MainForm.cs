@@ -2319,8 +2319,8 @@ namespace TestFlow.DevSoftware
                 bool uiNotBusy = newState != (int) RunState.EditProcess &&
                                  newState != (int) RunState.Running &&
                                  newState != (int) RunState.RunProcessing;
-                configureToolStripMenuItem.Enabled = uiNotBusy;
-                selectModelToolStripMenuItem.Enabled = uiNotBusy;
+//                configureToolStripMenuItem.Enabled = uiNotBusy;
+//                selectModelToolStripMenuItem.Enabled = uiNotBusy;
 
                 button_addWatch.Enabled = newState == (int) RunState.RunBlock;
                 button_deleteWatch.Enabled = newState == (int) RunState.RunBlock;
@@ -3096,24 +3096,6 @@ namespace TestFlow.DevSoftware
                 {
                     row.Cells[1].Value = values[varName];
                 }
-            }
-        }
-
-        private void UpdateCurrentSequence(ISequenceStep step)
-        {
-            ISequence sequence = GetSequence(step);
-            int tabIndex = sequence.Index <= 2 ? 0 : 1;
-            if (tabCon_Seq.SelectedIndex != tabIndex)
-            {
-                tabCon_Seq.SelectedIndex = tabIndex;
-            }
-            DataGridView seqTable = (DataGridView) tabCon_Seq.TabPages[tabIndex].Controls[0];
-            int currentRowIndex = seqTable.CurrentRow.Index;
-            ISequence currentSeq = GetSequence(tabIndex, currentRowIndex);
-            if (!sequence.Equals(currentSeq))
-            {
-                int rowIndex = GetSeqRowIndex(sequence.Index);
-                seqTable.CurrentCell = seqTable.Rows[rowIndex].Cells[0];
             }
         }
 
