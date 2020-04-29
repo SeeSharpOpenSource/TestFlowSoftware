@@ -188,5 +188,12 @@ namespace TestFlow.Software.OperationPanel
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void button_removeOi_Click(object sender, EventArgs e)
+        {
+            this._oiInfo.Parameters = string.Empty;
+            this._oiInfo.Assembly = null;
+            this._oiInfo.OperationPanelClass = null;
+        }
     }
 }

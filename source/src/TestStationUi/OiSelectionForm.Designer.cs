@@ -37,6 +37,7 @@
             this.button_configOi = new System.Windows.Forms.Button();
             this.comboBox_classes = new System.Windows.Forms.ComboBox();
             this.openFileDialog_assembly = new System.Windows.Forms.OpenFileDialog();
+            this.button_removeOi = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_selectAssembly
@@ -79,7 +80,7 @@
             // 
             // button_confirm
             // 
-            this.button_confirm.Location = new System.Drawing.Point(253, 123);
+            this.button_confirm.Location = new System.Drawing.Point(329, 123);
             this.button_confirm.Name = "button_confirm";
             this.button_confirm.Size = new System.Drawing.Size(75, 23);
             this.button_confirm.TabIndex = 6;
@@ -89,7 +90,7 @@
             // 
             // button_cancel
             // 
-            this.button_cancel.Location = new System.Drawing.Point(374, 123);
+            this.button_cancel.Location = new System.Drawing.Point(448, 123);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(75, 23);
             this.button_cancel.TabIndex = 7;
@@ -99,7 +100,7 @@
             // 
             // button_configOi
             // 
-            this.button_configOi.Location = new System.Drawing.Point(131, 123);
+            this.button_configOi.Location = new System.Drawing.Point(210, 123);
             this.button_configOi.Name = "button_configOi";
             this.button_configOi.Size = new System.Drawing.Size(75, 23);
             this.button_configOi.TabIndex = 8;
@@ -122,11 +123,22 @@
             this.openFileDialog_assembly.FileName = "openFileDialog1";
             this.openFileDialog_assembly.Filter = "dll Files|*.dll";
             // 
+            // button_removeOi
+            // 
+            this.button_removeOi.Location = new System.Drawing.Point(91, 123);
+            this.button_removeOi.Name = "button_removeOi";
+            this.button_removeOi.Size = new System.Drawing.Size(75, 23);
+            this.button_removeOi.TabIndex = 10;
+            this.button_removeOi.Text = "Remove OI";
+            this.button_removeOi.UseVisualStyleBackColor = true;
+            this.button_removeOi.Click += new System.EventHandler(this.button_removeOi_Click);
+            // 
             // OiSelectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(577, 172);
+            this.Controls.Add(this.button_removeOi);
             this.Controls.Add(this.comboBox_classes);
             this.Controls.Add(this.button_configOi);
             this.Controls.Add(this.button_cancel);
@@ -155,5 +167,6 @@
         private System.Windows.Forms.Button button_configOi;
         private System.Windows.Forms.ComboBox comboBox_classes;
         private System.Windows.Forms.OpenFileDialog openFileDialog_assembly;
+        private System.Windows.Forms.Button button_removeOi;
     }
 }
