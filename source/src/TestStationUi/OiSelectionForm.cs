@@ -43,8 +43,8 @@ namespace TestFlow.Software.OperationPanel
             _filteredClasses = new List<IClassInterfaceDescription>(20);
             if (null == _oiInfo.Assembly)
             {
-//                string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
-                string commonOiPath = "WinformCommonOi.dll";
+                string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
+//                string commonOiPath = "WinformCommonOi.dll";
                 label_assemblyPath.Text = commonOiPath;
             }
             else

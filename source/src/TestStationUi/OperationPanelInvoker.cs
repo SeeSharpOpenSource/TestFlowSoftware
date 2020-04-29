@@ -146,6 +146,10 @@ namespace TestFlow.Software.OperationPanel
 
         public void Dispose()
         {
+            if (_eventActions.Count <= 0)
+            {
+                return;
+            }
             IEngineController engineController = _globalInfo.TestflowEntity.EngineController;
             engineController.UnregisterRuntimeEvent(_eventActions[0], "TestGenerationStart", 0);
             engineController.UnregisterRuntimeEvent(_eventActions[1], "TestGenerationEnd", 0);

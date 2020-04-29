@@ -128,20 +128,23 @@ namespace TestFlow.DevSoftware
                 foreach (IFailedInfo failedInfo in statusinfo.FailedInfos.Values)
                 {
                     ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, failedInfo.StackTrace);
-                    printInfos.Add($"Step <{step.Name}> failed: {failedInfo.Message}");
+                    printInfos.Add($"Step <{step?.Name??string.Empty}> failed: {failedInfo.Message??string.Empty}");
                 }
             }
             ICallStack currentStack = GetCurrentStack(statusinfo);
-            StepResult result = statusinfo.StepResults[currentStack];
-            Dictionary<string, string> watchData = GetWatchData(statusinfo.WatchDatas);
-            _mainform.Invoke(new Action(() =>
+            if (null != currentStack)
             {
-                if (printInfos.Count > 0)
+                StepResult result = statusinfo.StepResults[currentStack];
+                Dictionary<string, string> watchData = GetWatchData(statusinfo.WatchDatas);
+                _mainform.Invoke(new Action(() =>
                 {
-                    _mainform.AppendOutput(string.Join(Environment.NewLine, printInfos));
-                }
-                _mainform.ShowStepResults(currentStack, result, watchData);
-            }));
+                    if (printInfos.Count > 0)
+                    {
+                        _mainform.AppendOutput(string.Join(Environment.NewLine, printInfos));
+                    }
+                    _mainform.ShowStepResults(currentStack, result, watchData);
+                }));
+            }
         }
 
         private ICallStack GetCurrentStack(IRuntimeStatusInfo statusinfo)

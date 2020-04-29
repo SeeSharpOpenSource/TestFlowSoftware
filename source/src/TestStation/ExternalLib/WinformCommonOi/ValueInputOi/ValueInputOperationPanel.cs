@@ -88,7 +88,8 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             }
             else
             {
-                ISessionGenerationInfo sessionGenerationInfo = generationInfo.RootGenerationInfo;
+                ISessionGenerationInfo sessionGenerationInfo = generationInfo.GenerationInfos[0];
+                _runtimeStatusForm.ShowAllSequenceState(RuntimeState.Error);
                 _runtimeStatusForm.PrintInformation("Test generation failed.");
                 if (null != sessionGenerationInfo.ErrorStack &&
                     !string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo))

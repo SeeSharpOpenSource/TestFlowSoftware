@@ -98,19 +98,19 @@ namespace TestFlow.DevSoftware.Controls
 
         private void UpdateDataTableColumn(string variableType)
         {
-            if (variableType.Equals("Boolean[]") && dataGridView_element.Columns[0] is DataGridViewTextBoxColumn)
+            if (variableType.Equals("Boolean[]") && dataGridView_element.Columns[1] is DataGridViewTextBoxColumn)
             {
                 dataGridView_element.AllowUserToAddRows = false;
                 dataGridView_element.Columns.Clear();
                 DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
-                column.DataSource = new string[] {"True", "False"};
+                column.DataSource = new string[] { "True", "False" };
                 column.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
                 column.HeaderText = "Value";
                 column.Name = "Column_value";
                 dataGridView_element.Columns.Add(column);
                 dataGridView_element.AllowUserToAddRows = true;
             }
-            else if (!variableType.Equals("Boolean[]") && !(dataGridView_element.Columns[0] is DataGridViewTextBoxColumn))
+            else if (!variableType.Equals("Boolean[]") && !(dataGridView_element.Columns[1] is DataGridViewTextBoxColumn))
             {
                 dataGridView_element.Columns.Clear();
                 DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
@@ -171,46 +171,17 @@ namespace TestFlow.DevSoftware.Controls
                 return;
             }
             string variableType = GetVariableType();
-            IEnumerable arrayValue = null;
             try
             {
-                switch (variableType)
-                {
-                    case "String[]":
-                        arrayValue = JsonConvert.DeserializeObject<string[]>(_variable.Value);
-                        break;
-                    case "Boolean[]":
-                        arrayValue = JsonConvert.DeserializeObject<bool[]>(_variable.Value);
-                        break;
-                    case "Double[]":
-                        arrayValue = JsonConvert.DeserializeObject<double[]>(_variable.Value);
-                        break;
-                    case "Single[]":
-                        arrayValue = JsonConvert.DeserializeObject<float[]>(_variable.Value);
-                        break;
-                    case "Int32[]":
-                        arrayValue = JsonConvert.DeserializeObject<int[]>(_variable.Value);
-                        break;
-                    case "UInt32[]":
-                        arrayValue = JsonConvert.DeserializeObject<uint[]>(_variable.Value);
-                        break;
-                    case "Int16[]":
-                        arrayValue = JsonConvert.DeserializeObject<short[]>(_variable.Value);
-                        break;
-                    case "UInt16[]":
-                        arrayValue = JsonConvert.DeserializeObject<ushort[]>(_variable.Value);
-                        break;
-                    case "Byte[]":
-                        arrayValue = JsonConvert.DeserializeObject<byte[]>(_variable.Value);
-                        break;
-                }
+                IEnumerable arrayValue = JsonConvert.DeserializeObject<string[]>(_variable.Value);
                 if (null == arrayValue)
                 {
                     return;
                 }
+                int index = 0;
                 foreach (object element in arrayValue)
                 {
-                    dataGridView_element.Rows.Add(element.ToString());
+                    dataGridView_element.Rows.Add(index++, element.ToString());
                 }
             }
             catch (JsonException ex)
@@ -223,38 +194,8 @@ namespace TestFlow.DevSoftware.Controls
 
         private string GetVariableValue()
         {
-            string variableType = GetVariableType();
             object serializeObject = null;
-            switch (variableType)
-            {
-                case "String[]":
-                    serializeObject = GetConvertedValue(typeof(string), (source) => source.ToString());
-                    break;
-                case "Boolean[]":
-                    serializeObject = GetConvertedValue(typeof(bool), (source) => bool.Parse(source));
-                    break;
-                case "Double[]":
-                    serializeObject = GetConvertedValue(typeof(double), (source) => double.Parse(source));
-                    break;
-                case "Single[]":
-                    serializeObject = GetConvertedValue(typeof(float), (source) => float.Parse(source));
-                    break;
-                case "Int32[]":
-                    serializeObject = GetConvertedValue(typeof(int), (source) => int.Parse(source));
-                    break;
-                case "UInt32[]":
-                    serializeObject = GetConvertedValue(typeof(uint), (source) => uint.Parse(source));
-                    break;
-                case "Int16[]":
-                    serializeObject = GetConvertedValue(typeof(short), (source) => short.Parse(source));
-                    break;
-                case "UInt16[]":
-                    serializeObject = GetConvertedValue(typeof(ushort), (source) => ushort.Parse(source));
-                    break;
-                case "Byte[]":
-                    serializeObject = GetConvertedValue(typeof(byte), (source) => byte.Parse(source));
-                    break;
-            }
+            serializeObject = GetConvertedValue(typeof(string), (source) => source.ToString());
             return null != serializeObject ? JsonConvert.SerializeObject(serializeObject) : string.Empty;
         }
 
@@ -262,7 +203,7 @@ namespace TestFlow.DevSoftware.Controls
         {
             int rowCount = dataGridView_element.RowCount;
             // 用户最后一行不填写值可能为null
-            if (rowCount > 0 && null == dataGridView_element.Rows[rowCount - 1].Cells[0].Value)
+            if (rowCount > 0 && null == dataGridView_element.Rows[rowCount - 1].Cells[1].Value)
             {
                 rowCount -= 1;
             }
@@ -270,15 +211,69 @@ namespace TestFlow.DevSoftware.Controls
             int index = 0;
             for (int i = 0; i < rowCount; i++)
             {
-                object element = dataGridView_element.Rows[i].Cells[0].Value;
+                object element = dataGridView_element.Rows[i].Cells[1].Value;
                 if (null == element)
                 {
                     throw new FormatException("The element of array should not be null.");
                 }
+                CheckTableData(element.ToString());
                 object value = convertFunc.Invoke(element.ToString());
                 array.SetValue(value, index++);
             }
             return array;
+        }
+
+        private void CheckTableData(string value)
+        {
+            value = value ?? string.Empty;
+            bool checkPassed = true;
+            switch (comboBox_type.Text)
+            {
+                case "Array of Boolean":
+                case "Boolean[]":
+                    bool boolValue;
+                    checkPassed = bool.TryParse(value, out boolValue);
+                    break;
+                case "Array of Decimal(Double)":
+                case "Double[]":
+                    double doubleValue;
+                    checkPassed = double.TryParse(value, out doubleValue);
+                    break;
+                case "Array of Decimal(Float)":
+                case "Single[]":
+                    float floatValue;
+                    checkPassed = float.TryParse(value, out floatValue);
+                    break;
+                case "Array of Decimal(Int)":
+                case "Int32[]":
+                    int intValue;
+                    checkPassed = int.TryParse(value, out intValue);
+                    break;
+                case "Array of Decimal(UInt)":
+                case "UInt32[]":
+                    uint uintValue;
+                    checkPassed = uint.TryParse(value, out uintValue);
+                    break;
+                case "Array of Decimal(Short)":
+                case "Int16[]":
+                    short shortValue;
+                    checkPassed = short.TryParse(value, out shortValue);
+                    break;
+                case "Array of Decimal(UShort)":
+                case "UInt16[]":
+                    ushort ushortValue;
+                    checkPassed = ushort.TryParse(value, out ushortValue);
+                    break;
+                case "Array of Decimal(Byte)":
+                case "Byte[]":
+                    byte byteValue;
+                    checkPassed = byte.TryParse(value, out byteValue);
+                    break;
+            }
+            if (!checkPassed)
+            {
+                throw new ApplicationException($"Invalid value <{value}>");
+            }
         }
 
         private void button_cancel_Click(object sender, EventArgs e)
@@ -294,7 +289,7 @@ namespace TestFlow.DevSoftware.Controls
             {
                 string variableValue = GetVariableValue();
                 _variable.Value = variableValue;
-                _variable.ReportRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), comboBox_recordLevel.Text);
+                _variable.AutoType = _variable.Type == null;
                 _isCancelled = false;
                 this.Close();
             }
@@ -316,17 +311,30 @@ namespace TestFlow.DevSoftware.Controls
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DataGridViewRow currentRow = dataGridView_element.CurrentRow;
-            if (null == currentRow || currentRow.Index == dataGridView_element.RowCount - 1)
+            int removeIndex = currentRow.Index;
+            if (null == currentRow || removeIndex == dataGridView_element.RowCount - 1)
             {
                 return;
             }
-            dataGridView_element.Rows.RemoveAt(currentRow.Index);
+            dataGridView_element.Rows.RemoveAt(removeIndex);
+            UpdateIndex(removeIndex - 1);
         }
 
-        private void ObjectEditor_Load(object sender, EventArgs e)
+        private void dataGridView_element_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            comboBox_recordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
-            comboBox_recordLevel.Text = _variable.ReportRecordLevel.ToString();
+            UpdateIndex(e.RowIndex);
+        }
+
+        private void UpdateIndex(int rowIndex)
+        {
+            if (rowIndex < 0)
+            {
+                rowIndex = 0;
+            }
+            for (int i = rowIndex; i < dataGridView_element.RowCount; i++)
+            {
+                dataGridView_element.Rows[i].Cells[0].Value = i;
+            }
         }
     }
 }
