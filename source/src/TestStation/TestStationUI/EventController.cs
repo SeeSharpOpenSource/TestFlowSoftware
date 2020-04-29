@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Testflow.Data;
 using Testflow.Data.Sequence;
 using Testflow.Modules;
@@ -98,7 +99,7 @@ namespace TestFlow.DevSoftware
                 else
                 {
                     _mainform.AppendOutput("Test generation failed.");
-                    if (string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo) &&
+                    if (!string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo) &&
                         null != sessionGenerationInfo.ErrorStack)
                     {
                         ISequenceStep errorStep = SequenceUtils.GetStepFromStack(_sequenceData,
@@ -123,15 +124,16 @@ namespace TestFlow.DevSoftware
         private void StatusReceived(IRuntimeStatusInfo statusinfo)
         {
             List<string> printInfos = new List<string>(5);
+            ICallStack currentStack = GetCurrentStack(statusinfo);
             if (statusinfo.FailedInfos?.Count > 0)
             {
+                ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, currentStack);
                 foreach (IFailedInfo failedInfo in statusinfo.FailedInfos.Values)
                 {
-                    ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, failedInfo.StackTrace);
-                    printInfos.Add($"Step <{step?.Name??string.Empty}> failed: {failedInfo.Message??string.Empty}");
+                    printInfos.Add($"Step <{step?.Name ?? string.Empty}> failed: {failedInfo.Message ?? string.Empty}");
                 }
             }
-            ICallStack currentStack = GetCurrentStack(statusinfo);
+
             if (null != currentStack)
             {
                 StepResult result = statusinfo.StepResults[currentStack];
@@ -169,19 +171,8 @@ namespace TestFlow.DevSoftware
 
         private void SequenceOver(ISequenceTestResult statistics)
         {
-            string printInfo;
-            if (statistics.SequenceIndex == -1)
-            {
-                printInfo = "ProcessSetUp over.";
-            }
-            else if (statistics.SequenceIndex == -2)
-            {
-                printInfo = "ProcessCleanUp over.";
-            }
-            else
-            {
-                printInfo = "MainSequence over.";
-            }
+            ISequence sequence = SequenceUtils.GetSequence(_sequenceData, statistics.SessionId, statistics.SequenceIndex);
+            string printInfo = $"{sequence.Name} over.";
             _mainform.Invoke(new Action(() => { _mainform.AppendOutput(printInfo); }));
         }
 
