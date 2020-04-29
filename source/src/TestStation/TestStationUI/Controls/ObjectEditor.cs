@@ -100,8 +100,8 @@ namespace TestFlow.DevSoftware.Controls
         {
             if (variableType.Equals("Boolean[]") && dataGridView_element.Columns[1] is DataGridViewTextBoxColumn)
             {
+                dataGridView_element.Columns.RemoveAt(1);
                 dataGridView_element.AllowUserToAddRows = false;
-                dataGridView_element.Columns.Clear();
                 DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
                 column.DataSource = new string[] { "True", "False" };
                 column.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -112,7 +112,7 @@ namespace TestFlow.DevSoftware.Controls
             }
             else if (!variableType.Equals("Boolean[]") && !(dataGridView_element.Columns[1] is DataGridViewTextBoxColumn))
             {
-                dataGridView_element.Columns.Clear();
+                dataGridView_element.Columns.RemoveAt(1);
                 DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
                 column.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
                 column.HeaderText = "Value";
