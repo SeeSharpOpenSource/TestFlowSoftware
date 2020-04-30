@@ -262,7 +262,7 @@ namespace TestFlow.DevSoftware
             if (tabNumber == 0)
             {
                 dgv_variable.Name = "GlobalVariableList";
-                globalVariableTab.Controls.Clear();
+                FreeControls(globalVariableTab.Controls);
                 globalVariableTab.Controls.Add(dgv_variable);
             }
             else if (null != CurrentSeq) //tabNumber == 1
@@ -278,7 +278,7 @@ namespace TestFlow.DevSoftware
                 }
 
                 dgv_variable.Name = CurrentSeq.Name + "VariableList";
-                tabCon_Variable.TabPages[1].Controls.Clear();
+                FreeControls(tabCon_Variable.TabPages[1].Controls);
                 tabCon_Variable.TabPages[1].Controls.Add(dgv_variable);
                 ShowVariables(1);
             }
@@ -293,6 +293,15 @@ namespace TestFlow.DevSoftware
             #endregion
 
             tabCon_Variable.SelectedIndex = tabNumber;
+        }
+
+        private void FreeControls(Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                control.Dispose();
+            }
+            controls.Clear();
         }
 
         private void CreateTDGVParameter()
