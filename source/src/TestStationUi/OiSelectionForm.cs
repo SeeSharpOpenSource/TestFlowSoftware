@@ -50,6 +50,8 @@ namespace TestFlow.Software.OperationPanel
             else
             {
                 label_assemblyPath.Text = _oiInfo.Assembly.Path;
+                label_currentoiAssembly.Text = _oiInfo.Assembly.Path;
+                label_currentOiClass.Text = _oiInfo.OperationPanelClass?.Name ?? string.Empty;
             }
             ShowCurrentAssemblyAndClassInfo();
 
@@ -194,6 +196,8 @@ namespace TestFlow.Software.OperationPanel
             this._oiInfo.Parameters = string.Empty;
             this._oiInfo.Assembly = null;
             this._oiInfo.OperationPanelClass = null;
+            this.label_currentoiAssembly.Text = string.Empty;
+            this.label_currentOiClass.Text = string.Empty;
         }
     }
 }
