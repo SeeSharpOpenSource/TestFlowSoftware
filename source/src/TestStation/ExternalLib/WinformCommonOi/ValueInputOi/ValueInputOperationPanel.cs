@@ -126,7 +126,10 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             if (runtimeInfo.StepResults.ContainsKey(currentStack))
             {
                 StepResult stepResult = runtimeInfo.StepResults[currentStack];
-                _runtimeStatusForm.PrintInformation($"{currentStep.Name}        {stepResult}");
+                if (stepResult != StepResult.NotAvailable)
+                {
+                    _runtimeStatusForm.PrintInformation($"{currentStep.Name}        {stepResult}");
+                }
             }
             if (runtimeInfo.FailedInfos.ContainsKey(0) && !string.IsNullOrWhiteSpace(runtimeInfo.FailedInfos[0]?.Message))
             {

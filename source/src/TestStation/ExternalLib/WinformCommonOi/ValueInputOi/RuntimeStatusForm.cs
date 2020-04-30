@@ -70,7 +70,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
         private int GetSequenceRowIndex(int sequenceIndex)
         {
             int rowIndex;
-            if (sequenceIndex == CommonConst.SetupIndex && sequenceIndex != CommonConst.TeardownIndex)
+            if (sequenceIndex != CommonConst.SetupIndex && sequenceIndex != CommonConst.TeardownIndex)
             {
                 rowIndex = sequenceIndex + 1;
             }
