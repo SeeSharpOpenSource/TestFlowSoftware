@@ -187,7 +187,7 @@
     <value>391, 17</value>
   </metadata>
   <metadata name="cMS_DgvStep.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>684, 17</value>
+    <value>551, 18</value>
   </metadata>
   <metadata name="Column_VariableName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -470,7 +470,7 @@
 </value>
   </data>
   <data name="viewController_Main.ControlInfos" xml:space="preserve">
-    <value>tabCon_Seq:EditIdle*Enabled=True,Visible=;EditProcess*Enabled=True,Visible=;RunIdle*Enabled=True,Visible=;RunBlock*Enabled=False,Visible=;RunProcessing*Enabled=False,Visible=;Running*Enabled=False,Visible=;RunOver*Enabled=True,Visible=</value>
+    <value>tabCon_Seq:EditIdle*Enabled=True,Visible=;EditProcess*Enabled=True,Visible=;RunIdle*Enabled=True,Visible=;RunBlock*Enabled=True,Visible=;RunProcessing*Enabled=True,Visible=;Running*Enabled=True,Visible=;RunOver*Enabled=True,Visible=</value>
   </data>
   <data name="viewController_Main.ControlInfos1" xml:space="preserve">
     <value>tabCon_Variable:EditIdle*Enabled=True,Visible=;EditProcess*Enabled=True,Visible=;RunIdle*Enabled=True,Visible=;RunBlock*Enabled=True,Visible=;RunProcessing*Enabled=True,Visible=;Running*Enabled=True,Visible=;RunOver*Enabled=True,Visible=</value>
