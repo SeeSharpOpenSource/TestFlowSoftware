@@ -107,6 +107,9 @@ namespace TestFlow.DevSoftware
         private Color RunningColor = Color.Coral;
         private Color SkipColor = Color.Gray;
 
+        private Color _valueColColor = Color.Black;
+        private Color _varColColor = Color.Red;
+
         #endregion
 
         #region 私有字段-各种标志位
@@ -1613,7 +1616,6 @@ namespace TestFlow.DevSoftware
             string paramName = _paramTable.Rows[rowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
             DataGridViewCell currentCell = _paramTable.Rows[rowIndex].Cells["ParameterValue"];
             string value = currentCell.Value?.ToString() ?? string.Empty;
-            // 如果是在编辑第三列的数据，并且值等于local.或者global.，则弹出变量选择列表
             if (columnIndex == 4 &&
                 (value.Equals(Constants.GlobalVarPrefix + Constants.VaraibleDelim,
                     StringComparison.CurrentCultureIgnoreCase) ||
@@ -1624,7 +1626,6 @@ namespace TestFlow.DevSoftware
                 return;
             }
 
-            
             ISequenceStep functionStep;
             ISequenceStep constructorStep;
             GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
@@ -1638,11 +1639,13 @@ namespace TestFlow.DevSoftware
                     if (string.IsNullOrWhiteSpace(value))
                     {
                         TestflowDesigntimeSession.SetInstance(string.Empty, functionStep);
-                        return;
                     }
-                    IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
-                    TestflowDesigntimeSession.SetInstance(value, functionStep);
-                    SetVariableType(functionStep.Function.ClassType, value, variable);
+                    else
+                    {
+                        IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
+                        TestflowDesigntimeSession.SetInstance(value, functionStep);
+                        SetVariableType(functionStep.Function.ClassType, value, variable);
+                    }
                 }
                 else
                 {
@@ -1657,9 +1660,8 @@ namespace TestFlow.DevSoftware
                         {
                             TestflowDesigntimeSession.SetInstance(string.Empty, constructorStep);
                         }
-                        return;
                     }
-                    if (paramName.Equals("Return Value"))
+                    else if (paramName.Equals("Return Value"))
                     {
                         IVariable variable = GetAvailableVariable(currentStep, value, constructorStep.Function.ClassType);
                         TestflowDesigntimeSession.SetInstance(value, constructorStep);
@@ -1684,18 +1686,26 @@ namespace TestFlow.DevSoftware
                     if (string.IsNullOrWhiteSpace(value))
                     {
                         TestflowDesigntimeSession.SetInstance(string.Empty, functionStep);
-                        return;
                     }
-                    IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
-                    TestflowDesigntimeSession.SetReturn(value, functionStep);
-                    SetVariableType(functionStep.Function.ReturnType.Type, value, variable);
-                    currentCell.Value = variable?.Name ?? string.Empty;
+                    else
+                    {
+                        IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
+                        TestflowDesigntimeSession.SetReturn(value, functionStep);
+                        SetVariableType(functionStep.Function.ReturnType.Type, value, variable);
+                        currentCell.Value = variable?.Name ?? string.Empty;
+                    }
                 }
                 else
                 {
                     SetStepParamValue(functionStep, paramName, value, currentCell, setByFx);
                 }
             }
+            SetParamColumnForeColor(setByFx, rowIndex);
+        }
+
+        private void SetParamColumnForeColor(bool setByFx, int rowIndex)
+        {
+            _paramTable.Rows[rowIndex].Cells[ParamTableValueCol].Style.ForeColor = setByFx ? _varColColor : _valueColColor;
         }
 
         private void SetVariableType(ITypeData paramType, string paramValue, IVariable variable)
@@ -2008,7 +2018,7 @@ namespace TestFlow.DevSoftware
         private void UpdateSettings()
         {
             ISequenceStep step = FindSelectedStep(treeView_stepView.SelectedNode);
-            if (null == step)
+            if (null == step || step.StepType == SequenceStepType.TryFinallyBlock)
             {
                 ClearSettings();
                 UpdateTabControlSetting(false);
@@ -2176,6 +2186,7 @@ namespace TestFlow.DevSoftware
             {
                 string instance = functionData.Instance;
                 _paramTable.Rows.Add(new object[] { null, "Return Value", $"Object({ functionData.ClassType.Namespace}.{functionData.ClassType.Name})", "Out", instance });
+                SetParamColumnForeColor(true, _paramTable.RowCount - 1);
             }
 
             #endregion
@@ -2185,6 +2196,7 @@ namespace TestFlow.DevSoftware
             {
                 string returnValue = functionData.Return;
                 _paramTable.Rows.Add(new object[] { null, "Return Value", functionData.ReturnType.Type.Name, "Out", returnValue });
+                SetParamColumnForeColor(true, _paramTable.RowCount - 1);
             }
 
             #endregion
@@ -2202,7 +2214,8 @@ namespace TestFlow.DevSoftware
                     // 如果参数值为变量类型，则处理该变量显示值
                     string paramValue = parameterData.Value;
                     int rowIndex = _paramTable.Rows.Add(new object[] { null, parameterType.Name, parameterType.Type.Name, modifier.Equals("None") ? "In" : modifier, paramValue });
-
+                    bool setByFx = parameterData.ParameterType != ParameterType.NotAvailable && parameterData.ParameterType != ParameterType.Value;
+                    SetParamColumnForeColor(setByFx, _paramTable.RowCount - 1);
                     // 该步骤是为了添加参数的Assembly到接口加载模块
                     IAssemblyInfo assemblyInfo;
                     _globalInfo.TestflowEntity.ComInterfaceManager.GetClassDescriptionByType(parameterType.Type,
@@ -2232,6 +2245,7 @@ namespace TestFlow.DevSoftware
                             }
                         }
                     }
+
                 }
             }
             #endregion
@@ -2258,6 +2272,7 @@ namespace TestFlow.DevSoftware
                     _paramTable.Rows.Add(new object[] { null, ExistingObjParent,
                     $"{_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name}", "In",
                                                         instanceValue});
+                    SetParamColumnForeColor(true, _paramTable.RowCount - 1);
                 }
                 // 方法显示
                 if (!string.IsNullOrWhiteSpace(comboBox_Method.Text) && null != CurrentStep)

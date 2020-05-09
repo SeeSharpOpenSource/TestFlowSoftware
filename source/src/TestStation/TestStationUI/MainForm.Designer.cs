@@ -34,9 +34,9 @@ namespace TestFlow.DevSoftware
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,6 +112,19 @@ namespace TestFlow.DevSoftware
             this.tryFinallyBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_DeleteStep = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.commonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.conditionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.conditionBlockToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.conditionStatementToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.conditionLoopToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.parallelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.multiThreadToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.timerBlockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.batchBlockToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gotoToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tryFinallyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl_settings = new System.Windows.Forms.TabControl();
             this.tabpage_Properties = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel_stepProperties = new System.Windows.Forms.FlowLayoutPanel();
@@ -202,19 +215,6 @@ namespace TestFlow.DevSoftware
             this.insertSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-            this.commonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.conditionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.parallelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flowControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.conditionBlockToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.conditionStatementToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.conditionLoopToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.multiThreadToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.timerBlockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.batchBlockToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.gotoToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.tryFinallyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_ActionMenu.SuspendLayout();
             this.toolStrip_QuickMenu.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -664,7 +664,7 @@ namespace TestFlow.DevSoftware
             this.toolStripMenuItem3,
             this.toolStripMenuItem5});
             this.cMS_DgvStep.Name = "cMS_DgvStep";
-            this.cMS_DgvStep.Size = new System.Drawing.Size(157, 136);
+            this.cMS_DgvStep.Size = new System.Drawing.Size(157, 114);
             // 
             // Menu_AddStep
             // 
@@ -674,7 +674,7 @@ namespace TestFlow.DevSoftware
             this.sequenceCallToolStripMenuItem,
             this.timingToolStripMenuItem});
             this.Menu_AddStep.Name = "Menu_AddStep";
-            this.Menu_AddStep.Size = new System.Drawing.Size(153, 22);
+            this.Menu_AddStep.Size = new System.Drawing.Size(156, 22);
             this.Menu_AddStep.Text = "Add Step";
             // 
             // actionToolStripMenuItem
@@ -788,7 +788,7 @@ namespace TestFlow.DevSoftware
             this.sequenceCallToolStripMenuItem2,
             this.timingToolStripMenuItem1});
             this.ToolStripMenuItem_insertStep.Name = "ToolStripMenuItem_insertStep";
-            this.ToolStripMenuItem_insertStep.Size = new System.Drawing.Size(153, 22);
+            this.ToolStripMenuItem_insertStep.Size = new System.Drawing.Size(156, 22);
             this.ToolStripMenuItem_insertStep.Text = "Insert Step";
             // 
             // testToolStripMenuItem1
@@ -897,16 +897,113 @@ namespace TestFlow.DevSoftware
             // Menu_DeleteStep
             // 
             this.Menu_DeleteStep.Name = "Menu_DeleteStep";
-            this.Menu_DeleteStep.Size = new System.Drawing.Size(153, 22);
+            this.Menu_DeleteStep.Size = new System.Drawing.Size(156, 22);
             this.Menu_DeleteStep.Text = "Delete Step";
             this.Menu_DeleteStep.Click += new System.EventHandler(this.DeleteSequenceStep);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(153, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(156, 22);
             this.toolStripMenuItem3.Text = "Rename Step";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.commonToolStripMenuItem,
+            this.conditionToolStripMenuItem,
+            this.parallelToolStripMenuItem,
+            this.flowControlToolStripMenuItem});
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(156, 22);
+            this.toolStripMenuItem5.Text = "Add Sub Step";
+            this.toolStripMenuItem5.Visible = false;
+            // 
+            // commonToolStripMenuItem
+            // 
+            this.commonToolStripMenuItem.Name = "commonToolStripMenuItem";
+            this.commonToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.commonToolStripMenuItem.Text = "Common";
+            // 
+            // conditionToolStripMenuItem
+            // 
+            this.conditionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.conditionBlockToolStripMenuItem2,
+            this.conditionStatementToolStripMenuItem2,
+            this.conditionLoopToolStripMenuItem2});
+            this.conditionToolStripMenuItem.Name = "conditionToolStripMenuItem";
+            this.conditionToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.conditionToolStripMenuItem.Text = "Condition";
+            // 
+            // conditionBlockToolStripMenuItem2
+            // 
+            this.conditionBlockToolStripMenuItem2.Name = "conditionBlockToolStripMenuItem2";
+            this.conditionBlockToolStripMenuItem2.Size = new System.Drawing.Size(194, 22);
+            this.conditionBlockToolStripMenuItem2.Text = "Condition Block";
+            // 
+            // conditionStatementToolStripMenuItem2
+            // 
+            this.conditionStatementToolStripMenuItem2.Name = "conditionStatementToolStripMenuItem2";
+            this.conditionStatementToolStripMenuItem2.Size = new System.Drawing.Size(194, 22);
+            this.conditionStatementToolStripMenuItem2.Text = "Condition Statement";
+            // 
+            // conditionLoopToolStripMenuItem2
+            // 
+            this.conditionLoopToolStripMenuItem2.Name = "conditionLoopToolStripMenuItem2";
+            this.conditionLoopToolStripMenuItem2.Size = new System.Drawing.Size(194, 22);
+            this.conditionLoopToolStripMenuItem2.Text = "Condition Loop";
+            // 
+            // parallelToolStripMenuItem
+            // 
+            this.parallelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.multiThreadToolStripMenuItem2,
+            this.timerBlockToolStripMenuItem1,
+            this.batchBlockToolStripMenuItem2});
+            this.parallelToolStripMenuItem.Name = "parallelToolStripMenuItem";
+            this.parallelToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.parallelToolStripMenuItem.Text = "Parallel";
+            this.parallelToolStripMenuItem.Visible = false;
+            // 
+            // multiThreadToolStripMenuItem2
+            // 
+            this.multiThreadToolStripMenuItem2.Name = "multiThreadToolStripMenuItem2";
+            this.multiThreadToolStripMenuItem2.Size = new System.Drawing.Size(151, 22);
+            this.multiThreadToolStripMenuItem2.Text = "Multi-Thread";
+            // 
+            // timerBlockToolStripMenuItem1
+            // 
+            this.timerBlockToolStripMenuItem1.Name = "timerBlockToolStripMenuItem1";
+            this.timerBlockToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+            this.timerBlockToolStripMenuItem1.Text = "Timer Block";
+            // 
+            // batchBlockToolStripMenuItem2
+            // 
+            this.batchBlockToolStripMenuItem2.Name = "batchBlockToolStripMenuItem2";
+            this.batchBlockToolStripMenuItem2.Size = new System.Drawing.Size(151, 22);
+            this.batchBlockToolStripMenuItem2.Text = "Batch Block";
+            // 
+            // flowControlToolStripMenuItem
+            // 
+            this.flowControlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gotoToolStripMenuItem2,
+            this.tryFinallyToolStripMenuItem1});
+            this.flowControlToolStripMenuItem.Name = "flowControlToolStripMenuItem";
+            this.flowControlToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.flowControlToolStripMenuItem.Text = "Flow Control";
+            // 
+            // gotoToolStripMenuItem2
+            // 
+            this.gotoToolStripMenuItem2.Name = "gotoToolStripMenuItem2";
+            this.gotoToolStripMenuItem2.Size = new System.Drawing.Size(134, 22);
+            this.gotoToolStripMenuItem2.Text = "Goto";
+            this.gotoToolStripMenuItem2.Visible = false;
+            // 
+            // tryFinallyToolStripMenuItem1
+            // 
+            this.tryFinallyToolStripMenuItem1.Name = "tryFinallyToolStripMenuItem1";
+            this.tryFinallyToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.tryFinallyToolStripMenuItem1.Text = "Try-Finally";
             // 
             // tabControl_settings
             // 
@@ -1166,7 +1263,7 @@ namespace TestFlow.DevSoftware
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(904, 358);
+            this.tabpage_Module.Size = new System.Drawing.Size(908, 360);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1174,7 +1271,7 @@ namespace TestFlow.DevSoftware
             // button_selectAssembly
             // 
             this.button_selectAssembly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_selectAssembly.Location = new System.Drawing.Point(873, 6);
+            this.button_selectAssembly.Location = new System.Drawing.Point(869, 6);
             this.button_selectAssembly.Name = "button_selectAssembly";
             this.button_selectAssembly.Size = new System.Drawing.Size(33, 24);
             this.button_selectAssembly.TabIndex = 14;
@@ -1189,7 +1286,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(777, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(781, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1200,7 +1297,7 @@ namespace TestFlow.DevSoftware
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_panel.Location = new System.Drawing.Point(86, 87);
             this.Parameter_panel.Name = "Parameter_panel";
-            this.Parameter_panel.Size = new System.Drawing.Size(820, 269);
+            this.Parameter_panel.Size = new System.Drawing.Size(816, 270);
             this.Parameter_panel.TabIndex = 10;
             // 
             // comboBox_Method
@@ -1211,7 +1308,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_Method.FormattingEnabled = true;
             this.comboBox_Method.Location = new System.Drawing.Point(85, 61);
             this.comboBox_Method.Name = "comboBox_Method";
-            this.comboBox_Method.Size = new System.Drawing.Size(821, 20);
+            this.comboBox_Method.Size = new System.Drawing.Size(817, 20);
             this.comboBox_Method.TabIndex = 9;
             this.comboBox_Method.TextChanged += new System.EventHandler(this.comboBox_Method_Validated);
             // 
@@ -1223,7 +1320,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_RootClass.FormattingEnabled = true;
             this.comboBox_RootClass.Location = new System.Drawing.Point(85, 34);
             this.comboBox_RootClass.Name = "comboBox_RootClass";
-            this.comboBox_RootClass.Size = new System.Drawing.Size(821, 20);
+            this.comboBox_RootClass.Size = new System.Drawing.Size(817, 20);
             this.comboBox_RootClass.TabIndex = 9;
             this.comboBox_RootClass.TextChanged += new System.EventHandler(this.comboBox_RootClass_Validated);
             // 
@@ -1319,14 +1416,14 @@ namespace TestFlow.DevSoftware
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1341,8 +1438,8 @@ namespace TestFlow.DevSoftware
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle8;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1350,8 +1447,8 @@ namespace TestFlow.DevSoftware
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle9;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -1563,7 +1660,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(906, 180);
+            this.textBox_reportData.Size = new System.Drawing.Size(910, 182);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -1750,6 +1847,7 @@ namespace TestFlow.DevSoftware
             // 
             // treeView_sequenceTree
             // 
+            this.treeView_sequenceTree.BackColor = System.Drawing.SystemColors.Control;
             this.treeView_sequenceTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView_sequenceTree.Font = new System.Drawing.Font("Courier New", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView_sequenceTree.Location = new System.Drawing.Point(0, 0);
@@ -1939,103 +2037,6 @@ namespace TestFlow.DevSoftware
             this.renameSequenceToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.renameSequenceToolStripMenuItem.Text = "Rename Sequence";
             this.renameSequenceToolStripMenuItem.Click += new System.EventHandler(this.renameSequenceToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.commonToolStripMenuItem,
-            this.conditionToolStripMenuItem,
-            this.parallelToolStripMenuItem,
-            this.flowControlToolStripMenuItem});
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(156, 22);
-            this.toolStripMenuItem5.Text = "Add Sub Step";
-            this.toolStripMenuItem5.Visible = false;
-            // 
-            // commonToolStripMenuItem
-            // 
-            this.commonToolStripMenuItem.Name = "commonToolStripMenuItem";
-            this.commonToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.commonToolStripMenuItem.Text = "Common";
-            // 
-            // conditionToolStripMenuItem
-            // 
-            this.conditionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.conditionBlockToolStripMenuItem2,
-            this.conditionStatementToolStripMenuItem2,
-            this.conditionLoopToolStripMenuItem2});
-            this.conditionToolStripMenuItem.Name = "conditionToolStripMenuItem";
-            this.conditionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.conditionToolStripMenuItem.Text = "Condition";
-            // 
-            // parallelToolStripMenuItem
-            // 
-            this.parallelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.multiThreadToolStripMenuItem2,
-            this.timerBlockToolStripMenuItem1,
-            this.batchBlockToolStripMenuItem2});
-            this.parallelToolStripMenuItem.Name = "parallelToolStripMenuItem";
-            this.parallelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.parallelToolStripMenuItem.Text = "Parallel";
-            this.parallelToolStripMenuItem.Visible = false;
-            // 
-            // flowControlToolStripMenuItem
-            // 
-            this.flowControlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gotoToolStripMenuItem2,
-            this.tryFinallyToolStripMenuItem1});
-            this.flowControlToolStripMenuItem.Name = "flowControlToolStripMenuItem";
-            this.flowControlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.flowControlToolStripMenuItem.Text = "Flow Control";
-            // 
-            // conditionBlockToolStripMenuItem2
-            // 
-            this.conditionBlockToolStripMenuItem2.Name = "conditionBlockToolStripMenuItem2";
-            this.conditionBlockToolStripMenuItem2.Size = new System.Drawing.Size(194, 22);
-            this.conditionBlockToolStripMenuItem2.Text = "Condition Block";
-            // 
-            // conditionStatementToolStripMenuItem2
-            // 
-            this.conditionStatementToolStripMenuItem2.Name = "conditionStatementToolStripMenuItem2";
-            this.conditionStatementToolStripMenuItem2.Size = new System.Drawing.Size(194, 22);
-            this.conditionStatementToolStripMenuItem2.Text = "Condition Statement";
-            // 
-            // conditionLoopToolStripMenuItem2
-            // 
-            this.conditionLoopToolStripMenuItem2.Name = "conditionLoopToolStripMenuItem2";
-            this.conditionLoopToolStripMenuItem2.Size = new System.Drawing.Size(194, 22);
-            this.conditionLoopToolStripMenuItem2.Text = "Condition Loop";
-            // 
-            // multiThreadToolStripMenuItem2
-            // 
-            this.multiThreadToolStripMenuItem2.Name = "multiThreadToolStripMenuItem2";
-            this.multiThreadToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-            this.multiThreadToolStripMenuItem2.Text = "Multi-Thread";
-            // 
-            // timerBlockToolStripMenuItem1
-            // 
-            this.timerBlockToolStripMenuItem1.Name = "timerBlockToolStripMenuItem1";
-            this.timerBlockToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.timerBlockToolStripMenuItem1.Text = "Timer Block";
-            // 
-            // batchBlockToolStripMenuItem2
-            // 
-            this.batchBlockToolStripMenuItem2.Name = "batchBlockToolStripMenuItem2";
-            this.batchBlockToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-            this.batchBlockToolStripMenuItem2.Text = "Batch Block";
-            // 
-            // gotoToolStripMenuItem2
-            // 
-            this.gotoToolStripMenuItem2.Name = "gotoToolStripMenuItem2";
-            this.gotoToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-            this.gotoToolStripMenuItem2.Text = "Goto";
-            this.gotoToolStripMenuItem2.Visible = false;
-            // 
-            // tryFinallyToolStripMenuItem1
-            // 
-            this.tryFinallyToolStripMenuItem1.Name = "tryFinallyToolStripMenuItem1";
-            this.tryFinallyToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.tryFinallyToolStripMenuItem1.Text = "Try-Finally";
             // 
             // MainForm
             // 
