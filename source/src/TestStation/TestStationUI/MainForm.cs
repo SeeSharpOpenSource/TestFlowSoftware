@@ -1375,7 +1375,7 @@ namespace TestFlow.DevSoftware
 
         private void SetParamValueFromFx(DataGridViewCellEventArgs e)
         {
-            string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString();
+            string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString() ?? string.Empty;
             VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
                 true);
             variableForm.ShowDialog(this);
@@ -2578,6 +2578,7 @@ namespace TestFlow.DevSoftware
                 _globalInfo.TestflowEntity.SequenceManager.Serialize(SequenceGroup, SerializationTarget.File,
                     filePath);
                 labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
+                treeView_sequenceTree.Nodes[0].Nodes[0].Text = SequenceGroup.Name;
             }
             catch (ApplicationException ex)
             {
@@ -2784,16 +2785,16 @@ namespace TestFlow.DevSoftware
             if (parent.Nodes.Count == 0)
             {
                 selectNode = parent;
-                currentStep = null;
+                currentStep = step.Parent as ISequenceStep;
             }
             else if (step.Index > 0)
             {
-                selectNode = treeView_stepView.Nodes[step.Index - 1];
+                selectNode = parent.Nodes[step.Index - 1];
                 currentStep = stepCollection[step.Index - 1];
             }
             else
             {
-                selectNode = treeView_stepView.Nodes[step.Index];
+                selectNode = parent.Nodes[step.Index];
                 currentStep = stepCollection[step.Index];
             }
             treeView_stepView.SelectedNode = selectNode;
