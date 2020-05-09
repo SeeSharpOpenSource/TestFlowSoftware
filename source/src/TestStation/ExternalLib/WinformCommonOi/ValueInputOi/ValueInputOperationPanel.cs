@@ -16,6 +16,7 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
         
         public ISequenceFlowContainer SequenceData { get; private set; }
         public OiSequenceType SupportSequence => OiSequenceType.SequenceGroup;
+
         public override void Dispose()
         {
             _valueInputOiForm?.Dispose();
@@ -65,19 +66,20 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
             OnOiReady(_valueInputOiForm.IsConfirmed, _valueInputOiForm.ErrorMessage);
             if (!_valueInputOiForm.IsConfirmed)
             {
+                _valueInputOiForm.Dispose();
                 _valueInputOiForm = null;
                 return;
             }
+            _valueInputOiForm.Dispose();
             _valueInputOiForm = null;
             this._runtimeStatusForm = new RuntimeStatusForm((ISequenceGroup) sequenceData);
             Application.Run(_runtimeStatusForm);
-            _runtimeStatusForm = null;
         }
 
         public override void TestGenerationStart(ITestGenerationInfo generationInfo)
         {
-            _runtimeStatusForm.ShowAllSequenceState(RuntimeState.TestGen);
-            _runtimeStatusForm.ShowStatus(RuntimeState.TestGen);
+            _runtimeStatusForm?.ShowAllSequenceState(RuntimeState.TestGen);
+            _runtimeStatusForm?.ShowStatus(RuntimeState.TestGen);
         }
 
         public override void TestGenerationOver(ITestGenerationInfo generationInfo)
@@ -111,8 +113,8 @@ namespace TestFlow.Software.WinformCommonOi.ValueInputOi
 
         public override void SequenceStart(ISequenceTestResult result)
         {
-            _runtimeStatusForm.ShowSequenceState(result.SequenceIndex, RuntimeState.Running);
-            _runtimeStatusForm.ShowStartTime(result.SequenceIndex, result.StartTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            _runtimeStatusForm?.ShowSequenceState(result.SequenceIndex, RuntimeState.Running);
+            _runtimeStatusForm?.ShowStartTime(result.SequenceIndex, result.StartTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
         }
 
         public override void StatusReceived(IRuntimeStatusInfo runtimeInfo)
