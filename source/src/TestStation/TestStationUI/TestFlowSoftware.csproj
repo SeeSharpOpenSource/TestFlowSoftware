@@ -150,6 +150,12 @@
     <Compile Include="Controls\NumericEditor.Designer.cs">
       <DependentUpon>NumericEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SequenceGroupPropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SequenceGroupPropertyForm.Designer.cs">
+      <DependentUpon>SequenceGroupPropertyForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SimpleClassEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -225,6 +231,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BooleanEditor.resx">
       <DependentUpon>BooleanEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SequenceGroupPropertyForm.resx">
+      <DependentUpon>SequenceGroupPropertyForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SimpleClassEditor.resx">
       <DependentUpon>SimpleClassEditor.cs</DependentUpon>

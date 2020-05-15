@@ -3336,6 +3336,66 @@ namespace TestFlow.DevSoftware
             selectedNode.Parent.Nodes.Remove(selectedNode);
         }
 
+
+        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selectedNode = treeView_sequenceTree.SelectedNode;
+            if (selectedNode.Level == 0)
+            {
+                // TODO
+            }
+            else if (selectedNode.Level == 1)
+            {
+                SequenceGroupPropertyForm propertyForm = new SequenceGroupPropertyForm(SequenceGroup);
+                propertyForm.ShowDialog(this);
+            }
+            else
+            {
+                // TODO
+            }
+        }
+
+        private void contextMenuStrip_sequence_Opening(object sender, CancelEventArgs e)
+        {
+            TreeNode selectedNode = treeView_sequenceTree.SelectedNode;
+            if (selectedNode.Level == 0)
+            {
+                addSequenceToolStripMenuItem1.Visible = false;
+                insertSequenceToolStripMenuItem.Visible = false;
+                deleteSequenceToolStripMenuItem.Visible = false;
+                renameSequenceToolStripMenuItem.Visible = false;
+                propertiesToolStripMenuItem.Visible = true;
+                toolStripSeparator3.Visible = false;
+            }
+            else if (selectedNode.Level == 1)
+            {
+                addSequenceToolStripMenuItem1.Visible = false;
+                insertSequenceToolStripMenuItem.Visible = false;
+                deleteSequenceToolStripMenuItem.Visible = false;
+                renameSequenceToolStripMenuItem.Visible = false;
+                propertiesToolStripMenuItem.Visible = true;
+                toolStripSeparator3.Visible = false;
+            }
+            else if (selectedNode.Index <= 1)
+            {
+                addSequenceToolStripMenuItem1.Visible = false;
+                insertSequenceToolStripMenuItem.Visible = false;
+                deleteSequenceToolStripMenuItem.Visible = false;
+                renameSequenceToolStripMenuItem.Visible = false;
+                propertiesToolStripMenuItem.Visible = true;
+                toolStripSeparator3.Visible = false;
+            }
+            else
+            {
+                addSequenceToolStripMenuItem1.Visible = true;
+                insertSequenceToolStripMenuItem.Visible = true;
+                deleteSequenceToolStripMenuItem.Visible = true;
+                renameSequenceToolStripMenuItem.Visible = true;
+                propertiesToolStripMenuItem.Visible = true;
+                toolStripSeparator3.Visible = true;
+            }
+        }
+
         private TreeNode FindTreeNode(ISequenceGroup sequenceGroup)
         {
             return treeView_sequenceTree.Nodes[0].Nodes[0];
@@ -3713,5 +3773,6 @@ namespace TestFlow.DevSoftware
                 ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
             }
         }
+
     }
 }
