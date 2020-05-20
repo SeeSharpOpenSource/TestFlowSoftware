@@ -175,7 +175,6 @@ namespace TestFlow.DevSoftware
             _testflowDesigntimeService = _globalInfo.TestflowEntity.DesignTimeService;
             _testflowRuntimeService = _globalInfo.TestflowEntity.RuntimeService;
             _interfaceManger = _globalInfo.TestflowEntity.ComInterfaceManager;
-            _testflowDesigntimeService.Initialize();
             #endregion
             _expandImagePath = _globalInfo.TestflowHome + "expand.png";
             _NexpandImagePath = _globalInfo.TestflowHome + "Nexpand.png";
@@ -397,6 +396,10 @@ namespace TestFlow.DevSoftware
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = !CheckIfCanClose();
+            if (!e.Cancel)
+            {
+                _oiInvoker?.Dispose();
+            }
         }
         
         #endregion

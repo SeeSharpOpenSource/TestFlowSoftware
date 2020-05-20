@@ -15,9 +15,10 @@ namespace TestFlow.DevSoftware
         static void Main(string[] args)
         {
             InitializeLogger();
+            GlobalInfo globalInfo = null;
             try
             {
-                GlobalInfo globalInfo = GlobalInfo.GetInstance();
+                globalInfo = GlobalInfo.GetInstance();
                 string filePath = string.Empty;
                 if (args.Length == 1 && !string.IsNullOrWhiteSpace(args[0]) && File.Exists(args[0]))
                 {
@@ -29,6 +30,7 @@ namespace TestFlow.DevSoftware
             }
             finally
             {
+                globalInfo?.TestflowEntity.Dispose();
                 Logger.Close();
             }
         }
