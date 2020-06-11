@@ -99,13 +99,21 @@ namespace TestFlow.DevSoftware
                 else
                 {
                     _mainform.AppendOutput("Test generation failed.");
-                    if (!string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo) &&
-                        null != sessionGenerationInfo.ErrorStack)
+                    if (!string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo))
                     {
-                        ISequenceStep errorStep = SequenceUtils.GetStepFromStack(_sequenceData,
-                            sessionGenerationInfo.ErrorStack);
-                        _mainform.AppendOutput($"ErrorStep:{errorStep.Name}  ErrorInfo:{sessionGenerationInfo.ErrorInfo}");
+                        if (null != sessionGenerationInfo.ErrorStack)
+                        {
+                            ISequenceStep errorStep = SequenceUtils.GetStepFromStack(_sequenceData,
+                                sessionGenerationInfo.ErrorStack);
+                            _mainform.AppendOutput($"ErrorStep:{errorStep.Name} ErrorInfo:{sessionGenerationInfo.ErrorInfo}");
+                            
+                        }
+                        if (!string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo))
+                        {
+                            _mainform.AppendOutput($"ErrorInfo:{sessionGenerationInfo.ErrorInfo}");
+                        }
                     }
+                    
                     _mainform.RunningOver();
                 }
             }));
