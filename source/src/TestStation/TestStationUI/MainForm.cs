@@ -3372,7 +3372,7 @@ namespace TestFlow.DevSoftware
             }
             else if (selectedNode.Level == 1)
             {
-                addSequenceToolStripMenuItem1.Visible = false;
+                addSequenceToolStripMenuItem1.Visible = true;
                 insertSequenceToolStripMenuItem.Visible = false;
                 deleteSequenceToolStripMenuItem.Visible = false;
                 renameSequenceToolStripMenuItem.Visible = false;
