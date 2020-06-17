@@ -132,6 +132,12 @@
     <Compile Include="Controls\ArrayDataEditor.Designer.cs">
       <DependentUpon>ArrayDataEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AssemblyConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\AssemblyConfigForm.Designer.cs">
+      <DependentUpon>AssemblyConfigForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ObjectEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -225,6 +231,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ArrayDataEditor.resx">
       <DependentUpon>ArrayDataEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\AssemblyConfigForm.resx">
+      <DependentUpon>AssemblyConfigForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ObjectEditor.resx">
       <DependentUpon>ObjectEditor.cs</DependentUpon>

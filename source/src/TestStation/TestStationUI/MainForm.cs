@@ -2513,43 +2513,62 @@ namespace TestFlow.DevSoftware
         }
 
         // 载入序列
-        private void LoadSequence(string sequenceFilePath)
+        // 载入序列
+        private bool LoadSequence(string sequenceFilePath)
         {
             _filePath = sequenceFilePath;
-            ISequenceGroup loadedSequenceGroup = _globalInfo.TestflowEntity.SequenceManager.LoadSequenceGroup(
-                SerializationTarget.File, _filePath);
-
             _testflowDesigntimeService.Unload();
-            _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description, loadedSequenceGroup);
-            foreach (IComInterfaceDescription comInterfaceDescription in _interfaceManger.GetComponentDescriptions())
-            {
-                _testflowDesigntimeService.AddComponent(comInterfaceDescription);
-            }
-            labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
-
-            #region 清空UI
-
+            _interfaceManger.DesigntimeInitialize();
+            // 清空UI
             ClearAll();
 
-            #endregion
-
-            #region Variables UI
-
+            ISequenceGroup loadedSequenceGroup = _globalInfo.TestflowEntity.SequenceManager.LoadSequenceGroup(
+                SerializationTarget.File, _filePath);
+            try
+            {
+                _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description, loadedSequenceGroup);
+            }
+            catch (TestflowException ex)
+            {
+                // 如果是组件接口加载模块的错误，则弹出程序集配置窗体修改
+                if ((ex.ErrorCode & CommonErrorCode.ComInterfaceErrorMask) != 0)
+                {
+                    DialogResult dialogResult = MessageBox.Show($"{ex.Message}{Environment.NewLine}Edit assembly configuration?", "Load Sequence",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (dialogResult != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                    AssemblyConfigForm configForm = new AssemblyConfigForm(loadedSequenceGroup.Assemblies, _interfaceManger);
+                    configForm.ShowDialog(this);
+                    if (configForm.IsCancelled)
+                    {
+                        return false;
+                    }
+                    _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description,
+                        loadedSequenceGroup);
+                    loadedSequenceGroup.Info.Modified = true;
+                    _globalInfo.TestflowEntity.SequenceManager.Serialize(loadedSequenceGroup, SerializationTarget.File, sequenceFilePath);
+                }
+            }
+            labelProject.Text = SequenceGroup.Name + Constants.ProjectNamePostfix;
+            
+            // Variables UI
             ShowVariables(0);
 
-            #endregion
-
             ResetPathComboBox();
-            // Sequence UId
-            ShowSequences(loadedSequenceGroup);
+            // Sequence UI
             tabCon_Seq.SelectedIndex = 0;
+            ShowSequences(loadedSequenceGroup);
             UpdateSettings();
             EnableAllEditControl();
             tabCon_Step.SelectedTab = tabPage_stepData;
             UpdateToolStripButtonsState();
+            SequenceGroup.Info.Modified = false;
             treeView_sequenceTree.SelectedNode = treeView_sequenceTree.Nodes[0].Nodes[0];
             treeView_stepView.SelectedNode = null;
             UpdateSettings();
+            return true;
         }
 
         private void UpdateToolStripButtonsState()
