@@ -2523,7 +2523,7 @@ namespace TestFlow.DevSoftware
             ClearAll();
 
             ISequenceGroup loadedSequenceGroup = _globalInfo.TestflowEntity.SequenceManager.LoadSequenceGroup(
-                SerializationTarget.File, _filePath);
+                SerializationTarget.File, _filePath, true.ToString());
             try
             {
                 _testflowDesigntimeService.Load(loadedSequenceGroup.Name, loadedSequenceGroup.Description, loadedSequenceGroup);
