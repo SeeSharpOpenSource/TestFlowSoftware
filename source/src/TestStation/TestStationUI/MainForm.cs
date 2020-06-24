@@ -3404,7 +3404,7 @@ namespace TestFlow.DevSoftware
                 insertSequenceToolStripMenuItem.Visible = false;
                 deleteSequenceToolStripMenuItem.Visible = false;
                 renameSequenceToolStripMenuItem.Visible = false;
-                propertiesToolStripMenuItem.Visible = true;
+                propertiesToolStripMenuItem.Visible = false;
                 toolStripSeparator3.Visible = false;
             }
             else
@@ -3413,7 +3413,7 @@ namespace TestFlow.DevSoftware
                 insertSequenceToolStripMenuItem.Visible = true;
                 deleteSequenceToolStripMenuItem.Visible = true;
                 renameSequenceToolStripMenuItem.Visible = true;
-                propertiesToolStripMenuItem.Visible = true;
+                propertiesToolStripMenuItem.Visible = false;
                 toolStripSeparator3.Visible = true;
             }
         }
@@ -3494,7 +3494,8 @@ namespace TestFlow.DevSoftware
 
         private ISequenceStep FindSelectedStep(TreeNode node)
         {
-            if (null == node || node.Level == 0)
+            ISequence currentSeq = CurrentSeq;
+            if (null == node || node.Level == 0 || null == currentSeq)
             {
                 return null;
             }
@@ -3504,7 +3505,6 @@ namespace TestFlow.DevSoftware
                 nodeStack.Push(node);
                 node = node.Parent;
             } while (null != node && node.Level > 0);
-            ISequence currentSeq = CurrentSeq;
             ISequenceStep step = currentSeq.Steps[nodeStack.Pop().Index];
             for (int i = nodeStack.Count - 1; i >= 0; i--)
             {
@@ -3532,10 +3532,7 @@ namespace TestFlow.DevSoftware
                 _lastSelectSeqNode.ForeColor = _selectedColor;
             }
             CurrentSeq = selectedSequence;
-            if (null != CurrentSeq)
-            {
-                ShowSteps(CurrentSeq);
-            }
+            ShowSteps(CurrentSeq);
             CreateDGVVariable(1);
             UpdateSettings();
             _internalOperation = false;
