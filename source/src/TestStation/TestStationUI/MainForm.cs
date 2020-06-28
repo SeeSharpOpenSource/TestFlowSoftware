@@ -1215,6 +1215,52 @@ namespace TestFlow.DevSoftware
             _internalOperation = false;
         }
 
+
+        private void button_loopTimeVar_Click(object sender, EventArgs e)
+        {
+            if (_internalOperation || null == CurrentSeq || null == CurrentStep) { return; }
+            _internalOperation = true;
+
+            string value = textBox_loopTimeVar.Text ?? string.Empty;
+            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
+                false);
+            variableForm.ShowDialog(this);
+            if (!variableForm.IsCancelled)
+            {
+                textBox_loopTimeVar.Text = variableForm.ParamValue;
+                if (null != CurrentStep.RetryCounter)
+                {
+                    CurrentStep.RetryCounter.CounterVariable = variableForm.ParamValue;
+                }
+                else if (null != CurrentStep.LoopCounter)
+                {
+                    CurrentStep.LoopCounter.CounterVariable = variableForm.ParamValue;
+                }
+            }
+            variableForm.Dispose();
+
+            _internalOperation = false;
+        }
+
+        private void button_passTimeVar_Click(object sender, EventArgs e)
+        {
+            if (_internalOperation || null == CurrentSeq || null == CurrentStep) { return; }
+            _internalOperation = true;
+
+            string value = textBox_passTimeVar.Text ?? string.Empty;
+            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
+                false);
+            variableForm.ShowDialog(this);
+            if (!variableForm.IsCancelled)
+            {
+                textBox_passTimeVar.Text = variableForm.ParamValue;
+                CurrentStep.RetryCounter.PassCountVariable = variableForm.ParamValue;
+            }
+            variableForm.Dispose();
+
+            _internalOperation = false;
+        }
+
         private void comboBox_conditionType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_internalOperation)
@@ -3595,6 +3641,14 @@ namespace TestFlow.DevSoftware
                 LoopTimesnumericUpDown.Enabled = true;
                 numericUpDown_passTimes.Enabled = false;
                 numericUpDown_retryTime.Enabled = false;
+
+                textBox_passTimeVar.Text = string.Empty;
+                textBox_loopTimeVar.Text = step.LoopCounter.CounterVariable ?? string.Empty;
+                button_passTimeVar.Enabled = false;
+                button_loopTimeVar.Enabled = true;
+                textBox_passTimeVar.Enabled = false;
+                textBox_loopTimeVar.Enabled = true;
+
             }
             else if (null != step.RetryCounter)
             {
@@ -3605,6 +3659,13 @@ namespace TestFlow.DevSoftware
                 LoopTimesnumericUpDown.Enabled = false;
                 numericUpDown_passTimes.Enabled = true;
                 numericUpDown_retryTime.Enabled = true;
+
+                textBox_passTimeVar.Text = step.RetryCounter.PassCountVariable ?? string.Empty;
+                textBox_loopTimeVar.Text = step.RetryCounter.CounterVariable ?? string.Empty;
+                button_passTimeVar.Enabled = true;
+                button_loopTimeVar.Enabled = true;
+                textBox_passTimeVar.Enabled = true;
+                textBox_loopTimeVar.Enabled = true;
             }
             else
             {
@@ -3615,6 +3676,13 @@ namespace TestFlow.DevSoftware
                 LoopTimesnumericUpDown.Enabled = false;
                 numericUpDown_passTimes.Enabled = true;
                 numericUpDown_retryTime.Enabled = true;
+
+                textBox_passTimeVar.Text = string.Empty;
+                textBox_loopTimeVar.Text = string.Empty;
+                button_passTimeVar.Enabled = false;
+                button_loopTimeVar.Enabled = false;
+                textBox_passTimeVar.Enabled = false;
+                textBox_loopTimeVar.Enabled = false;
             }
         }
 
@@ -3735,6 +3803,12 @@ namespace TestFlow.DevSoftware
                     numericUpDown_retryTime.Enabled = false;
                     selectedStep.RetryCounter = null;
                     selectedStep.LoopCounter = null;
+                    textBox_passTimeVar.Text = string.Empty;
+                    textBox_loopTimeVar.Text = string.Empty;
+                    button_passTimeVar.Enabled = false;
+                    button_loopTimeVar.Enabled = false;
+                    textBox_passTimeVar.Enabled = false;
+                    textBox_loopTimeVar.Enabled = false;
                     break;
                 case "FixedTimes":
                     LoopTimesnumericUpDown.Enabled = true;
@@ -3748,6 +3822,12 @@ namespace TestFlow.DevSoftware
                     selectedStep.LoopCounter.CounterEnabled = true;
                     selectedStep.LoopCounter.CounterEnabled = true;
                     selectedStep.LoopCounter.MaxValue = (int) LoopTimesnumericUpDown.Value;
+                    textBox_passTimeVar.Text = string.Empty;
+                    textBox_loopTimeVar.Text = selectedStep.LoopCounter.CounterVariable ?? string.Empty;
+                    button_passTimeVar.Enabled = false;
+                    button_loopTimeVar.Enabled = true;
+                    textBox_passTimeVar.Enabled = false;
+                    textBox_loopTimeVar.Enabled = true;
                     break;
                 case "PassTimes":
                     LoopTimesnumericUpDown.Enabled = false;
@@ -3761,6 +3841,12 @@ namespace TestFlow.DevSoftware
                     selectedStep.RetryCounter.RetryEnabled = true;
                     selectedStep.RetryCounter.MaxRetryTimes = (int) numericUpDown_retryTime.Value;
                     selectedStep.RetryCounter.PassTimes = (int) numericUpDown_passTimes.Value;
+                    textBox_passTimeVar.Text = selectedStep.RetryCounter.PassCountVariable ?? string.Empty;
+                    textBox_loopTimeVar.Text = selectedStep.RetryCounter.CounterVariable ?? string.Empty;
+                    button_passTimeVar.Enabled = true;
+                    button_loopTimeVar.Enabled = true;
+                    textBox_passTimeVar.Enabled = true;
+                    textBox_loopTimeVar.Enabled = true;
                     break;
             }
         }

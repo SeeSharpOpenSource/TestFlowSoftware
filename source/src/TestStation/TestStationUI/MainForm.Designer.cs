@@ -34,9 +34,9 @@ namespace TestFlow.DevSoftware
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip_ActionMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,6 +137,12 @@ namespace TestFlow.DevSoftware
             this.checkBox_RecordStatus = new System.Windows.Forms.CheckBox();
             this.comboBox_asserFailedAction = new System.Windows.Forms.ComboBox();
             this.groupBox_loopProperties = new System.Windows.Forms.GroupBox();
+            this.label_passTimeVar = new System.Windows.Forms.Label();
+            this.label_loopTimeVar = new System.Windows.Forms.Label();
+            this.button_passTimeVar = new System.Windows.Forms.Button();
+            this.textBox_passTimeVar = new System.Windows.Forms.TextBox();
+            this.button_loopTimeVar = new System.Windows.Forms.Button();
+            this.textBox_loopTimeVar = new System.Windows.Forms.TextBox();
             this.numericUpDown_passTimes = new System.Windows.Forms.NumericUpDown();
             this.label_passTimes = new System.Windows.Forms.Label();
             this.numericUpDown_retryTime = new System.Windows.Forms.NumericUpDown();
@@ -1146,6 +1152,12 @@ namespace TestFlow.DevSoftware
             // 
             // groupBox_loopProperties
             // 
+            this.groupBox_loopProperties.Controls.Add(this.label_passTimeVar);
+            this.groupBox_loopProperties.Controls.Add(this.label_loopTimeVar);
+            this.groupBox_loopProperties.Controls.Add(this.button_passTimeVar);
+            this.groupBox_loopProperties.Controls.Add(this.textBox_passTimeVar);
+            this.groupBox_loopProperties.Controls.Add(this.button_loopTimeVar);
+            this.groupBox_loopProperties.Controls.Add(this.textBox_loopTimeVar);
             this.groupBox_loopProperties.Controls.Add(this.numericUpDown_passTimes);
             this.groupBox_loopProperties.Controls.Add(this.label_passTimes);
             this.groupBox_loopProperties.Controls.Add(this.numericUpDown_retryTime);
@@ -1156,10 +1168,62 @@ namespace TestFlow.DevSoftware
             this.groupBox_loopProperties.Controls.Add(this.label_loopTimesConfig);
             this.groupBox_loopProperties.Location = new System.Drawing.Point(396, 3);
             this.groupBox_loopProperties.Name = "groupBox_loopProperties";
-            this.groupBox_loopProperties.Size = new System.Drawing.Size(325, 150);
+            this.groupBox_loopProperties.Size = new System.Drawing.Size(503, 150);
             this.groupBox_loopProperties.TabIndex = 11;
             this.groupBox_loopProperties.TabStop = false;
             this.groupBox_loopProperties.Text = "Loop Configuration";
+            // 
+            // label_passTimeVar
+            // 
+            this.label_passTimeVar.AutoSize = true;
+            this.label_passTimeVar.Location = new System.Drawing.Point(321, 86);
+            this.label_passTimeVar.Name = "label_passTimeVar";
+            this.label_passTimeVar.Size = new System.Drawing.Size(119, 12);
+            this.label_passTimeVar.TabIndex = 16;
+            this.label_passTimeVar.Text = "Pass Time Variable:";
+            // 
+            // label_loopTimeVar
+            // 
+            this.label_loopTimeVar.AutoSize = true;
+            this.label_loopTimeVar.Location = new System.Drawing.Point(321, 29);
+            this.label_loopTimeVar.Name = "label_loopTimeVar";
+            this.label_loopTimeVar.Size = new System.Drawing.Size(119, 12);
+            this.label_loopTimeVar.TabIndex = 15;
+            this.label_loopTimeVar.Text = "Loop Time Variable:";
+            // 
+            // button_passTimeVar
+            // 
+            this.button_passTimeVar.Location = new System.Drawing.Point(441, 99);
+            this.button_passTimeVar.Name = "button_passTimeVar";
+            this.button_passTimeVar.Size = new System.Drawing.Size(48, 23);
+            this.button_passTimeVar.TabIndex = 14;
+            this.button_passTimeVar.Text = "f(x)";
+            this.button_passTimeVar.UseVisualStyleBackColor = true;
+            this.button_passTimeVar.Click += new System.EventHandler(this.button_passTimeVar_Click);
+            // 
+            // textBox_passTimeVar
+            // 
+            this.textBox_passTimeVar.Location = new System.Drawing.Point(322, 100);
+            this.textBox_passTimeVar.Name = "textBox_passTimeVar";
+            this.textBox_passTimeVar.Size = new System.Drawing.Size(113, 21);
+            this.textBox_passTimeVar.TabIndex = 13;
+            // 
+            // button_loopTimeVar
+            // 
+            this.button_loopTimeVar.Location = new System.Drawing.Point(441, 42);
+            this.button_loopTimeVar.Name = "button_loopTimeVar";
+            this.button_loopTimeVar.Size = new System.Drawing.Size(48, 23);
+            this.button_loopTimeVar.TabIndex = 12;
+            this.button_loopTimeVar.Text = "f(x)";
+            this.button_loopTimeVar.UseVisualStyleBackColor = true;
+            this.button_loopTimeVar.Click += new System.EventHandler(this.button_loopTimeVar_Click);
+            // 
+            // textBox_loopTimeVar
+            // 
+            this.textBox_loopTimeVar.Location = new System.Drawing.Point(322, 43);
+            this.textBox_loopTimeVar.Name = "textBox_loopTimeVar";
+            this.textBox_loopTimeVar.Size = new System.Drawing.Size(113, 21);
+            this.textBox_loopTimeVar.TabIndex = 11;
             // 
             // numericUpDown_passTimes
             // 
@@ -1300,7 +1364,7 @@ namespace TestFlow.DevSoftware
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_panel.Location = new System.Drawing.Point(86, 87);
             this.Parameter_panel.Name = "Parameter_panel";
-            this.Parameter_panel.Size = new System.Drawing.Size(816, 267);
+            this.Parameter_panel.Size = new System.Drawing.Size(816, 271);
             this.Parameter_panel.TabIndex = 10;
             // 
             // comboBox_Method
@@ -1360,7 +1424,7 @@ namespace TestFlow.DevSoftware
             this.tabPage_runtimeInfo.Location = new System.Drawing.Point(4, 22);
             this.tabPage_runtimeInfo.Name = "tabPage_runtimeInfo";
             this.tabPage_runtimeInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(908, 360);
+            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(904, 358);
             this.tabPage_runtimeInfo.TabIndex = 4;
             this.tabPage_runtimeInfo.Text = "RuntimeInformation";
             this.tabPage_runtimeInfo.UseVisualStyleBackColor = true;
@@ -1385,14 +1449,14 @@ namespace TestFlow.DevSoftware
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_clearOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_copyOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.textBox_output);
-            this.splitContainer_runtime.Size = new System.Drawing.Size(902, 354);
-            this.splitContainer_runtime.SplitterDistance = 420;
+            this.splitContainer_runtime.Size = new System.Drawing.Size(898, 352);
+            this.splitContainer_runtime.SplitterDistance = 417;
             this.splitContainer_runtime.TabIndex = 0;
             // 
             // button_deleteWatch
             // 
             this.button_deleteWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_deleteWatch.Location = new System.Drawing.Point(266, 319);
+            this.button_deleteWatch.Location = new System.Drawing.Point(263, 317);
             this.button_deleteWatch.Name = "button_deleteWatch";
             this.button_deleteWatch.Size = new System.Drawing.Size(100, 28);
             this.button_deleteWatch.TabIndex = 7;
@@ -1403,7 +1467,7 @@ namespace TestFlow.DevSoftware
             // button_addWatch
             // 
             this.button_addWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_addWatch.Location = new System.Drawing.Point(47, 319);
+            this.button_addWatch.Location = new System.Drawing.Point(47, 317);
             this.button_addWatch.Name = "button_addWatch";
             this.button_addWatch.Size = new System.Drawing.Size(100, 28);
             this.button_addWatch.TabIndex = 6;
@@ -1419,14 +1483,14 @@ namespace TestFlow.DevSoftware
             this.dataGridView_variableValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_variableValues.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
@@ -1436,13 +1500,13 @@ namespace TestFlow.DevSoftware
             this.dataGridView_variableValues.ReadOnly = true;
             this.dataGridView_variableValues.RowHeadersVisible = false;
             this.dataGridView_variableValues.RowTemplate.Height = 23;
-            this.dataGridView_variableValues.Size = new System.Drawing.Size(416, 291);
+            this.dataGridView_variableValues.Size = new System.Drawing.Size(413, 289);
             this.dataGridView_variableValues.TabIndex = 5;
             // 
             // Column_VariableName
             // 
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
@@ -1450,8 +1514,8 @@ namespace TestFlow.DevSoftware
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;
@@ -1482,7 +1546,7 @@ namespace TestFlow.DevSoftware
             this.button_clearOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_clearOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_clearOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_clearOutput.Location = new System.Drawing.Point(429, -1);
+            this.button_clearOutput.Location = new System.Drawing.Point(428, -1);
             this.button_clearOutput.Name = "button_clearOutput";
             this.button_clearOutput.Size = new System.Drawing.Size(45, 22);
             this.button_clearOutput.TabIndex = 2;
@@ -1497,7 +1561,7 @@ namespace TestFlow.DevSoftware
             this.button_copyOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_copyOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_copyOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_copyOutput.Location = new System.Drawing.Point(384, -1);
+            this.button_copyOutput.Location = new System.Drawing.Point(383, -1);
             this.button_copyOutput.Name = "button_copyOutput";
             this.button_copyOutput.Size = new System.Drawing.Size(45, 22);
             this.button_copyOutput.TabIndex = 1;
@@ -1517,7 +1581,7 @@ namespace TestFlow.DevSoftware
             this.textBox_output.Name = "textBox_output";
             this.textBox_output.ReadOnly = true;
             this.textBox_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_output.Size = new System.Drawing.Size(473, 331);
+            this.textBox_output.Size = new System.Drawing.Size(472, 329);
             this.textBox_output.TabIndex = 0;
             // 
             // tabCon_Step
@@ -1663,7 +1727,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(922, 188);
+            this.textBox_reportData.Size = new System.Drawing.Size(930, 192);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -2330,6 +2394,12 @@ namespace TestFlow.DevSoftware
         private ToolStripMenuItem propertiesToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripSeparator toolStripSeparator4;
+        private Button button_loopTimeVar;
+        private TextBox textBox_loopTimeVar;
+        private Button button_passTimeVar;
+        private TextBox textBox_passTimeVar;
+        private Label label_passTimeVar;
+        private Label label_loopTimeVar;
     }
 }
 
