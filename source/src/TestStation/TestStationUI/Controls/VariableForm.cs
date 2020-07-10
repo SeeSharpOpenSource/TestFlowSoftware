@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Testflow.Data;
@@ -18,7 +19,6 @@ namespace TestFlow.DevSoftware.Controls
         public string ParamValue { get; private set; }
         public bool IsCancelled { get; private set; }
         public bool IsExpression { get; private set; }
-        private readonly Regex _expRegex;
         private readonly GlobalInfo _globalInfo;
 
         private readonly TreeNode _globalNode;
@@ -27,11 +27,14 @@ namespace TestFlow.DevSoftware.Controls
         private IVariableCollection _globalVariables;
         private IVariableCollection _localVariables;
         private readonly Regex _propertyItemRegex;
+        private ISequenceStep _parentStep;
+        private StringBuilder _editVarCache;
 
-        public VariableForm(IVariableCollection globalVariables, IVariableCollection localVariableses, GlobalInfo globalInfo, string paramValue = "", bool expressionEnabled = false)
+        public VariableForm(IVariableCollection globalVariables, IVariableCollection localVariableses, 
+            GlobalInfo globalInfo, ISequenceStep parentStep, string paramValue = "", bool expressionEnabled = false)
         {
-            this._expRegex = new Regex("^(([^\\.]+)(?:\\.[^\\.]+)*)\\[\\d+\\]$");
             _propertyItemRegex = new Regex("^(.+)\\(.+\\)$");
+            _parentStep = parentStep;
             InitializeComponent();
             this.ParamValue = paramValue;
             _globalVariables = globalVariables;
@@ -50,7 +53,9 @@ namespace TestFlow.DevSoftware.Controls
             this.IsExpression = false;
             this._globalInfo = globalInfo;
             _expressionEnabled = expressionEnabled;
-
+            _editVarCache = new StringBuilder(100);
+            _editVarCache.Append(ParamValue);
+            ShowPropertyList();
             if (!string.IsNullOrWhiteSpace(paramValue))
             {
                 textBox_expression.Text = paramValue;
@@ -60,16 +65,11 @@ namespace TestFlow.DevSoftware.Controls
         private void CreateNode(TreeNode parent, IVariableCollection variables)
         {
             string variableName = ParamValue;
-            Match match = _expRegex.Match(variableName);
-            if (match.Success)
-            {
-                variableName = match.Groups[2].Value;
-            }
             foreach (IVariable variable in variables)
             {
                 TreeNode variableNode = parent.Nodes.Add(GetVariableShowText(variable));
                 variableNode.Tag = variable.Name;
-                if (variableName != null && variableName.Equals(variable.Name))
+                if (!_expressionEnabled && variableName != null && variableName.Equals(variable.Name))
                 {
                     treeView_variables.SelectedNode = variableNode;
                 }
@@ -90,7 +90,10 @@ namespace TestFlow.DevSoftware.Controls
             {
                 return;
             }
-            textBox_expression.Text = ParamValue;
+            textBox_expression.AppendText(ParamValue);
+            _editVarCache.Clear();
+            _editVarCache.Append(ParamValue);
+            ShowPropertyList();
             if (!_expressionEnabled)
             {
                 this.IsCancelled = false;
@@ -106,20 +109,32 @@ namespace TestFlow.DevSoftware.Controls
                 MessageBox.Show("Please select a variable.", "Variable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            bool isVariable;
-            this.ParamValue = Utility.GetParamValue(showValue, out isVariable);
-            Match matchData = _expRegex.Match(this.ParamValue);
-            string variableName = _expressionEnabled && matchData.Success
-                ? matchData.Groups[2].Value
-                : Utility.GetVariableName(ParamValue);
-            bool isLocalVariable = _localVariables.Any(item => item.Name.Equals(variableName));
-            if (!isLocalVariable && !_globalVariables.Any(item => item.Name.Equals(variableName)))
+            bool isExpression = _globalInfo.TestflowEntity.SequenceManager.IsExpression(showValue);
+            if (isExpression)
             {
-                MessageBox.Show($"Variable <{variableName}> does not exist.", "Variable", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return;
+                try
+                {
+                    _globalInfo.TestflowEntity.SequenceManager.GetExpressionData(_parentStep, showValue);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
-            this.IsExpression = matchData.Success;
+            else
+            {
+                string variableName = Utility.GetVariableName(showValue);
+                bool isLocalVariable = _localVariables.Any(item => item.Name.Equals(variableName));
+                if (!isLocalVariable && !_globalVariables.Any(item => item.Name.Equals(variableName)))
+                {
+                    MessageBox.Show($"Variable <{variableName}> does not exist.", "Variable", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            ParamValue = showValue;
+            this.IsExpression = isExpression;
             this.IsCancelled = false;
             this.Close();
         }
@@ -135,26 +150,20 @@ namespace TestFlow.DevSoftware.Controls
             return null != variable.Type ? $"{variable.Name}({variable.Type.Name})" : variable.Name;
         }
 
-        private void VariableForm_Load(object sender, System.EventArgs e)
+        private void VariableForm_Load(object sender, EventArgs e)
         {
             treeView_variables.ExpandAll();
             splitContainer_varControls.Panel2Collapsed = !_expressionEnabled;
         }
 
-        private void textBox_expression_TextChanged(object sender, System.EventArgs e)
+        private void ShowPropertyList()
         {
-            if (!_expressionEnabled)
-            {
-                return;
-            }
             listBox_properties.Items.Clear();
-            string showValue = textBox_expression.Text;
-            if (string.IsNullOrWhiteSpace(showValue) || _expRegex.IsMatch(showValue))
+            if (!_expressionEnabled || _editVarCache.Length == 0)
             {
                 return;
             }
-            bool isVariable;
-            string paramValue = Utility.GetParamValue(showValue, out isVariable);
+            string paramValue = _editVarCache.ToString();
             IVariable variable = GetVariable(paramValue);
             if (variable?.Type == null)
             {
@@ -205,6 +214,11 @@ namespace TestFlow.DevSoftware.Controls
             }
         }
 
+        private void textBox_expression_TextChanged(object sender, System.EventArgs e)
+        {
+            
+        }
+
         private IVariable GetVariable(string paramValue)
         {
             string variableName = Utility.GetVariableName(paramValue);
@@ -228,7 +242,10 @@ namespace TestFlow.DevSoftware.Controls
                 return;
             }
             string selectProperty = matchData.Groups[1].Value;
-            textBox_expression.AppendText($".{selectProperty}");
+            string propertyAppendStr = $".{selectProperty}";
+            textBox_expression.AppendText(propertyAppendStr);
+            _editVarCache.Append(propertyAppendStr);
+            ShowPropertyList();
         }
     }
 }

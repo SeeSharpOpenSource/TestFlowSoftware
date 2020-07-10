@@ -142,7 +142,6 @@ namespace TestFlow.DevSoftware
         private readonly IRuntimeService _testflowRuntimeService;
         private readonly IComInterfaceManager _interfaceManger;
         // 表达式匹配模式，第1组为数组的源数据，第二组为数组的变量名称
-        private readonly Regex _expRegex;
 
         #endregion
 
@@ -178,7 +177,6 @@ namespace TestFlow.DevSoftware
             #endregion
             _expandImagePath = _globalInfo.TestflowHome + "expand.png";
             _NexpandImagePath = _globalInfo.TestflowHome + "Nexpand.png";
-            this._expRegex = new Regex("^(([^\\.]+)(?:\\.[^\\.]+)*)\\[\\d+\\]$");
 
             InitializeComponent();
             this.TsfFilePath = sequencePath;
@@ -1222,7 +1220,7 @@ namespace TestFlow.DevSoftware
             _internalOperation = true;
 
             string value = textBox_loopTimeVar.Text ?? string.Empty;
-            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
+            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, CurrentStep, value,
                 false);
             variableForm.ShowDialog(this);
             if (!variableForm.IsCancelled)
@@ -1248,7 +1246,7 @@ namespace TestFlow.DevSoftware
             _internalOperation = true;
 
             string value = textBox_passTimeVar.Text ?? string.Empty;
-            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
+            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, CurrentStep, value,
                 false);
             variableForm.ShowDialog(this);
             if (!variableForm.IsCancelled)
@@ -1428,13 +1426,13 @@ namespace TestFlow.DevSoftware
         private void SetParamValueFromFx(DataGridViewCellEventArgs e)
         {
             string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString() ?? string.Empty;
-            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, value,
+            VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, CurrentStep, value,
                 true);
             variableForm.ShowDialog(this);
             if (!variableForm.IsCancelled)
             {
                 _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = variableForm.ParamValue;
-                SetParamValue(true, e.RowIndex, ParamTableValueCol);
+                SetParamValue(true, variableForm.IsExpression, e.RowIndex, ParamTableValueCol);
             }
             variableForm.Dispose();
         }
@@ -1647,7 +1645,7 @@ namespace TestFlow.DevSoftware
 
             try
             {
-                SetParamValue(false, e.RowIndex, e.ColumnIndex);
+                SetParamValue(false, false, e.RowIndex, e.ColumnIndex);
             }
             catch (ApplicationException ex)
             {
@@ -1659,7 +1657,7 @@ namespace TestFlow.DevSoftware
             _internalOperation = false;
         }
 
-        private void SetParamValue(bool setByFx, int rowIndex, int columnIndex)
+        private void SetParamValue(bool setByFx, bool isExpression, int rowIndex, int columnIndex)
         {
             //注：只有value的值会改变
             string paramName = _paramTable.Rows[rowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
@@ -1723,7 +1721,7 @@ namespace TestFlow.DevSoftware
                     }
                     else
                     {
-                        SetStepParamValue(constructorStep, paramName, value, currentCell, setByFx);
+                        SetStepParamValue(constructorStep, paramName, value, currentCell, setByFx, isExpression);
                     }
                 }
             }
@@ -1746,7 +1744,7 @@ namespace TestFlow.DevSoftware
                 }
                 else
                 {
-                    SetStepParamValue(functionStep, paramName, value, currentCell, setByFx);
+                    SetStepParamValue(functionStep, paramName, value, currentCell, setByFx, isExpression);
                 }
             }
             SetParamColumnForeColor(setByFx, rowIndex);
@@ -1771,7 +1769,7 @@ namespace TestFlow.DevSoftware
             UpdateSingleVariable(variable, variable.Parent is ISequenceGroup);
         }
 
-        private void SetStepParamValue(ISequenceStep step, string paramName, string value, DataGridViewCell currentCell, bool setByFx)
+        private void SetStepParamValue(ISequenceStep step, string paramName, string value, DataGridViewCell currentCell, bool setByFx, bool isExpression)
         {
             IArgument argument = step.Function.ParameterType.FirstOrDefault(item => item.Name.Equals(paramName));
             if (null == argument)
@@ -1782,16 +1780,15 @@ namespace TestFlow.DevSoftware
             if (setByFx)
             {
                 string variableName = value;
-                ParameterType paramType = ParameterType.Variable;
-                if (_expRegex.IsMatch(value))
+                ParameterType paramType = ParameterType.Expression;
+                if (!isExpression)
                 {
-                    paramType = ParameterType.Expression;
-                    variableName = _expRegex.Match(value).Groups[2].Value;
+                    paramType = ParameterType.Variable;
+                    // 检查变量是否存在
+                    IVariable variable = GetAvailableVariable(step, variableName, null);
+                    SetVariableType(argument.Type, value, variable);
                 }
-                // 检查变量是否存在
-                IVariable variable = GetAvailableVariable(step, variableName, null);
                 TestflowDesigntimeSession.SetParameterValue(paramName, value, paramType, step);
-                SetVariableType(argument.Type, value, variable);
             }
             // 如果参数为类类型或者有ref或者out的参数且不是json字符串，则需要使用变量传递
             else if ((argument.VariableType == VariableType.Class || argument.VariableType == VariableType.Struct ||
@@ -3214,6 +3211,8 @@ namespace TestFlow.DevSoftware
             switch (stepResults)
             {
                 case StepResult.NotAvailable:
+                    currentColor = Color.White;
+                    break;
                 case StepResult.RetryFailed:
                     currentColor = Color.Coral;
                     break;

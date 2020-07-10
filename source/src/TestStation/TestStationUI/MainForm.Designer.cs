@@ -1229,6 +1229,11 @@ namespace TestFlow.DevSoftware
             // 
             this.numericUpDown_passTimes.BackColor = System.Drawing.Color.LightGray;
             this.numericUpDown_passTimes.Location = new System.Drawing.Point(175, 101);
+            this.numericUpDown_passTimes.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
             this.numericUpDown_passTimes.Name = "numericUpDown_passTimes";
             this.numericUpDown_passTimes.Size = new System.Drawing.Size(120, 21);
             this.numericUpDown_passTimes.TabIndex = 9;
@@ -1252,6 +1257,11 @@ namespace TestFlow.DevSoftware
             // 
             this.numericUpDown_retryTime.BackColor = System.Drawing.Color.LightGray;
             this.numericUpDown_retryTime.Location = new System.Drawing.Point(175, 44);
+            this.numericUpDown_retryTime.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
             this.numericUpDown_retryTime.Name = "numericUpDown_retryTime";
             this.numericUpDown_retryTime.Size = new System.Drawing.Size(120, 21);
             this.numericUpDown_retryTime.TabIndex = 7;
@@ -1284,6 +1294,11 @@ namespace TestFlow.DevSoftware
             // 
             this.LoopTimesnumericUpDown.BackColor = System.Drawing.Color.LightGray;
             this.LoopTimesnumericUpDown.Location = new System.Drawing.Point(29, 101);
+            this.LoopTimesnumericUpDown.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
             this.LoopTimesnumericUpDown.Name = "LoopTimesnumericUpDown";
             this.LoopTimesnumericUpDown.Size = new System.Drawing.Size(120, 21);
             this.LoopTimesnumericUpDown.TabIndex = 4;
@@ -1330,7 +1345,7 @@ namespace TestFlow.DevSoftware
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(908, 360);
+            this.tabpage_Module.Size = new System.Drawing.Size(904, 358);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1727,7 +1742,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(930, 192);
+            this.textBox_reportData.Size = new System.Drawing.Size(934, 194);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
