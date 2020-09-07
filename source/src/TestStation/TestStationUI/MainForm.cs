@@ -21,6 +21,8 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using SeeSharpTools.JY.Report;
+using Testflow;
+using Testflow.Utility.Utils;
 using TestFlow.DevSoftware.Common;
 using TestFlow.DevSoftware.Controls;
 using TestFlow.DevSoftware.ParameterChecker;
@@ -162,6 +164,15 @@ namespace TestFlow.DevSoftware
         private TreeDataGridView _paramTable;
 
         #endregion
+
+        #region 复制相关
+
+        private ISequence _copiedSequence = null;
+
+        private ISequenceStep _copiedStep = null;
+
+        #endregion
+
 
         #region 界面初始化
         
@@ -481,6 +492,27 @@ namespace TestFlow.DevSoftware
         #endregion
 
         #region Edit子菜单项事件
+
+        private void toolStripMenuItem_copySequence_Click(object sender, EventArgs e)
+        {
+            _copiedSequence = CurrentSeq;
+        }
+
+        private void toolStripMenuItem_pasteSequence_Click(object sender, EventArgs e)
+        {
+            int index = CurrentSeq.Index < 0 ? 0 : CurrentSeq.Index + 1;
+            ISequence sequence = (ISequence) _copiedSequence.Clone();
+            while (SequenceGroup.Sequences.Any(item => item.Name.Equals(sequence.Name)))
+            {
+                sequence.Name = sequence.Name + "-copy";
+            }
+            sequence.Parent = SequenceGroup;
+            SequenceGroup.Sequences.Insert(index, sequence);
+            ShowSequences(SequenceGroup);
+            int rowIndex = GetSeqRowIndex(index);
+            treeView_sequenceTree.SelectedNode = treeView_sequenceTree.Nodes[0].Nodes[0].Nodes[rowIndex];
+            _copiedSequence = null;
+        }
 
         private void addSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -3433,6 +3465,8 @@ namespace TestFlow.DevSoftware
                 renameSequenceToolStripMenuItem.Visible = false;
                 propertiesToolStripMenuItem.Visible = true;
                 toolStripSeparator3.Visible = false;
+                toolStripMenuItem_copySequence.Enabled = false;
+                toolStripMenuItem_pasteSequence.Enabled = false;
             }
             else if (selectedNode.Level == 1)
             {
@@ -3442,6 +3476,8 @@ namespace TestFlow.DevSoftware
                 renameSequenceToolStripMenuItem.Visible = false;
                 propertiesToolStripMenuItem.Visible = true;
                 toolStripSeparator3.Visible = false;
+                toolStripMenuItem_copySequence.Enabled = false;
+                toolStripMenuItem_pasteSequence.Enabled = false;
             }
             else if (selectedNode.Index <= 1)
             {
@@ -3451,6 +3487,8 @@ namespace TestFlow.DevSoftware
                 renameSequenceToolStripMenuItem.Visible = false;
                 propertiesToolStripMenuItem.Visible = false;
                 toolStripSeparator3.Visible = false;
+                toolStripMenuItem_copySequence.Enabled = false;
+                toolStripMenuItem_pasteSequence.Enabled = _copiedSequence != null;
             }
             else
             {
@@ -3460,6 +3498,8 @@ namespace TestFlow.DevSoftware
                 renameSequenceToolStripMenuItem.Visible = true;
                 propertiesToolStripMenuItem.Visible = false;
                 toolStripSeparator3.Visible = true;
+                toolStripMenuItem_copySequence.Enabled = true;
+                toolStripMenuItem_pasteSequence.Enabled = _copiedSequence != null;
             }
         }
 
@@ -3499,6 +3539,23 @@ namespace TestFlow.DevSoftware
                 node = node.Nodes[stepIndex];
             }
             return node;
+        }
+
+        private TreeNode FindStepNode(ISequenceStep step, TreeNode rootNode)
+        {
+            Stack<int> indexes = new Stack<int>(5);
+            do
+            {
+                indexes.Push(step.Index);
+                step = step.Parent as ISequenceStep;
+            } while (null != step);
+            TreeNode stepNode = rootNode;
+            while (indexes.Count > 0)
+            {
+                int index = indexes.Pop();
+                stepNode = stepNode.Nodes[index];
+            }
+            return stepNode;
         }
 
         private ISequence FindSelectedSequence(TreeNode node)
@@ -3742,6 +3799,45 @@ namespace TestFlow.DevSoftware
             }
             selectedStep.Name = newName;
             treeView_stepView.SelectedNode.Text = newName;
+        }
+
+        private void copyStepToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _copiedStep = CurrentStep;
+        }
+
+        private void pasteStepToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (null == CurrentSeq || null == _copiedStep)
+            {
+                return;
+            }
+            int index = CurrentSeq.Steps.Count;
+            ISequenceStepCollection parentSteps = CurrentSeq.Steps;
+            ISequenceFlowContainer parent = CurrentSeq;
+            if (null != CurrentStep)
+            {
+                index = CurrentStep.Index + 1;
+                parentSteps = CurrentStep.Parent is ISequence
+                    ? CurrentSeq.Steps
+                    : ((ISequenceStep) CurrentStep.Parent).SubSteps;
+                parent = CurrentStep.Parent;
+            }
+            ISequenceStep step = (ISequenceStep) _copiedStep.Clone();
+            while (parentSteps.Any(item => item.Name.Equals(step.Name)))
+            {
+                step.Name += "-copy";
+            }
+            parentSteps.Insert(index, step);
+            step.Parent = parent;
+            _copiedStep = null;
+            ShowSteps(CurrentSeq);
+            treeView_stepView.SelectedNode = FindStepNode(step, treeView_stepView.Nodes[0]);
+        }
+
+        private void cMS_DgvStep_Opening(object sender, CancelEventArgs e)
+        {
+            pasteStepToolStripMenuItem1.Enabled = null != _copiedStep;
         }
 
         private void renameSequenceToolStripMenuItem_Click(object sender, EventArgs e)
