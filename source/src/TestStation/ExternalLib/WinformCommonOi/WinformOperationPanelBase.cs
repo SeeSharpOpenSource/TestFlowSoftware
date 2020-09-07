@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Testflow.Data.Sequence;
-using Testflow.ExtensionBase.OperationPanel;
 using Testflow.Runtime.Data;
+using Testflow.Runtime.OperationPanel;
 
 namespace TestFlow.Software.WinformCommonOi
 {
