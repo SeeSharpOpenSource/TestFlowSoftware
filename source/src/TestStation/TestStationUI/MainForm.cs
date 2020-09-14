@@ -2214,8 +2214,9 @@ namespace TestFlow.DevSoftware
 
         private string GetMethodSignature(IFuncInterfaceDescription func)
         {
-            string[] str = func.Signature.Split('.');
-            return str[str.Length - 1];
+            string signature = func.Signature;
+            int splitIndex = signature.IndexOf('.') + 1;
+            return splitIndex > 0 ? signature.Substring(splitIndex, signature.Length - splitIndex) : signature;
         }
 
         private void ShowConstructorsAndMethods(IFunctionData selectedFunction = null)

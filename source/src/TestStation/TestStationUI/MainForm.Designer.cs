@@ -125,7 +125,6 @@ namespace TestFlow.DevSoftware
             this.flowControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tryFinallyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.copyStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteStepToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -679,7 +678,6 @@ namespace TestFlow.DevSoftware
             this.Menu_DeleteStep,
             this.toolStripMenuItem3,
             this.toolStripMenuItem5,
-            this.pasteStepToolStripMenuItem,
             this.toolStripSeparator6,
             this.copyStepToolStripMenuItem,
             this.pasteStepToolStripMenuItem1});
@@ -1025,12 +1023,6 @@ namespace TestFlow.DevSoftware
             this.tryFinallyToolStripMenuItem1.Name = "tryFinallyToolStripMenuItem1";
             this.tryFinallyToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.tryFinallyToolStripMenuItem1.Text = "Try-Finally";
-            // 
-            // pasteStepToolStripMenuItem
-            // 
-            this.pasteStepToolStripMenuItem.Name = "pasteStepToolStripMenuItem";
-            this.pasteStepToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.pasteStepToolStripMenuItem.Text = "Paste Step";
             // 
             // toolStripSeparator6
             // 
@@ -1382,7 +1374,7 @@ namespace TestFlow.DevSoftware
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(908, 360);
+            this.tabpage_Module.Size = new System.Drawing.Size(904, 358);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1476,7 +1468,7 @@ namespace TestFlow.DevSoftware
             this.tabPage_runtimeInfo.Location = new System.Drawing.Point(4, 22);
             this.tabPage_runtimeInfo.Name = "tabPage_runtimeInfo";
             this.tabPage_runtimeInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(908, 360);
+            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(904, 358);
             this.tabPage_runtimeInfo.TabIndex = 4;
             this.tabPage_runtimeInfo.Text = "RuntimeInformation";
             this.tabPage_runtimeInfo.UseVisualStyleBackColor = true;
@@ -1501,14 +1493,14 @@ namespace TestFlow.DevSoftware
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_clearOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_copyOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.textBox_output);
-            this.splitContainer_runtime.Size = new System.Drawing.Size(902, 354);
-            this.splitContainer_runtime.SplitterDistance = 418;
+            this.splitContainer_runtime.Size = new System.Drawing.Size(898, 352);
+            this.splitContainer_runtime.SplitterDistance = 416;
             this.splitContainer_runtime.TabIndex = 0;
             // 
             // button_deleteWatch
             // 
             this.button_deleteWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_deleteWatch.Location = new System.Drawing.Point(264, 319);
+            this.button_deleteWatch.Location = new System.Drawing.Point(262, 317);
             this.button_deleteWatch.Name = "button_deleteWatch";
             this.button_deleteWatch.Size = new System.Drawing.Size(100, 28);
             this.button_deleteWatch.TabIndex = 7;
@@ -1519,7 +1511,7 @@ namespace TestFlow.DevSoftware
             // button_addWatch
             // 
             this.button_addWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_addWatch.Location = new System.Drawing.Point(47, 319);
+            this.button_addWatch.Location = new System.Drawing.Point(47, 317);
             this.button_addWatch.Name = "button_addWatch";
             this.button_addWatch.Size = new System.Drawing.Size(100, 28);
             this.button_addWatch.TabIndex = 6;
@@ -1552,7 +1544,7 @@ namespace TestFlow.DevSoftware
             this.dataGridView_variableValues.ReadOnly = true;
             this.dataGridView_variableValues.RowHeadersVisible = false;
             this.dataGridView_variableValues.RowTemplate.Height = 23;
-            this.dataGridView_variableValues.Size = new System.Drawing.Size(414, 291);
+            this.dataGridView_variableValues.Size = new System.Drawing.Size(412, 289);
             this.dataGridView_variableValues.TabIndex = 5;
             // 
             // Column_VariableName
@@ -1598,7 +1590,7 @@ namespace TestFlow.DevSoftware
             this.button_clearOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_clearOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_clearOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_clearOutput.Location = new System.Drawing.Point(431, -1);
+            this.button_clearOutput.Location = new System.Drawing.Point(429, -1);
             this.button_clearOutput.Name = "button_clearOutput";
             this.button_clearOutput.Size = new System.Drawing.Size(45, 22);
             this.button_clearOutput.TabIndex = 2;
@@ -1613,7 +1605,7 @@ namespace TestFlow.DevSoftware
             this.button_copyOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_copyOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_copyOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_copyOutput.Location = new System.Drawing.Point(386, -1);
+            this.button_copyOutput.Location = new System.Drawing.Point(384, -1);
             this.button_copyOutput.Name = "button_copyOutput";
             this.button_copyOutput.Size = new System.Drawing.Size(45, 22);
             this.button_copyOutput.TabIndex = 1;
@@ -1633,7 +1625,7 @@ namespace TestFlow.DevSoftware
             this.textBox_output.Name = "textBox_output";
             this.textBox_output.ReadOnly = true;
             this.textBox_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_output.Size = new System.Drawing.Size(475, 331);
+            this.textBox_output.Size = new System.Drawing.Size(473, 329);
             this.textBox_output.TabIndex = 0;
             // 
             // tabCon_Step
@@ -1779,7 +1771,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(954, 204);
+            this.textBox_reportData.Size = new System.Drawing.Size(958, 206);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -2478,7 +2470,6 @@ namespace TestFlow.DevSoftware
         private ToolStripMenuItem toolStripMenuItem_copySequence;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripMenuItem copyStepToolStripMenuItem;
-        private ToolStripMenuItem pasteStepToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator6;
         private ToolStripMenuItem pasteStepToolStripMenuItem1;
     }
