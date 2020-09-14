@@ -1463,7 +1463,7 @@ namespace TestFlow.DevSoftware
             variableForm.ShowDialog(this);
             if (!variableForm.IsCancelled)
             {
-                _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value = variableForm.ParamValue;
+                SetValueAndConfigCellControl(true, variableForm.ParamValue, e.RowIndex);
                 SetParamValue(true, variableForm.IsExpression, e.RowIndex, ParamTableValueCol);
             }
             variableForm.Dispose();
@@ -1677,6 +1677,8 @@ namespace TestFlow.DevSoftware
 
             try
             {
+                string value = _paramTable.Rows[e.RowIndex].Cells[e.ColumnIndex].Value ?.ToString() ?? string.Empty;
+                SetValueAndConfigCellControl(false, value, e.RowIndex);
                 SetParamValue(false, false, e.RowIndex, e.ColumnIndex);
             }
             catch (ApplicationException ex)
@@ -1857,6 +1859,74 @@ namespace TestFlow.DevSoftware
                     // 值类型直接写入参数
                     TestflowDesigntimeSession.SetParameterValue(paramName, value, ParameterType.Value, step);
                 }
+            }
+        }
+
+        private IArgument GetStepArgument(int rowIndex)
+        {
+            ISequenceStep functionStep;
+            ISequenceStep constructorStep;
+            ISequenceStep currentStep = CurrentStep;
+            GetConstructAndFuncStep(currentStep, out constructorStep, out functionStep);
+            string paramName = _paramTable.Rows[rowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
+            // 修改构造方法的参数
+            if (_paramTable.FindNodeGroup(rowIndex).Equals("Constructor"))
+            {
+                // 实例为已存在的变量
+                if (paramName.Equals(ExistingObjParent) || paramName.Equals("Return Value"))
+                {
+                    return null;
+                }
+                return constructorStep.Function.ParameterType.FirstOrDefault(item => item.Name.Equals(paramName));
+            }
+            // 修改Method的参数
+            else
+            {
+                if (paramName.Equals(ExistingObjParent) || paramName.Equals("Return Value"))
+                {
+                    return null;
+                }
+                return functionStep.Function.ParameterType.FirstOrDefault(item => item.Name.Equals(paramName));
+            }
+        }
+
+        private void SetValueAndConfigCellControl(bool setByFx, string value, int rowIndex)
+        {
+            IArgument argument = GetStepArgument(rowIndex);
+            if (null == argument)
+            {
+                return;
+            }
+            // 使用表达式配置、参数类型不是枚举则使用文本框显示和配置
+            DataGridViewCell valueCell = _paramTable.Rows[rowIndex].Cells[ParamTableValueCol];
+            if (setByFx || argument.VariableType != VariableType.Enumeration)
+            {
+                if (!(valueCell is DataGridViewTextBoxCell))
+                {
+                    valueCell = new DataGridViewTextBoxCell();
+                    _paramTable.Rows[rowIndex].Cells[ParamTableValueCol] = valueCell;
+                }
+                valueCell.Value = value ?? string.Empty;
+            }
+            // 枚举类型且未使用表达式配置的使用下拉框配置
+            else
+            {
+                if (!(valueCell is DataGridViewComboBoxCell))
+                {
+                     valueCell = new DataGridViewComboBoxCell();
+                    _paramTable.Rows[rowIndex].Cells[ParamTableValueCol] = valueCell;
+                }
+                string[] enumItems = new string[0];
+                try
+                {
+                    enumItems = _globalInfo.TestflowEntity.ComInterfaceManager.GetEnumItems(argument.Type);
+                }
+                catch (ApplicationException ex)
+                {
+                    Logger.Print(ex, ex.Message, LogLevel.Warn);
+                }
+                ((DataGridViewComboBoxCell) valueCell).DataSource = enumItems;
+                valueCell.Value = value ?? string.Empty;
             }
         }
 
@@ -2294,40 +2364,61 @@ namespace TestFlow.DevSoftware
                     string paramValue = parameterData.Value;
                     int rowIndex = _paramTable.Rows.Add(new object[] { null, parameterType.Name, parameterType.Type.Name, modifier.Equals("None") ? "In" : modifier, paramValue });
                     bool setByFx = parameterData.ParameterType != ParameterType.NotAvailable && parameterData.ParameterType != ParameterType.Value;
-                    SetParamColumnForeColor(setByFx, _paramTable.RowCount - 1);
+                    
                     // 该步骤是为了添加参数的Assembly到接口加载模块
                     IAssemblyInfo assemblyInfo;
                     _globalInfo.TestflowEntity.ComInterfaceManager.GetClassDescriptionByType(parameterType.Type,
                         out assemblyInfo);
-
-                    // 枚举特殊处理
-                    if (parameterType.VariableType == VariableType.Enumeration)
-                    {
-                        string[] enumItems = null;
-                        try
-                        {
-                            enumItems = _globalInfo.TestflowEntity.ComInterfaceManager.GetEnumItems(parameterType.Type);
-                        }
-                        catch (ApplicationException ex)
-                        {
-                            Logger.Print(ex, ex.Message, LogLevel.Warn);
-                        }
-                        // 如果当前程序集包含该枚举的定义，则显示为下拉框，否则不作为
-                        if (null != enumItems && enumItems.Length > 0)
-                        {
-                            DataGridViewComboBoxCell enumCell = new DataGridViewComboBoxCell();
-                            enumCell.DataSource = enumItems;
-                            _paramTable.Rows[rowIndex].Cells["ParameterValue"] = enumCell;
-                            if (!string.IsNullOrEmpty(parameterData.Value))
-                            {
-                                enumCell.Value = parameterData.Value;
-                            }
-                        }
-                    }
-
+                    ShowSingleParameter(parameterData, parameterType, rowIndex, setByFx);
                 }
             }
             #endregion
+        }
+
+        private void ShowSingleParameter(IParameterData parameterData, IArgument parameterType, int rowIndex, bool setByFx)
+        {
+            // 枚举特殊处理
+            if (parameterType.VariableType == VariableType.Enumeration && 
+                parameterData.ParameterType != ParameterType.Expression &&
+                parameterData.ParameterType != ParameterType.Variable)
+            {
+                string[] enumItems = null;
+                try
+                {
+                    enumItems = _globalInfo.TestflowEntity.ComInterfaceManager.GetEnumItems(parameterType.Type);
+                }
+                catch (ApplicationException ex)
+                {
+                    Logger.Print(ex, ex.Message, LogLevel.Warn);
+                }
+                // 如果当前程序集包含该枚举的定义，则显示为下拉框，否则不作为
+                if (null != enumItems && enumItems.Length > 0)
+                {
+                    DataGridViewComboBoxCell enumCell =
+                        _paramTable.Rows[rowIndex].Cells["ParameterValue"] as DataGridViewComboBoxCell;
+                    if (null == enumCell)
+                    {
+                        enumCell = new DataGridViewComboBoxCell();
+                        _paramTable.Rows[rowIndex].Cells["ParameterValue"] = enumCell;
+                    }
+                    enumCell.DataSource = enumItems;
+                    if (!string.IsNullOrEmpty(parameterData.Value))
+                    {
+                        enumCell.Value = parameterData.Value;
+                    }
+                }
+            }
+            else
+            {
+                DataGridViewTextBoxCell textCell = _paramTable.Rows[rowIndex].Cells["ParameterValue"] as DataGridViewTextBoxCell;
+                if (null == textCell)
+                {
+                    textCell = new DataGridViewTextBoxCell();
+                    _paramTable.Rows[rowIndex].Cells["ParameterValue"] = textCell;
+                }
+                textCell.Value = parameterData.Value;
+            }
+            SetParamColumnForeColor(setByFx, _paramTable.RowCount - 1);
         }
 
         private void UpdateTDGVParameter()
