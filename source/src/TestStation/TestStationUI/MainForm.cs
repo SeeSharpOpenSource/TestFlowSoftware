@@ -1892,13 +1892,15 @@ namespace TestFlow.DevSoftware
 
         private void SetValueAndConfigCellControl(bool setByFx, string value, int rowIndex)
         {
+            DataGridViewCell valueCell = _paramTable.Rows[rowIndex].Cells[ParamTableValueCol];
             IArgument argument = GetStepArgument(rowIndex);
             if (null == argument)
             {
+                valueCell.Value = value;
                 return;
             }
             // 使用表达式配置、参数类型不是枚举则使用文本框显示和配置
-            DataGridViewCell valueCell = _paramTable.Rows[rowIndex].Cells[ParamTableValueCol];
+            
             if (setByFx || argument.VariableType != VariableType.Enumeration)
             {
                 if (!(valueCell is DataGridViewTextBoxCell))
