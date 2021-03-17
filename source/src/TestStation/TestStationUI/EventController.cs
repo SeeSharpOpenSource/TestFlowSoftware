@@ -180,7 +180,7 @@ namespace TestFlow.DevSoftware
         private void SequenceOver(ISequenceTestResult statistics)
         {
             ISequence sequence = SequenceUtils.GetSequence(_sequenceData, statistics.SessionId, statistics.SequenceIndex);
-            string printInfo = $"{sequence.Name} over.";
+            string printInfo = null == statistics.FailedInfo ? $"{sequence.Name} over." : $"{sequence.Name} failed.";
             _mainform.Invoke(new Action(() => { _mainform.AppendOutput(printInfo); }));
         }
 

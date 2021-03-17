@@ -136,13 +136,13 @@ namespace TestFlow.DevSoftware.Runtime
                 }
 
                 PrintWatchData(statusinfo.WatchDatas);
-                if (null != statusinfo.FailedInfos)
-                {
-                    foreach (KeyValuePair<int, IFailedInfo> keyValuePair in statusinfo.FailedInfos)
-                    {
-                        _mainForm.PrintInfo($"Sequence {keyValuePair.Key} failed: {keyValuePair.Value.Message}");
-                    }
-                }
+                //if (null != statusinfo.FailedInfos)
+                //{
+                //    foreach (KeyValuePair<int, IFailedInfo> keyValuePair in statusinfo.FailedInfos)
+                //    {
+                //        _mainForm.PrintInfo($"Sequence {keyValuePair.Key} failed: {keyValuePair.Value.Message}");
+                //    }
+                //}
             }));
         }
 
@@ -158,11 +158,11 @@ namespace TestFlow.DevSoftware.Runtime
                 dataGridView_status.Rows[rowIndex].Cells[EndTimeCol].Value = statistics.EndTime.ToString("HH:mm:ss.fff");
                 if (statistics.ResultState > RuntimeState.Success && null != statistics.FailedInfo)
                 {
-                    _mainForm.PrintInfo($"Sequence <{statistics.SequenceIndex}> failed: {statistics.FailedInfo.Message}");
+                    // _mainForm.PrintInfo($"Sequence <{statistics.SequenceIndex}> failed: {statistics.FailedInfo.Message}");
                 }
                 else
                 {
-                    _mainForm.PrintInfo($"Sequence <{statistics.SequenceIndex}> over.");
+                    // _mainForm.PrintInfo($"Sequence <{statistics.SequenceIndex}> over.");
                 }
                 _startTimes[rowIndex] = DateTime.MaxValue;
             }));
