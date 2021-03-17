@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Testflow;
 using Testflow.Data.Sequence;
 using Testflow.External.RunnerInvoker;
+using Testflow.Runtime;
 using Testflow.Usr;
 
 namespace TestFlowExecutor
@@ -28,9 +29,9 @@ namespace TestFlowExecutor
                 TestflowRunnerOptions runnerOptions = new TestflowRunnerOptions();
                 this._testflowRunner = TestFlowRunnerInvoker.CreateInstance(runnerOptions);
                 this._testflowRunner.Initialize();
-                this._testflowRunner.DesigntimeInitialize();
                 this._testflowRunner.RuntimeInitialize();
                 _testflowRunner.EngineController.ExceptionRaised += EngineControllerOnExceptionRaised;
+                _testflowRunner.DesigntimeInitialize();
             }
             catch (Exception ex)
             {
@@ -52,13 +53,20 @@ namespace TestFlowExecutor
             
             try
             {
-                _testflowRunner.RuntimeService.Initialize();
                 ISequenceGroup sequenceGroup = _testflowRunner.SequenceManager.LoadSequenceGroup(SerializationTarget.File, sequenceFile);
+                _testflowRunner.ComInterfaceManager.GetComponentInterfaces(sequenceGroup.Assemblies);
+                _testflowRunner.RuntimeInitialize();
+                _testflowRunner.RuntimeService.Initialize();
                 _testflowRunner.RuntimeService.Load(sequenceGroup);
-                ThreadPool.QueueUserWorkItem((state) =>
+                this._testflowRunner.EngineController.RegisterRuntimeEvent(
+                    new RuntimeDelegate.SessionStatusAction(FrmMain_SessionStart), "SessionStart", 0);
+                this._testflowRunner.EngineController.RegisterRuntimeEvent(
+                    new RuntimeDelegate.SessionStatusAction(FrmMain_SessionOver), "SessionOver", 0);
+                                ThreadPool.QueueUserWorkItem((state) =>
                 {
                     _testflowRunner.EngineController.Start();
                 });
+                this.button_run.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -68,7 +76,33 @@ namespace TestFlowExecutor
 
         private void EngineControllerOnExceptionRaised(Exception ex)
         {
-            Invoke(new Action(() => { AppendErrorInfo(ex); }));
+            Invoke(new Action(() => {
+                AppendErrorInfo(ex);
+                this.button_run.Enabled = true;
+            }));
+        }
+
+        private void FrmMain_SessionStart(Testflow.Runtime.Data.ITestResultCollection statistics)
+        {
+            Invoke(new Action(() => {
+                string showInfo = "Sequence Start...";
+                this.textBox_output.AppendText(showInfo);
+                this.textBox_output.AppendText(Environment.NewLine);
+            }));
+        }
+
+        private void FrmMain_SessionOver(Testflow.Runtime.Data.ITestResultCollection statistics)
+        {
+            Invoke(new Action(() => {
+                string showInfo = "Sequence over.";
+                if (statistics.Any(item => item.Value.ResultState != RuntimeState.Success))
+                {
+                    showInfo = "Sequence Failed.";
+                }
+                this.textBox_output.AppendText(showInfo);
+                this.textBox_output.AppendText(Environment.NewLine);
+                this.button_run.Enabled = true;
+            }));
         }
 
         private void AppendErrorInfo(Exception ex)

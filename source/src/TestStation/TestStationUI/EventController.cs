@@ -190,12 +190,12 @@ namespace TestFlow.DevSoftware
             UnRegisterEvent();
             string runtimeHash = _globalInfo.TestflowEntity.EngineController.GetRuntimeInfo<string>("RuntimeHash");
             string reportPath = GetReportPath();
-            _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt, _sequenceData);
-            _mainform.Invoke(new Action(() =>
-            {
-                _mainform.RunningOver();
-                _mainform.PrintReport(reportPath);
-            }));
+            // _globalInfo.TestflowEntity.ResultManager.PrintReport(reportPath, runtimeHash, ReportType.txt, _sequenceData);
+            //_mainform.Invoke(new Action(() =>
+            //{
+            //    _mainform.RunningOver();
+            //    _mainform.PrintReport(reportPath);
+            //}));
         }
 
         private string GetReportPath()
