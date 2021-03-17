@@ -153,7 +153,7 @@ namespace JYProductOperationPanel
                     nameof(OiStartSequenceConfirmed));
                 startSequenceEvent.AddEventHandler(this._panelForm, startSequenceCallBack);
 
-                Application.Run(this._panelForm);
+                _panelForm.ShowDialog();
             }
             catch (TestflowException ex)
             {
