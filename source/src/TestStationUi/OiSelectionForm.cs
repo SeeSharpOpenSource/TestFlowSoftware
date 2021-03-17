@@ -12,6 +12,7 @@ using Testflow.Data;
 using Testflow.Data.Description;
 using Testflow.Data.Sequence;
 using Testflow.Modules;
+using Testflow.Runtime.OperationPanel;
 using TestFlow.SoftDevCommon;
 using TestFlow.Software.WinformCommonOi;
 using TestFlow.Software.WinformCommonOi.ValueInputOi;
@@ -23,13 +24,14 @@ namespace TestFlow.Software.OperationPanel
         private IOperationPanelInfo _oiInfo;
         private ISequenceGroup _sequenceData;
         private GlobalInfo _globalInfo;
-        private List<IClassInterfaceDescription> _filteredClasses;
+        private List<Type> _filteredClasses;
         private Assembly _oiAssembly;
         private IComInterfaceDescription _comDescription;
 
         private IAssemblyInfo _originalAssemblyInfo;
         private ITypeData _originalTypeData;
         private string _originalParamValue;
+        private Type _configFormType;
 
         public OiSelectionForm(ISequenceGroup sequenceGroup, GlobalInfo globalInfo)
         {
@@ -40,21 +42,20 @@ namespace TestFlow.Software.OperationPanel
             _originalTypeData = _oiInfo.OperationPanelClass;
             _originalParamValue = _oiInfo.Parameters;
             _globalInfo = globalInfo;
-            _filteredClasses = new List<IClassInterfaceDescription>(20);
-            if (null == _oiInfo.Assembly)
+            _filteredClasses = new List<Type>(20);
+            string assemblyPath = this._oiInfo.Assembly?.Path;
+            if (null == assemblyPath)
             {
-                string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
-//                string commonOiPath = "WinformCommonOi.dll";
-                label_assemblyPath.Text = commonOiPath;
+                assemblyPath = GetDefaultOiAssembly();
+                label_assemblyPath.Text = assemblyPath;
             }
             else
             {
-                label_assemblyPath.Text = _oiInfo.Assembly.Path;
-                label_currentoiAssembly.Text = _oiInfo.Assembly.Path;
+                label_assemblyPath.Text = assemblyPath;
                 label_currentOiClass.Text = _oiInfo.OperationPanelClass?.Name ?? string.Empty;
             }
+            _comDescription = this._globalInfo.TestflowEntity.ComInterfaceManager.GetComponentInterface(assemblyPath);
             ShowCurrentAssemblyAndClassInfo();
-
         }
 
         private void button_confirm_Click(object sender, EventArgs e)
@@ -99,22 +100,17 @@ namespace TestFlow.Software.OperationPanel
 
         private void InitClasses()
         {
-            _comDescription = null;
             comboBox_classes.Text = string.Empty;
             comboBox_classes.Items.Clear();
             _oiAssembly = null;
-            IComInterfaceManager interfaceManager = _globalInfo.TestflowEntity.ComInterfaceManager;
-            string commonOiPath = _globalInfo.TestflowHome + "WinformCommonOi.dll";
-            IComInterfaceDescription oiBaseInterfaceDescription = interfaceManager.GetComponentInterface(commonOiPath);
-            ITypeData oiBaseType = interfaceManager.GetTypeByName("WinformOperationPanelBase", "TestFlow.Software.WinformCommonOi");
-
-            _comDescription = interfaceManager.GetComponentInterface(label_assemblyPath.Text);
+            string oiPath = this.label_assemblyPath.Text;
             _filteredClasses.Clear();
-            foreach (IClassInterfaceDescription classDescription in _comDescription.Classes)
+            _oiAssembly = Assembly.LoadFrom(oiPath);
+            foreach (Type exportedType in _oiAssembly.ExportedTypes)
             {
-                if (interfaceManager.IsDerivedFrom(classDescription.ClassType, oiBaseType))
+                if (typeof(IOperationPanel).IsAssignableFrom(exportedType))
                 {
-                    _filteredClasses.Add(classDescription);
+                    this._filteredClasses.Add(exportedType);
                 }
             }
             if (_filteredClasses.Count <= 0)
@@ -122,11 +118,19 @@ namespace TestFlow.Software.OperationPanel
                 return;
             }
             _oiAssembly = Assembly.LoadFrom(label_assemblyPath.Text);
-            IEnumerable<string> oiClassNames = from item in _filteredClasses select item.ClassType.Name;
+            IEnumerable<string> oiClassNames = from item in _filteredClasses select item.Name;
+            _comDescription = this._globalInfo.TestflowEntity.ComInterfaceManager.GetComponentInterface(oiPath);
             foreach (string className in oiClassNames)
             {
                 comboBox_classes.Items.Add(className);
             }
+        }
+
+        private static string GetDefaultOiAssembly()
+        {
+            string workSpaceDir = Environment.GetEnvironmentVariable("TESTFLOW_WORKSPACE").Split(';')[0];
+            string defaultOiPath = workSpaceDir + "JYProductOperationPanel.dll";
+            return defaultOiPath;
         }
 
         private void comboBox_classes_SelectedIndexChanged(object sender, EventArgs e)
@@ -136,18 +140,20 @@ namespace TestFlow.Software.OperationPanel
                 button_configOi.Enabled = false;
                 return;
             }
+            _configFormType = null;
             try
             {
-                IClassInterfaceDescription selectedClass = _filteredClasses[comboBox_classes.SelectedIndex];
-                Type oiType = _oiAssembly.GetType($"{selectedClass.ClassType.Namespace}.{selectedClass.ClassType.Name}");
-                object oiNstanceObj = Activator.CreateInstance(oiType);
-                ValueInputOperationPanel operationPanel = oiNstanceObj as ValueInputOperationPanel;
-                WinformOperationPanelBase oiInstance = oiNstanceObj as WinformOperationPanelBase;
+                Type selectedClass = _filteredClasses[comboBox_classes.SelectedIndex];
+                Type oiType = _oiAssembly.GetType($"{selectedClass.Namespace}.{selectedClass.Name}");
+                PropertyInfo configPanelInfo =
+                    oiType.GetProperty("ConfigPanel", BindingFlags.Public | BindingFlags.Static);
+                
                 button_configOi.Enabled = true;
                 _oiInfo.Assembly = _comDescription.Assembly;
-                _oiInfo.OperationPanelClass = selectedClass.ClassType;
-                Type configFormType = oiInstance?.ConfigFormType;
-                if (null == configFormType)
+                _oiInfo.OperationPanelClass = this._comDescription.Classes
+                    .First(item => item.Name.Equals(selectedClass.Name)).ClassType;
+                this._configFormType = configPanelInfo?.GetValue(null) as Type;
+                if (null == this._configFormType)
                 {
                     button_configOi.Enabled = false;
                     return;
@@ -168,27 +174,41 @@ namespace TestFlow.Software.OperationPanel
                     button_configOi.Enabled = false;
                     return;
                 }
-                IClassInterfaceDescription selectedClass = _filteredClasses[comboBox_classes.SelectedIndex];
-                Type oiType = _oiAssembly.GetType($"{selectedClass.ClassType.Namespace}.{selectedClass.ClassType.Name}");
-                WinformOperationPanelBase oiInstance = (WinformOperationPanelBase)Activator.CreateInstance(oiType);
-                Type configFormType = oiInstance?.ConfigFormType;
-                IOiConfigForm configForm = (IOiConfigForm)Activator.CreateInstance(configFormType);
+                Type configFormType = _configFormType;
+                IOIConfigPanel configForm = (IOIConfigPanel)Activator.CreateInstance(configFormType);
                 if (null == configForm)
                 {
                     return;
                 }
-                configForm.Initialize(_sequenceData);
-                configForm.ShowDialog();
-                string configData = configForm.GetOiConfigData();
-                if (!string.IsNullOrWhiteSpace(configData))
+
+                configForm.ShowOiConfigPanel(this._sequenceData, GetShowParameter());
+                bool isConfirmed = false;
+                string configData = configForm.GetParameter(out isConfirmed);
+                if (!isConfirmed)
                 {
-                    _oiInfo.Parameters = configData;
+                    return;
                 }
+                _oiInfo.Parameters = configData ?? string.Empty;
             }
             catch (ApplicationException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private object[] GetShowParameter()
+        {
+            List<object> oiExtraParams = new List<object>(10);
+            // TestFlow平台运行时关联路径
+            List<string> platformDirs = new List<string>(10);
+            IConfigurationManager configManager = this._globalInfo.TestflowEntity.ConfigurationManager;
+            platformDirs.Add(Utility.GetParentDir(this._sequenceData.Info.SequenceGroupFile));
+            platformDirs.AddRange(configManager.ConfigData.GetProperty<string[]>("WorkspaceDir"));
+            platformDirs.Add(configManager.ConfigData.GetProperty<string>("PlatformLibDir"));
+            platformDirs.Add(configManager.ConfigData.GetProperty<string>("TestflowHome"));
+            oiExtraParams.Add(platformDirs.ToArray());
+
+            return oiExtraParams.ToArray();
         }
 
         private void button_removeOi_Click(object sender, EventArgs e)

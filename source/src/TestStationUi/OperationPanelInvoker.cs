@@ -53,7 +53,7 @@ namespace TestFlow.Software.OperationPanel
 
         public void RegeisterOiReadyEventAndStart(Action<bool, string> eventDelegate)
         {
-            _operationPanel.OiReady += eventDelegate;
+            // _operationPanel.OiReady += eventDelegate;
         }
 
 

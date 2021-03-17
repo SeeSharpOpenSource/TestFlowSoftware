@@ -128,7 +128,7 @@ namespace TestFlow.DevSoftware
 
         private readonly GlobalInfo _globalInfo; //GlobalInfo是Runner的包装层
         private readonly IDesignTimeService _testflowDesigntimeService;
-        private OperationPanelInvoker _oiInvoker;
+        // private OperationPanelInvoker _oiInvoker;
 
         private IDesignTimeSession TestflowDesigntimeSession
         {
@@ -184,6 +184,7 @@ namespace TestFlow.DevSoftware
             _globalInfo.PrintUutResult = PrintUutResult;
             _testflowDesigntimeService = _globalInfo.TestflowEntity.DesignTimeService;
             _testflowRuntimeService = _globalInfo.TestflowEntity.RuntimeService;
+            this._globalInfo.TestflowEntity.EngineController.ExceptionRaised += EngineExceptionRaised;
             _interfaceManger = _globalInfo.TestflowEntity.ComInterfaceManager;
             #endregion
             _expandImagePath = _globalInfo.TestflowHome + "expand.png";
@@ -407,7 +408,7 @@ namespace TestFlow.DevSoftware
             e.Cancel = !CheckIfCanClose();
             if (!e.Cancel)
             {
-                _oiInvoker?.Dispose();
+                // _oiInvoker?.Dispose();
             }
         }
         
@@ -689,7 +690,7 @@ namespace TestFlow.DevSoftware
                 viewController_Main.State = RunState.RunIdle.ToString();
                 try
                 {
-                    RunSequencePreProcess();
+                    RunSequence();
                 }
                 catch (ApplicationException ex)
                 {
@@ -3011,7 +3012,7 @@ namespace TestFlow.DevSoftware
 
         #region 序列运行
 
-        private void RunSequencePreProcess()
+        private void RunSequence()
         {
             // 序列未保存则弹出保存界面，如果保存失败或取消则返回不执行
             if (string.IsNullOrWhiteSpace(SequenceGroup.Info.SequenceGroupFile))
@@ -3051,20 +3052,9 @@ namespace TestFlow.DevSoftware
                 RuntimeStatusForm runtimeStatusForm = (RuntimeStatusForm)RuntimeStatusTab.Controls[0];
                 runtimeStatusForm.LoadSequence(runtimeSequenceGroup);
                 runtimeStatusForm.RegisterEvent();
-                _oiInvoker?.Dispose();
-                _oiInvoker = new OperationPanelInvoker(_globalInfo, runtimeSequenceGroup);
-                bool oiAvailable = _oiInvoker.Initialize();
-                // 如果OI可用，则使用OI的OIReady事件触发引擎开始运行
-                if (oiAvailable)
-                {
-                    _oiInvoker.RegeisterOiReadyEventAndStart(StartRunSequence);
-                }
-                else
-                {
-                    _testflowRuntimeService.Run();
-                    viewController_Main.State = RunState.Running.ToString();
-                }
-                
+
+                this._testflowRuntimeService.Run();
+                viewController_Main.State = RunState.Running.ToString();
             }
             catch (ApplicationException ex)
             {
@@ -3072,6 +3062,15 @@ namespace TestFlow.DevSoftware
                 ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
                 viewController_Main.State = RunState.RunIdle.ToString();
             }
+        }
+
+        private void EngineExceptionRaised(Exception exception)
+        {
+            BeginInvoke(new Action(() =>
+            {
+                viewController_Main.State = RunState.RunIdle.ToString();
+                PrintInfo($"Start engine failed. {exception.Message}");
+            }));
         }
 
         private void StartRunSequence(bool oiStart, string message)

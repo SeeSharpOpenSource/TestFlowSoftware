@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Testflow.Data;
 using Testflow.Data.Description;
 using Testflow.Data.Sequence;
@@ -305,6 +306,70 @@ namespace TestFlow.SoftDevCommon
             }
             // 如果Stack的长度比比较的长，也说明比Stack大
             return stackElem.Length >= compareElem.Length;
+        }
+
+        public static string GetAbsolutePath(string path, string[] availableDirs)
+        {
+            string fullPath = TryGetAbsolutePath(path, availableDirs);
+            if (string.IsNullOrWhiteSpace(fullPath))
+            {
+                throw new ApplicationException($"The panel form assembly {path} cannot be found.");
+            }
+            return fullPath;
+        }
+
+        public static string TryGetAbsolutePath(string path, string[] availableDirs)
+        {
+            const string absolutePathFormat = @"^[a-zA-Z]:{0}";
+            char dirDelim = Path.DirectorySeparatorChar;
+            // \在正则表达式中需要转义
+            string absolutePathRegexStr = dirDelim.Equals('\\')
+                ? string.Format(absolutePathFormat, @"\\")
+                : string.Format(absolutePathFormat, dirDelim);
+            if (Regex.IsMatch(path, absolutePathRegexStr))
+            {
+                return path;
+            }
+
+            foreach (string availableDir in availableDirs)
+            {
+                string fullPath = availableDir + path;
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+            return string.Empty;
+        }
+
+        public static string GetRelativePath(string path, string[] availableDirs)
+        {
+            const string absolutePathFormat = @"^[a-zA-Z]:{0}";
+            char dirDelim = Path.DirectorySeparatorChar;
+            // \在正则表达式中需要转义
+            string absolutePathRegexStr = dirDelim.Equals('\\')
+                ? string.Format(absolutePathFormat, @"\\")
+                : string.Format(absolutePathFormat, dirDelim);
+            if (!Regex.IsMatch(path, absolutePathRegexStr))
+            {
+                return path;
+            }
+
+            foreach (string availableDir in availableDirs)
+            {
+                if (path.StartsWith(availableDir))
+                {
+                    return path.Substring(availableDir.Length, path.Length - availableDir.Length);
+                }
+            }
+            return string.Empty;
+        }
+
+        public static string GetParentDir(string path)
+        {
+            char dirDelim = Path.DirectorySeparatorChar;
+            int endIndex = path.LastIndexOf(dirDelim) + 1;
+            return path.Substring(0, endIndex);
         }
     }
 }
