@@ -33,14 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtensionBase">
-      <HintPath>C:\SeeSharp\JYTEK\TestFlow\sdk\ExtensionBase.dll</HintPath>
-    </Reference>
-    <Reference Include="funcdefs">
-      <HintPath>C:\SeeSharp\JYTEK\TestFlow\sdk\funcdefs.dll</HintPath>
-    </Reference>
-    <Reference Include="libCommon">
-      <HintPath>C:\SeeSharp\JYTEK\TestFlow\sdk\libCommon.dll</HintPath>
+    <Reference Include="libCommon, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TestFlowReference\libCommon.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,10 +53,11 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="tfInvoker">
-      <HintPath>C:\SeeSharp\JYTEK\TestFlow\sdk\tfInvoker.dll</HintPath>
+      <HintPath>..\..\..\TestFlowReference\tfInvoker.dll</HintPath>
     </Reference>
-    <Reference Include="tfutil">
-      <HintPath>C:\SeeSharp\JYTEK\TestFlow\sdk\tfutil.dll</HintPath>
+    <Reference Include="tfutil, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TestFlowReference\tfutil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

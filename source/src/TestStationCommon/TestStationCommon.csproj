@@ -31,13 +31,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="libCommon">
-      <HintPath>..\Reference\libCommon.dll</HintPath>
+      <HintPath>..\..\..\TestFlowReference\libCommon.dll</HintPath>
     </Reference>
     <Reference Include="SeeSharpTools.JY.File">
       <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.File.dll</HintPath>
     </Reference>
     <Reference Include="SeeSharpTools.JY.Report">
-      <HintPath>..\Reference\SeeSharpTools.JY.Report.dll</HintPath>
+      <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.Report.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,10 +48,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TestflowLauncher">
-      <HintPath>..\Reference\TestflowLauncher.dll</HintPath>
+      <HintPath>..\..\..\TestFlowReference\TestflowLauncher.dll</HintPath>
     </Reference>
     <Reference Include="tfutil">
-      <HintPath>..\Reference\tfutil.dll</HintPath>
+      <HintPath>..\..\..\TestFlowReference\tfutil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

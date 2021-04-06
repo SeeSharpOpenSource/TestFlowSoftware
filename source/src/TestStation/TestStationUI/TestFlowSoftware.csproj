@@ -53,8 +53,9 @@
     <ApplicationIcon>jytek.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libCommon">
-      <HintPath>..\..\Reference\libCommon.dll</HintPath>
+    <Reference Include="libCommon, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\TestFlowReference\libCommon.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -106,9 +107,6 @@
     <Reference Include="tfutil, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\tfutil.dll</HintPath>
-    </Reference>
-    <Reference Include="UsrLibBase">
-      <HintPath>..\..\Reference\UsrLibBase.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

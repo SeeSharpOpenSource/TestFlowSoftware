@@ -1,0 +1,15 @@
+********************************************************************************
+UUT Report
+Station ID:                   {Station}
+Test Socket Index:            {SocketIndex}
+Serial Number:                {SerialNumber}
+Date:                         {Date}
+Time:                         {Time}
+Operator:                     {Operator}
+Execution Time(s):            {ExecutionTime}
+UUT Result:                   {UUTResult}
+Error Code:                   {ErrorCode}
+********************************************************************************
+
+Begin Sequence: MainSequence
+({SequencePath})

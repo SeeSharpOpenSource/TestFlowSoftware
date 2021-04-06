@@ -1,0 +1,2 @@
+{SequenceName}:									{Result}
+  ExecuteTime(s):                                 {ExecutionSeconds}

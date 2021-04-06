@@ -30,12 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtensionBase, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\ExtensionBase.dll</HintPath>
+    <Reference Include="ExtensionBase">
+      <HintPath>..\..\..\TestFlowReference\ExtensionBase.dll</HintPath>
     </Reference>
     <Reference Include="libCommon">
-      <HintPath>..\Reference\libCommon.dll</HintPath>
+      <HintPath>..\..\..\TestFlowReference\libCommon.dll</HintPath>
     </Reference>
     <Reference Include="SeeSharpTools.JY.File">
       <HintPath>C:\SeeSharp\JYTEK\SeeSharpTools\Bin\SeeSharpTools.JY.File.dll</HintPath>
@@ -53,9 +52,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="tfutil, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\tfutil.dll</HintPath>
+    <Reference Include="tfutil">
+      <HintPath>..\..\..\TestFlowReference\tfutil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

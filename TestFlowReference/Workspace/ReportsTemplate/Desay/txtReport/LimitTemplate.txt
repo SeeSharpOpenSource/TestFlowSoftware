@@ -1,0 +1,7 @@
+  {LimitName}:					{Result}
+      Limits:                 
+         Hight:               {HighValue}
+         Low:                 {LowValue}
+      Units:                  {Unit}
+      Comparison Type:        {ComparisonType}
+      Data:                   {Value}

@@ -1,0 +1,348 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ExtensionBase</name>
+    </assembly>
+    <members>
+        <member name="T:Testflow.ExtensionBase.Actions.ActionResult">
+            <summary>
+            Action执行结果
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Actions.ActionResult.IsPassed">
+            <summary>
+            Action执行是否通过
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Actions.ActionResult.FailedType">
+            <summary>
+            失败类型
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Actions.ActionResult.Exception">
+            <summary>
+            错误异常
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Actions.ActionResult.ErrorMessage">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Actions.ActionResult.ErrorCode">
+            <summary>
+            错误码
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Common.AssertionAttribute">
+            <summary>
+            用于断言声明的注解
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Common.CallBackAttribute">
+            <summary>
+            回调类型注解
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.Common.CallBackAttribute.#ctor(Testflow.Data.CallBackType)">
+            <summary>
+            回调类型
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Common.CallBackAttribute.CallBackType">
+            <summary>
+            回调类型，同步还是异步
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Common.DescriptionAttribute">
+            <summary>
+            描述信息
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Common.HideAttribute">
+            <summary>
+            是否隐藏某个类/属性/方法
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Common.TestflowTypeAttribute">
+            <summary>
+            Testflow中会被使用的数据类型
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Common.TestflowTypeAttribute.IsTestflowDataType">
+            <summary>
+            该类是否是Testflow中会被使用的数据类型
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.Common.TestflowTypeAttribute.#ctor">
+            <summary>
+            标记该类为Testflow中会被使用的数据类型
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.Common.TestflowTypeAttribute.#ctor(System.Boolean)">
+            <summary>
+            是否标记该类为Testflow中会被使用的数据类型
+            </summary>
+            <param name="isDataType">该类是否为Testflow中会被使用的数据类型</param>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Common.TestflowElementAttribute">
+            <summary>
+            在Testflow中被使用的元素注解
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Common.TestflowElementAttribute.IsTestflowElement">
+            <summary>
+            元素是否为Testflow的可用项
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.Common.TestflowElementAttribute.#ctor">
+            <summary>
+            标记某个类/方法/属性会作为Testflow的使用项目
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.Common.TestflowElementAttribute.#ctor(System.Boolean)">
+            <summary>
+            是否标记某个类/方法/属性会作为Testflow的使用项目
+            </summary>
+            <param name="isTestflowElement">是否标记目标为Testflow的可用项目</param>
+        </member>
+        <member name="T:Testflow.ExtensionBase.LibTypeNames">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.AssertLib">
+            <summary>
+            断言库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.FunctionLib">
+            <summary>
+            函数库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.AlgorithmLib">
+            <summary>
+            算法库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.HardwareLib">
+            <summary>
+            硬件库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.ToolBoxLib">
+            <summary>
+            工具库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.PlatformLib">
+            <summary>
+            平台库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.MiscLib">
+            <summary>
+            杂项库类型名
+            </summary>
+        </member>
+        <member name="F:Testflow.ExtensionBase.LibTypeNames.FlowCtrlLib">
+            <summary>
+            流程控制库类型名
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Algorithm">
+            <summary>
+              Looks up a localized string similar to Algorithm.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Assertion">
+            <summary>
+              Looks up a localized string similar to Assertion.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.FlowControl">
+            <summary>
+              Looks up a localized string similar to FlowControl.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Function">
+            <summary>
+              Looks up a localized string similar to Function.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Hardware">
+            <summary>
+              Looks up a localized string similar to Hardware.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.InvalidSequence">
+            <summary>
+              Looks up a localized string similar to Invalid sequence data type..
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Miscellaneous">
+            <summary>
+              Looks up a localized string similar to Miscellaneous.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Platform">
+            <summary>
+              Looks up a localized string similar to Platform.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_en.Tools">
+            <summary>
+              Looks up a localized string similar to Tools.
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Algorithm">
+            <summary>
+              Looks up a localized string similar to 算法.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Assert">
+            <summary>
+              Looks up a localized string similar to 断言.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.FlowContrl">
+            <summary>
+              Looks up a localized string similar to 流程控制.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Function">
+            <summary>
+              Looks up a localized string similar to 函数.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Hardware">
+            <summary>
+              Looks up a localized string similar to 硬件.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.InvalidSequence">
+            <summary>
+              Looks up a localized string similar to 无效的序列类型。.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Miscellaneous">
+            <summary>
+              Looks up a localized string similar to 杂项.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.Platform">
+            <summary>
+              Looks up a localized string similar to 平台功能.
+            </summary>
+        </member>
+        <member name="P:Testflow.ExtensionBase.Resources.locale.i18n_userlib_zh.ToolBox">
+            <summary>
+              Looks up a localized string similar to 工具.
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Synchronous.SynchronizedFunctionAttribute">
+            <summary>
+            同步方法
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.Synchronous.SynchronousType">
+            <summary>
+            同步类型
+            </summary>
+        </member>
+        <member name="T:Testflow.ExtensionBase.IFlowConsole">
+            <summary>
+            Testflow的控制台接口
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.IFlowConsole.Print(System.String)">
+            <summary>
+            在控制台打印信息
+            </summary>
+            <param name="message">待打印的消息</param>
+        </member>
+        <member name="M:Testflow.ExtensionBase.IFlowConsole.Print(System.String,System.Object[])">
+            <summary>
+            在控制台打印信息
+            </summary>
+            <param name="messageFormat">消息格式</param>
+            <param name="args">消息的参数</param>
+        </member>
+        <member name="M:Testflow.ExtensionBase.IFlowConsole.Print(System.Exception,System.String)">
+            <summary>
+            在控制台打印信息
+            </summary>
+            <param name="exception">异常</param>
+            <param name="message">附加信息</param>
+        </member>
+        <member name="T:Testflow.ExtensionBase.ISynchronizedResource">
+            <summary>
+            同步资源的接口
+            </summary>
+        </member>
+        <member name="M:Testflow.ExtensionBase.ISynchronizedResource.Synchronize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Testflow.Usr.Common.TestflowCategoryAttribute">
+            <summary>
+            库类型属性标签
+            </summary>
+        </member>
+        <member name="P:Testflow.Usr.Common.TestflowCategoryAttribute.CategoryString">
+            <summary>
+            库的类型
+            </summary>
+        </member>
+        <member name="P:Testflow.Usr.Common.TestflowCategoryAttribute.Category">
+            <summary>
+            库的类型
+            </summary>
+        </member>
+        <member name="M:Testflow.Usr.Common.TestflowCategoryAttribute.#ctor(System.String)">
+            <summary>
+            创建库类型属性实例
+            </summary>
+            <param name="categoryString"></param>
+        </member>
+        <member name="M:Testflow.Usr.Common.TestflowCategoryAttribute.#ctor(Testflow.Data.LibraryCategory)">
+            <summary>
+            创建库类型属性实例
+            </summary>
+        </member>
+    </members>
+</doc>

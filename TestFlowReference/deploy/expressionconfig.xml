@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<ExpressionOperatorConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.2.0">
+  <ExpressionOperators>
+    <ExpressionOperator Name="GetElement" Description="Get the element in specified subscript.">
+      <Symbol>[]</Symbol>
+      <FormatString>{0}[{1}]</FormatString>
+      <Priority>10</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Get2DArrayElement" Description="Get the element of speficied subscript in two-dimensional array.">
+      <Symbol>[,]</Symbol>
+      <FormatString>{0}[{1},{2}]</FormatString>
+      <Priority>10</Priority>
+      <ArgumentsCount>2</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Get3DArrayElement" Description="Get the element of speficied subscript in three-dimensional array.">
+      <Symbol>[,,]</Symbol>
+      <FormatString>{0}[{1},{2},{3}]</FormatString>
+      <Priority>10</Priority>
+      <ArgumentsCount>3</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="NegativeOperation" Description="Get the result of -1*Source.">
+      <Symbol>-</Symbol>
+      <FormatString>-{0}</FormatString>
+      <Priority>10</Priority>
+      <ArgumentsCount>0</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Addition" Description="Get the result of addition operation between two element.">
+      <Symbol>+</Symbol>
+      <FormatString>{0}+{1}</FormatString>
+      <Priority>5</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Substraction" Description="Get the result of substraction operation between two element.">
+      <Symbol>-</Symbol>
+      <FormatString>{0}-{1}</FormatString>
+      <Priority>5</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Multiplication" Description="Get the result of multiplication operation between two element.">
+      <Symbol>*</Symbol>
+      <FormatString>{0}*{1}</FormatString>
+      <Priority>8</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Division" Description="Get the result of division operation between two element.">
+      <Symbol>/</Symbol>
+      <FormatString>{0}/{1}</FormatString>
+      <Priority>8</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Complementation" Description="Get the result of complementation operation between two element.">
+      <Symbol>%</Symbol>
+      <FormatString>{0}%{1}</FormatString>
+      <Priority>8</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="Brackets" Description="Get the result of value between brackets.">
+      <Symbol>()</Symbol>
+      <FormatString>({0})</FormatString>
+      <Priority>0</Priority>
+      <ArgumentsCount>0</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="GreaterThan" Description="Get the result that whether source value is greater than argument value.">
+      <Symbol>&gt;</Symbol>
+      <FormatString>{0}&gt;{1}</FormatString>
+      <Priority>1</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="LessThan" Description="Get the result that whether source value is less than argument value.">
+      <Symbol>&lt;</Symbol>
+      <FormatString>{0}&lt;{1}</FormatString>
+      <Priority>1</Priority>
+      <ArgumentsCount>1</ArgumentsCount>
+    </ExpressionOperator>
+	<ExpressionOperator Name="BinocularOperation" Description="Get the result of binocular operationo.">
+      <Symbol>?:</Symbol>
+      <FormatString>{0}?{1}:{2}</FormatString>
+      <Priority>1</Priority>
+      <ArgumentsCount>2</ArgumentsCount>
+    </ExpressionOperator>
+  </ExpressionOperators>
+  <ExpressionCalculators>
+  <ExpressionCalculatorInfo Name="GetArrayElement" Description="Get the array data element in specified subscript.">
+      <OperatorName>GetElement</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.ArrayElementAcquirer" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Array" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+    <ExpressionCalculatorInfo Name="GetListElement" Description="Get the list data element in specified subscript.">
+      <OperatorName>GetElement</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.ListElementAcquirer" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Collections.IList" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="Get2DArrayElement" Description="Get the array data element in specified subscript.">
+      <OperatorName>Get2DArrayElement</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.Array2DElementAcquirer" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Array" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+		<ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="Get3DArrayElement" Description="Get the array data element in specified subscript.">
+      <OperatorName>Get3DArrayElement</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.Array3DElementAcquirer" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Array" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+		<ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+		<ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int32" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NegativeCalculate" Description="Get the negative value of numeric.">
+      <OperatorName>NegativeOperation</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NegativeCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes></ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericAdd" Description="Get the value of two numeric add operation.">
+      <OperatorName>Addition</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NumericAddCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="StringAdd" Description="Get the value of two string add operation.">
+      <OperatorName>Addition</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.StringAddCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.String" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.String" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericSubstract" Description="Get the value of two numeric substract operation.">
+      <OperatorName>Substraction</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NumericSubstractCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericMultiplicate" Description="Get the value of two numeric multiplicate operation.">
+      <OperatorName>Multiplication</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NumericMultiplicateCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericDivide" Description="Get the value of two numeric division operation.">
+      <OperatorName>Division</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NumericDivideCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericComplement" Description="Get the value of two numeric complement operation.">
+      <OperatorName>Complementation</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.ComplementationCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int64" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Int64" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="BracketsOperation" Description="Get the bracket value.">
+      <OperatorName>Brackets</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.BracketsOperator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Object" />
+      <ArgumentTypes></ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericGreaterThanCalculator" Description="Get the result that if source numeric is greater than argument numeric.">
+      <OperatorName>GreaterThan</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NumericGreaterThanCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="NumericLessThanCalculator" Description="Get the result that if source numeric is less than argument numeric.">
+      <OperatorName>LessThan</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.NumericLessThanCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Double" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+	<ExpressionCalculatorInfo Name="BinocularCalculator" Description="Get the binocular result of three elements.">
+      <OperatorName>BinocularOperation</OperatorName>
+      <CalculatorClass AssemblyPath="ExpressionCalculators.dll" AssemblyName='ExpressionCalculators' ClassName="Testflow.External.ExpressionCalculators.BinocularCalculator" />
+      <SourceType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Boolean" />
+      <ArgumentTypes>
+        <ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Object" />
+		<ArgumentType AssemblyPath="mscorlib.dll" AssemblyName="mscorlib" ClassName="System.Object" />
+      </ArgumentTypes>
+    </ExpressionCalculatorInfo>
+  </ExpressionCalculators>
+</ExpressionOperatorConfiguration>
