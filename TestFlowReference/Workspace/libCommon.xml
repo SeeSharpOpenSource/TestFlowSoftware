@@ -515,7 +515,6 @@
             <summary>
             创建TestflowAssertException的实例
             </summary>
-            <param name="errorCode">错误码</param>
             <param name="message">异常信息</param>
         </member>
         <member name="M:Testflow.Usr.TestflowAssertException.#ctor(System.String,System.String)">
@@ -622,6 +621,196 @@
             由外部代码创建的运行时异常
             </summary>
             <param name="message">错误信息</param>
+        </member>
+        <member name="T:Testflow.Data.Attributes.AttributeArgumentType">
+            <summary>
+            属性参数的类型
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.String">
+            <summary>
+            普通字符串
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.FunctionString">
+            <summary>
+            带有表达式参数的字符串
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.Integer">
+            <summary>
+            整型数值
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.Numeric">
+            <summary>
+            普通数值类型
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.Boolean">
+            <summary>
+            条件类型
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.Enumeration">
+            <summary>
+            枚举类型
+            </summary>
+        </member>
+        <member name="F:Testflow.Data.Attributes.AttributeArgumentType.DynamicEnumeration">
+            <summary>
+            动态枚举类型
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeArgument.ArgumentName">
+            <summary>
+            参数名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeArgument.ArgumentIndex">
+            <summary>
+            参数索引
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeArgument.Type">
+            <summary>
+            参数类型
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeArgument.ExtraInfo">
+            <summary>
+            参数的额外信息
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeDeclaration.FullName">
+            <summary>
+            完整名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeDeclaration.Target">
+            <summary>
+            属性的目标名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeDeclaration.Type">
+            <summary>
+            属性的类型名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IAttributeDeclaration.Arguments">
+            <summary>
+            属性的参数
+            </summary>
+        </member>
+        <member name="T:Testflow.Data.Attributes.IAttributeDeclarationCollection">
+            <summary>
+            所有定义属性描述的集合
+            </summary>
+        </member>
+        <member name="M:Testflow.Data.Attributes.IAttributeDeclarationCollection.GetDeclaredTargets">
+            <summary>
+            获取定义的所有属性目标
+            </summary>
+        </member>
+        <member name="M:Testflow.Data.Attributes.IAttributeDeclarationCollection.GetDeclaredTypes(System.String)">
+            <summary>
+            获取指定目标下所有的属性定义
+            </summary>
+            <param name="target">目标名称</param>
+        </member>
+        <member name="M:Testflow.Data.Attributes.IAttributeDeclarationCollection.GetAttributeDeclaration(System.String,System.String)">
+            <summary>
+            获取指定的属性对象的声明信息
+            </summary>
+            <param name="target">目标名称</param>
+            <param name="type">属性类型</param>
+        </member>
+        <member name="T:Testflow.Data.Attributes.IStepAttribute">
+            <summary>
+            Step属性
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.Index">
+            <summary>
+            属性的索引号
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.Target">
+            <summary>
+            属性的目标名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.Type">
+            <summary>
+            属性的类型名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.FullType">
+            <summary>
+            完整类型
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.Condition">
+            <summary>
+            属性的生效条件
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.ParameterValues">
+            <summary>
+            属性参数
+            </summary>
+        </member>
+        <member name="T:Testflow.Data.Attributes.IStepAttributeCollection">
+            <summary>
+            步骤属性集合
+            </summary>
+        </member>
+        <member name="T:Testflow.Data.Actions.ActionExecutorAttribute">
+            <summary>
+            Action执行器属性
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Actions.ActionExecutorAttribute.Name">
+            <summary>
+            属性执行器的名称
+            </summary>
+        </member>
+        <member name="T:Testflow.Data.Actions.ActionMethodAttribute">
+            <summary>
+            Action方法属性
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Actions.ActionMethodAttribute.Name">
+            <summary>
+            Action方法的名称
+            </summary>
+        </member>
+        <member name="T:Testflow.Data.Actions.IActionExecutor">
+            <summary>
+            Action执行器接口
+            </summary>
+        </member>
+        <member name="M:Testflow.Data.Actions.IActionExecutor.DesigntimeInitialize(Testflow.DesignTime.IDesigntimeContext)">
+            <summary>
+            初始化Action执行器
+            </summary>
+            <param name="context">设计时</param>
+        </member>
+        <member name="M:Testflow.Data.Actions.IActionExecutor.DesigntimeInitialize(Testflow.Runtime.ISlaveRunnerContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:Testflow.Data.Actions.ParameterSourceAttribute">
+            <summary>
+            参数数据源获取方法名，该方法必须符合IList&lt;string&gt; AcquirerMethod(ISequenceStep, IStepAction, int)的接口
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Actions.ParameterSourceAttribute.AcquirerMethod">
+            <summary>
+            参数值可选项的获取方法名，该方法必须符合IList&lt;string&gt; AcquirerMethod(ISequenceStep, IStepAction, int)的接口
+            </summary>
         </member>
         <member name="T:Testflow.Data.CallBackType">
             <summary>
@@ -1523,6 +1712,36 @@
             保存返回值的变量名
             </summary>
         </member>
+        <member name="T:Testflow.Data.Sequence.IStepAction">
+            <summary>
+            步骤内部的行为
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.IStepAction.Name">
+            <summary>
+            Action的名称
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.IStepAction.Description">
+            <summary>
+            Action的描述信息
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.IStepAction.ActionType">
+            <summary>
+            Action的类型
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.IStepAction.Parameters">
+            <summary>
+            Action的参数
+            </summary>
+        </member>
+        <member name="T:Testflow.Data.Sequence.IStepActionCollection">
+            <summary>
+            StepAction的集合
+            </summary>
+        </member>
         <member name="T:Testflow.Data.Sequence.ITestProject">
             <summary>
             测试工程文件接口
@@ -1918,9 +2137,29 @@
             步骤在当前序列的索引
             </summary>
         </member>
+        <member name="P:Testflow.Data.Sequence.ISequenceStep.PrecedingAttributes">
+            <summary>
+            前置属性
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.ISequenceStep.PrepareActions">
+            <summary>
+            序列的准备Action集合
+            </summary>
+        </member>
         <member name="P:Testflow.Data.Sequence.ISequenceStep.Function">
             <summary>
             当前步骤的Function，如果该步骤包含子步骤，该参数为null
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.ISequenceStep.PostActions">
+            <summary>
+            序列的后续处理Action集合
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Sequence.ISequenceStep.PostAttributes">
+            <summary>
+            后置属性
             </summary>
         </member>
         <member name="P:Testflow.Data.Sequence.ISequenceStep.StepType">
@@ -2151,6 +2390,26 @@
         <member name="P:Testflow.Data.IAssemblyInfo.Version">
             <summary>
             程序集的版本号
+            </summary>
+        </member>
+        <member name="T:Testflow.PlatformState">
+            <summary>
+             平台的当前状态
+            </summary>
+        </member>
+        <member name="F:Testflow.PlatformState.NotAvailable">
+            <summary>
+            平台不可用
+            </summary>
+        </member>
+        <member name="F:Testflow.PlatformState.Designtime">
+            <summary>
+            设计时状态
+            </summary>
+        </member>
+        <member name="F:Testflow.PlatformState.Runtime">
+            <summary>
+            运行时状态
             </summary>
         </member>
         <member name="T:Testflow.FlowControl.TestflowLoopBreakException">
@@ -2866,6 +3125,18 @@
             创建空白的FunctionData
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Testflow.Modules.ISequenceManager.CreateActionData(Testflow.Data.Description.IFuncInterfaceDescription)">
+            <summary>
+            创建空白的StepAction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Testflow.Modules.ISequenceManager.CreateStepAttribute(Testflow.Data.Attributes.IAttributeDeclaration)">
+            <summary>
+            创建步骤属性，如果入参为null则创建空白的对象，否则给根据模板创建对应的Attribute
+            </summary>
+            <param name="attributeDeclaration">创建Step属性的定义模板</param>
         </member>
         <member name="M:Testflow.Modules.ISequenceManager.CreateLoopCounter">
             <summary>
@@ -3810,6 +4081,11 @@
             序列调试器的集合
             </summary>
         </member>
+        <member name="T:Testflow.Runtime.ISlaveRunnerContext">
+            <summary>
+            Slave端运行时上下文
+            </summary>
+        </member>
         <member name="T:Testflow.Runtime.OperationPanel.IOIConfigPanel">
             <summary>
             OI配置窗体的接口
@@ -4291,9 +4567,19 @@
             <param name="sequenceGroup">序列组</param>
             <returns>返回的序列组运行会话</returns>
         </member>
+        <member name="E:Testflow.Runtime.IRuntimeService.TestGenerationStart">
+            <summary>
+            测试开始生成时触发
+            </summary>
+        </member>
         <member name="E:Testflow.Runtime.IRuntimeService.TestGenStart">
             <summary>
             测试开始生成时触发
+            </summary>
+        </member>
+        <member name="E:Testflow.Runtime.IRuntimeService.TestGenerationOver">
+            <summary>
+            测试生成结束后触发
             </summary>
         </member>
         <member name="E:Testflow.Runtime.IRuntimeService.TestGenOver">
@@ -4301,9 +4587,19 @@
             测试生成结束后触发
             </summary>
         </member>
+        <member name="E:Testflow.Runtime.IRuntimeService.TestInstanceStart">
+            <summary>
+            所有测试开始执行时触发
+            </summary>
+        </member>
         <member name="E:Testflow.Runtime.IRuntimeService.TestStart">
             <summary>
             所有测试开始执行时触发
+            </summary>
+        </member>
+        <member name="E:Testflow.Runtime.IRuntimeService.TestInstanceOver">
+            <summary>
+            所有测试执行结束后触发
             </summary>
         </member>
         <member name="E:Testflow.Runtime.IRuntimeService.TestOver">
@@ -5097,6 +5393,11 @@
             抽象类的构造方法
             </summary>
             <param name="options"></param>
+        </member>
+        <member name="P:Testflow.TestflowRunner.PlatformState">
+            <summary>
+            当前平台的状态
+            </summary>
         </member>
         <member name="P:Testflow.TestflowRunner.RuntimeService">
             <summary>
