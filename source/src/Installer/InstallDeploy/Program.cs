@@ -36,7 +36,7 @@ namespace EasyTestDeploy
             ftri.ExtendName = ".tfseq";
             ftri.Description = "Test Sequence File项目文件";
             ftri.IcoPath = installPath + "\\jytek.ico";
-            ftri.ExePath = installPath + "\\Workspace\\JYProductTestPanel.exe";
+            ftri.ExePath = installPath + "\\Workspace\\JYProductTestPanel\\JYProductTestPanel.exe";
 
             try
             {
