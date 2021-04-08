@@ -730,6 +730,11 @@
             Step属性
             </summary>
         </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.Name">
+            <summary>
+            StepAttribute的名称
+            </summary>
+        </member>
         <member name="P:Testflow.Data.Attributes.IStepAttribute.Index">
             <summary>
             属性的索引号
@@ -758,6 +763,11 @@
         <member name="P:Testflow.Data.Attributes.IStepAttribute.ParameterValues">
             <summary>
             属性参数
+            </summary>
+        </member>
+        <member name="P:Testflow.Data.Attributes.IStepAttribute.Value">
+            <summary>
+            StepAttribute的值
             </summary>
         </member>
         <member name="T:Testflow.Data.Attributes.IStepAttributeCollection">
