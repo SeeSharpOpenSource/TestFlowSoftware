@@ -13,7 +13,9 @@ namespace TestFlow.Software.WinformCommonOi
         /// <summary>
         /// OI面板可以开始运行的事件
         /// </summary>
-        public event Action<bool, Dictionary<string, object>> OiReady;
+        public event Action<bool, Dictionary<string, object>> ConfigurationOver;
+
+        public event Action<bool, string> OiReady;
 
         public abstract void ShowPanel(ISequenceFlowContainer sequenceData, params object[] extraParams);
 
@@ -51,7 +53,7 @@ namespace TestFlow.Software.WinformCommonOi
 
         public void OnOiReady(bool oiInitSuccess, string message)
         {
-            this.OiReady?.Invoke(oiInitSuccess, null);
+            this.ConfigurationOver?.Invoke(oiInitSuccess, new Dictionary<string, object>(0));
         }
 
         public abstract void Dispose();

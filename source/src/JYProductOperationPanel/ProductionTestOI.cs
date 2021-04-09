@@ -46,7 +46,10 @@ namespace JYProductOperationPanel
         public Type ConfigPanelType => ConfigPanel;
         public ISequenceFlowContainer SequenceData { get; private set; }
         public OiSequenceType SupportSequence => OiSequenceType.SequenceGroup;
-        public event Action<bool, Dictionary<string, object>> OiReady;
+        public event Action<bool, Dictionary<string, object>> ConfigurationOver;
+
+        [Obsolete]
+        public event Action<bool, string> OiReady;
 
         public static Type ConfigPanel => typeof(ProductionTestOIConfigPanel);
 
@@ -68,7 +71,7 @@ namespace JYProductOperationPanel
         // 异步事件
         private void OiStartSequenceConfirmed(bool isStartConfirmed, Dictionary<string, object> parameters)
         {
-            OiReady?.Invoke(isStartConfirmed, parameters);
+            ConfigurationOver?.Invoke(isStartConfirmed, parameters);
         }
 
         private EventInfo GetOIEventInfo(Type oiClassType, string eventName)
