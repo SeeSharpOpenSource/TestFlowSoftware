@@ -682,7 +682,7 @@ namespace TestFlow.DevSoftware
             this.copyStepToolStripMenuItem,
             this.pasteStepToolStripMenuItem1});
             this.cMS_DgvStep.Name = "cMS_DgvStep";
-            this.cMS_DgvStep.Size = new System.Drawing.Size(157, 186);
+            this.cMS_DgvStep.Size = new System.Drawing.Size(157, 164);
             this.cMS_DgvStep.Opening += new System.ComponentModel.CancelEventHandler(this.cMS_DgvStep_Opening);
             // 
             // Menu_AddStep
@@ -1374,7 +1374,7 @@ namespace TestFlow.DevSoftware
             this.tabpage_Module.Location = new System.Drawing.Point(4, 22);
             this.tabpage_Module.Name = "tabpage_Module";
             this.tabpage_Module.Padding = new System.Windows.Forms.Padding(3);
-            this.tabpage_Module.Size = new System.Drawing.Size(904, 358);
+            this.tabpage_Module.Size = new System.Drawing.Size(908, 360);
             this.tabpage_Module.TabIndex = 1;
             this.tabpage_Module.Text = "Module";
             this.tabpage_Module.UseVisualStyleBackColor = true;
@@ -1382,7 +1382,7 @@ namespace TestFlow.DevSoftware
             // button_selectAssembly
             // 
             this.button_selectAssembly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_selectAssembly.Location = new System.Drawing.Point(873, 6);
+            this.button_selectAssembly.Location = new System.Drawing.Point(870, 6);
             this.button_selectAssembly.Name = "button_selectAssembly";
             this.button_selectAssembly.Size = new System.Drawing.Size(33, 24);
             this.button_selectAssembly.TabIndex = 14;
@@ -1397,7 +1397,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(781, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(776, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1408,7 +1408,7 @@ namespace TestFlow.DevSoftware
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_panel.Location = new System.Drawing.Point(86, 87);
             this.Parameter_panel.Name = "Parameter_panel";
-            this.Parameter_panel.Size = new System.Drawing.Size(820, 273);
+            this.Parameter_panel.Size = new System.Drawing.Size(816, 267);
             this.Parameter_panel.TabIndex = 10;
             // 
             // comboBox_Method
@@ -1419,7 +1419,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_Method.FormattingEnabled = true;
             this.comboBox_Method.Location = new System.Drawing.Point(85, 61);
             this.comboBox_Method.Name = "comboBox_Method";
-            this.comboBox_Method.Size = new System.Drawing.Size(821, 20);
+            this.comboBox_Method.Size = new System.Drawing.Size(817, 20);
             this.comboBox_Method.TabIndex = 9;
             this.comboBox_Method.TextChanged += new System.EventHandler(this.comboBox_Method_Validated);
             // 
@@ -1431,7 +1431,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_RootClass.FormattingEnabled = true;
             this.comboBox_RootClass.Location = new System.Drawing.Point(85, 34);
             this.comboBox_RootClass.Name = "comboBox_RootClass";
-            this.comboBox_RootClass.Size = new System.Drawing.Size(821, 20);
+            this.comboBox_RootClass.Size = new System.Drawing.Size(817, 20);
             this.comboBox_RootClass.TabIndex = 9;
             this.comboBox_RootClass.TextChanged += new System.EventHandler(this.comboBox_RootClass_Validated);
             // 
@@ -1771,7 +1771,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(958, 206);
+            this.textBox_reportData.Size = new System.Drawing.Size(962, 208);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
