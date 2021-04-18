@@ -230,6 +230,10 @@ namespace TestFlow.DevSoftware
             this.toolStripMenuItem_pasteSequence = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip_defaultValue = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nULLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eMPTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_ActionMenu.SuspendLayout();
             this.toolStrip_QuickMenu.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -277,6 +281,7 @@ namespace TestFlow.DevSoftware
             this.cMS_DgvVariable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainFormBindingSource)).BeginInit();
             this.contextMenuStrip_sequence.SuspendLayout();
+            this.contextMenuStrip_defaultValue.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip_ActionMenu
@@ -1382,7 +1387,7 @@ namespace TestFlow.DevSoftware
             // button_selectAssembly
             // 
             this.button_selectAssembly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_selectAssembly.Location = new System.Drawing.Point(870, 6);
+            this.button_selectAssembly.Location = new System.Drawing.Point(869, 6);
             this.button_selectAssembly.Name = "button_selectAssembly";
             this.button_selectAssembly.Size = new System.Drawing.Size(33, 24);
             this.button_selectAssembly.TabIndex = 14;
@@ -1397,7 +1402,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(776, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(775, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1771,7 +1776,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(962, 208);
+            this.textBox_reportData.Size = new System.Drawing.Size(970, 212);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -2194,6 +2199,36 @@ namespace TestFlow.DevSoftware
             this.propertiesToolStripMenuItem.Text = "Property";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
+            // contextMenuStrip_defaultValue
+            // 
+            this.contextMenuStrip_defaultValue.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem,
+            this.nULLToolStripMenuItem,
+            this.eMPTYToolStripMenuItem});
+            this.contextMenuStrip_defaultValue.Name = "contextMenuStrip_defaultValue";
+            this.contextMenuStrip_defaultValue.Size = new System.Drawing.Size(143, 70);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.clearToolStripMenuItem.Tag = "clear";
+            this.clearToolStripMenuItem.Text = "Clear Value";
+            // 
+            // nULLToolStripMenuItem
+            // 
+            this.nULLToolStripMenuItem.Name = "nULLToolStripMenuItem";
+            this.nULLToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.nULLToolStripMenuItem.Tag = "null";
+            this.nULLToolStripMenuItem.Text = "Set Null";
+            // 
+            // eMPTYToolStripMenuItem
+            // 
+            this.eMPTYToolStripMenuItem.Name = "eMPTYToolStripMenuItem";
+            this.eMPTYToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.eMPTYToolStripMenuItem.Tag = "empty";
+            this.eMPTYToolStripMenuItem.Text = "Set Empty";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2269,6 +2304,7 @@ namespace TestFlow.DevSoftware
             this.cMS_DgvVariable.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mainFormBindingSource)).EndInit();
             this.contextMenuStrip_sequence.ResumeLayout(false);
+            this.contextMenuStrip_defaultValue.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2472,6 +2508,10 @@ namespace TestFlow.DevSoftware
         private ToolStripMenuItem copyStepToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator6;
         private ToolStripMenuItem pasteStepToolStripMenuItem1;
+        private ContextMenuStrip contextMenuStrip_defaultValue;
+        private ToolStripMenuItem clearToolStripMenuItem;
+        private ToolStripMenuItem nULLToolStripMenuItem;
+        private ToolStripMenuItem eMPTYToolStripMenuItem;
     }
 }
 
