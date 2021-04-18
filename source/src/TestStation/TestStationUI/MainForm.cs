@@ -1653,6 +1653,14 @@ namespace TestFlow.DevSoftware
             {
                 return;
             }
+            ITypeData stringType = this._interfaceManger.GetTypeByName("String", "System");
+            // 当前参数的类型是不是可以接收string类型的入参
+            bool isTypeCanBeSetString = this._interfaceManger.IsDerivedFrom(stringType, paramInfo.Type);
+            // 如果参数可以用string赋值，则也可以认定为简单类型
+            if (isTypeCanBeSetString)
+            {
+                return;
+            }
             try
             {
                 int index = function.ParameterType.IndexOf(paramInfo);
@@ -1715,6 +1723,10 @@ namespace TestFlow.DevSoftware
             }
             else
             {
+                if (!Utility.IsJsonValue(valueStr))
+                {
+                    valueStr = string.Empty;
+                }
                 SimpleClassEditor classEditor = new SimpleClassEditor(classInterface, interfaceManager, valueStr);
                 classEditor.ShowDialog(this);
                 return classEditor.IsCancelled ? null : classEditor.GetValue();
@@ -1874,6 +1886,10 @@ namespace TestFlow.DevSoftware
                 return ParameterType.NotAvailable;
             }
             ParameterType parameterType;
+            ITypeData stringType = this._interfaceManger.GetTypeByName("String", "System");
+            // 当前参数的类型是不是可以接收string类型的入参
+            bool isTypeCanBeSetString = stringType.Equals(argument.Type) ||
+                                        this._interfaceManger.IsDerivedFrom(stringType, argument.Type);
             // 如果确认为变量，则直接写入参数
             if (setByFx)
             {
@@ -1891,14 +1907,10 @@ namespace TestFlow.DevSoftware
             }
             // 如果参数为类类型或者有ref或者out的参数且不是json字符串，则需要使用变量传递
             else if ((argument.VariableType == VariableType.Class || argument.VariableType == VariableType.Struct ||
-                      argument.Modifier != ArgumentModifier.None) && !Utility.IsJsonValue(value) && !string.IsNullOrWhiteSpace(value))
+                      argument.Modifier != ArgumentModifier.None) && !(Utility.IsJsonValue(value) || isTypeCanBeSetString))
             {
-                IVariable variable = GetAvailableVariable(step, value, argument.Type);
-                TestflowDesigntimeSession.SetParameterValue(paramName, variable?.Name ?? string.Empty,
-                    ParameterType.Value, step);
-                parameterType = ParameterType.Value;
-                SetVariableType(argument.Type, value, variable);
-                currentCell.Value = variable?.Name ?? string.Empty;
+                throw new ApplicationException(
+                    "The value of current parameter should be assigned with a variable or structured value.");
             }
             else if (!string.IsNullOrWhiteSpace(value))
             {
@@ -1913,28 +1925,15 @@ namespace TestFlow.DevSoftware
                     }
                     value = boolValue.ToString();
                     currentCell.Value = value;
-                    parameterType = ParameterType.Value;
                 }
-                // 不是string类型，并且值为空，则修改为未配置状态
-                if (!argument.Type.Name.Equals("String") && string.IsNullOrWhiteSpace(value))
-                {
-                    // 值类型直接写入参数
-                    TestflowDesigntimeSession.SetParameterValue(paramName, string.Empty, ParameterType.NotAvailable, step);
-                    parameterType = ParameterType.NotAvailable;
-                }
-                else
-                {
-                    // 值类型直接写入参数
-                    TestflowDesigntimeSession.SetParameterValue(paramName, value, ParameterType.Value, step);
-                    parameterType = ParameterType.Value;
-                }
+                // 值类型直接写入参数
+                TestflowDesigntimeSession.SetParameterValue(paramName, value, ParameterType.Value, step);
+                parameterType = ParameterType.Value;
             }
             else
             {
                 parameterType = ParameterType.NotAvailable;
-                ITypeData stringType = this._interfaceManger.GetTypeByName("String", "System");
-                if (!isClearOperation && (stringType.Equals(argument.Type) ||
-                                          this._interfaceManger.IsDerivedFrom(stringType, argument.Type)))
+                if (!isClearOperation && isTypeCanBeSetString)
                 {
                     parameterType = ParameterType.Value;
                 }
