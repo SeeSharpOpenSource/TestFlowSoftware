@@ -827,17 +827,65 @@ namespace TestFlow.DevSoftware
 
         private void DeleteVariable_Click(object sender, EventArgs e)
         {
-            if (_internalOperation) return;
-            _internalOperation = true;
+            if (this._internalOperation) return;
+            this._internalOperation = true;
             string varName = VaraibleTable.CurrentRow.Cells["VariableName"].Value.ToString();
             VaraibleTable.Rows.Remove(VaraibleTable.CurrentRow);
-            TestflowDesigntimeSession.RemoveVariable(VaraibleTable.Name.Equals("GlobalVariableList") ?
-                                                               (ISequenceFlowContainer)SequenceGroup : CurrentSeq,
-                                                      varName);
-            _internalOperation = false;
+            TestflowDesigntimeSession.RemoveVariable(
+                VaraibleTable.Name.Equals("GlobalVariableList") ? (ISequenceFlowContainer) SequenceGroup : CurrentSeq,
+                varName);
+            this._internalOperation = false;
         }
 
         #endregion
+
+        #endregion
+
+        #region 赋值单元格事件
+
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this._paramTable.CurrentCell == null || this._paramTable.IsParent(this._paramTable.CurrentCell.RowIndex))
+            {
+                return;
+            }
+            int rowIndex = this._paramTable.CurrentCell.RowIndex;
+            int columnIndex = this._paramTable.CurrentCell.ColumnIndex;
+            this._internalOperation = true;
+            this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = string.Empty;
+            SetParamValue(false, false, rowIndex, ParamTableValueCol, true);
+            this._internalOperation = false;
+        }
+
+        private void nULLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this._paramTable.CurrentCell == null || this._paramTable.IsParent(this._paramTable.CurrentCell.RowIndex))
+            {
+                return;
+            }
+            int rowIndex = this._paramTable.CurrentCell.RowIndex;
+            int columnIndex = this._paramTable.CurrentCell.ColumnIndex;
+            this._internalOperation = true;
+            this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = CommonConst.NullValue;
+            SetParamValue(false, false, rowIndex, ParamTableValueCol, false);
+            this._internalOperation = false;
+        }
+
+        private void eMPTYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this._paramTable.CurrentCell == null || this._paramTable.IsParent(this._paramTable.CurrentCell.RowIndex))
+            {
+                return;
+            }
+            int rowIndex = this._paramTable.CurrentCell.RowIndex;
+            int columnIndex = this._paramTable.CurrentCell.ColumnIndex;
+            this._internalOperation = true;
+            this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = string.Empty;
+            SetParamValue(false, false, rowIndex, ParamTableValueCol, false);
+            this._internalOperation = false;
+
+        }
 
         #endregion
 
@@ -1428,13 +1476,14 @@ namespace TestFlow.DevSoftware
                    function.Type != FunctionType.StaticFunction && function.Type != FunctionType.StaticPropertySetter;
         }
 
-        private void TdgvParamCellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void TdgvParamCellContentClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             // ColumnHeaders不作为,标题行不作为
             if (e.RowIndex < 0 || _paramTable.IsParent(e.RowIndex) || _internalOperation)
             {
                 return;
             }
+            _paramTable.CurrentCell = this._paramTable.Rows[e.RowIndex].Cells[e.ColumnIndex];
             _internalOperation = true;
 
             try
@@ -1442,11 +1491,16 @@ namespace TestFlow.DevSoftware
                 int columnIndex = e.ColumnIndex;
                 if (_paramTable.Columns[columnIndex].Name.Equals("Parameterfx"))
                 {
-                    SetParamValueFromFx(e);
+                    SetParamValueFromFx(e.RowIndex);
                 }
                 else if (_paramTable.Columns[columnIndex].Name.Equals("ParameterCheck"))
                 {
                     CheckParamValue(e);
+                }
+                else if (this._paramTable.Columns[columnIndex].Name.Equals("ParameterValue") && e.Button == MouseButtons.Right)
+                {
+                    Rectangle cellRectangle = this._paramTable.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
+                    this.contextMenuStrip_defaultValue.Show(this._paramTable, cellRectangle.Left, cellRectangle.Bottom);
                 }
             }
             catch (ApplicationException ex)
@@ -1456,21 +1510,22 @@ namespace TestFlow.DevSoftware
             _internalOperation = false;
         }
 
-        private void SetParamValueFromFx(DataGridViewCellEventArgs e)
+        private void SetParamValueFromFx(int rowIndex)
         {
-            string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString() ?? string.Empty;
+            ;
+            string value = _paramTable.Rows[rowIndex].Cells["ParameterValue"].Value?.ToString() ?? string.Empty;
             VariableForm variableForm = new VariableForm(SequenceGroup.Variables, CurrentSeq.Variables, _globalInfo, CurrentStep, value,
                 true);
             variableForm.ShowDialog(this);
             if (!variableForm.IsCancelled)
             {
-                SetValueAndConfigCellControl(true, variableForm.ParamValue, e.RowIndex);
-                SetParamValue(true, variableForm.IsExpression, e.RowIndex, ParamTableValueCol);
+                SetValueAndConfigCellControl(true, variableForm.ParamValue, rowIndex);
+                SetParamValue(true, variableForm.IsExpression, rowIndex, ParamTableValueCol, false);
             }
             variableForm.Dispose();
         }
 
-        private void CheckParamValue(DataGridViewCellEventArgs e)
+        private void CheckParamValue(DataGridViewCellMouseEventArgs e)
         {
             string name = _paramTable.Rows[e.RowIndex].Cells["ParameterName"].Value.ToString();
             string value = _paramTable.Rows[e.RowIndex].Cells["ParameterValue"].Value?.ToString();
@@ -1680,7 +1735,7 @@ namespace TestFlow.DevSoftware
             {
                 string value = _paramTable.Rows[e.RowIndex].Cells[e.ColumnIndex].Value ?.ToString() ?? string.Empty;
                 SetValueAndConfigCellControl(false, value, e.RowIndex);
-                SetParamValue(false, false, e.RowIndex, e.ColumnIndex);
+                SetParamValue(false, false, e.RowIndex, e.ColumnIndex, false);
             }
             catch (ApplicationException ex)
             {
@@ -1692,7 +1747,7 @@ namespace TestFlow.DevSoftware
             _internalOperation = false;
         }
 
-        private void SetParamValue(bool setByFx, bool isExpression, int rowIndex, int columnIndex)
+        private void SetParamValue(bool setByFx, bool isExpression, int rowIndex, int columnIndex, bool isClearOperation)
         {
             //注：只有value的值会改变
             string paramName = _paramTable.Rows[rowIndex].Cells["ParameterName"].Value?.ToString() ?? string.Empty;
@@ -1708,6 +1763,7 @@ namespace TestFlow.DevSoftware
                 return;
             }
 
+            bool isAvailable = false;
             ISequenceStep functionStep;
             ISequenceStep constructorStep;
             GetConstructAndFuncStep(CurrentStep, out constructorStep, out functionStep);
@@ -1721,29 +1777,19 @@ namespace TestFlow.DevSoftware
                     if (string.IsNullOrWhiteSpace(value))
                     {
                         TestflowDesigntimeSession.SetInstance(string.Empty, functionStep);
+                        isAvailable = false;
                     }
                     else
                     {
                         IVariable variable = GetAvailableVariable(currentStep, value, functionStep.Function.ClassType);
                         TestflowDesigntimeSession.SetInstance(value, functionStep);
                         SetVariableType(functionStep.Function.ClassType, value, variable);
+                        isAvailable = true;
                     }
                 }
                 else
                 {
-                    // 
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        if (null != functionStep)
-                        {
-                            TestflowDesigntimeSession.SetInstance(string.Empty, functionStep);
-                        }
-                        if (null != constructorStep)
-                        {
-                            TestflowDesigntimeSession.SetInstance(string.Empty, constructorStep);
-                        }
-                    }
-                    else if (paramName.Equals("Return Value"))
+                    if (paramName.Equals("Return Value"))
                     {
                         IVariable variable = GetAvailableVariable(currentStep, value, constructorStep.Function.ClassType);
                         TestflowDesigntimeSession.SetInstance(value, constructorStep);
@@ -1753,10 +1799,13 @@ namespace TestFlow.DevSoftware
                             TestflowDesigntimeSession.SetInstance(value, functionStep);
                         }
                         currentCell.Value = variable?.Name ?? string.Empty;
+                        isAvailable = true;
                     }
                     else
                     {
-                        SetStepParamValue(constructorStep, paramName, value, currentCell, setByFx, isExpression);
+                        ParameterType parameterType = SetStepParamValue(constructorStep, paramName, value, currentCell,
+                            setByFx, isExpression, isClearOperation);
+                        isAvailable = parameterType != ParameterType.NotAvailable;
                     }
                 }
             }
@@ -1776,13 +1825,25 @@ namespace TestFlow.DevSoftware
                         SetVariableType(functionStep.Function.ReturnType.Type, value, variable);
                         currentCell.Value = variable?.Name ?? string.Empty;
                     }
+                    isAvailable = true;
                 }
                 else
                 {
-                    SetStepParamValue(functionStep, paramName, value, currentCell, setByFx, isExpression);
+                    ParameterType parameterType = SetStepParamValue(functionStep, paramName, value, currentCell,
+                        setByFx, isExpression, isClearOperation);
+                    isAvailable = parameterType != ParameterType.NotAvailable;
                 }
             }
+            SetParamNameForeColor(isAvailable, rowIndex);
             SetParamColumnForeColor(setByFx, rowIndex);
+        }
+
+        private void SetParamNameForeColor(bool isValueAvailable, int rowIndex)
+        {
+            this._paramTable.Rows[rowIndex].Cells[ParamTableNameCol].Style.BackColor =
+                isValueAvailable ? Color.White : Color.LightGray;
+            this._paramTable.Rows[rowIndex].Cells[ParamTableNameCol].Style.ForeColor =
+                isValueAvailable ? Color.Black : Color.DimGray;
         }
 
         private void SetParamColumnForeColor(bool setByFx, int rowIndex)
@@ -1804,26 +1865,29 @@ namespace TestFlow.DevSoftware
             UpdateSingleVariable(variable, variable.Parent is ISequenceGroup);
         }
 
-        private void SetStepParamValue(ISequenceStep step, string paramName, string value, DataGridViewCell currentCell, bool setByFx, bool isExpression)
+        private ParameterType SetStepParamValue(ISequenceStep step, string paramName, string value, DataGridViewCell currentCell,
+            bool setByFx, bool isExpression, bool isClearOperation)
         {
             IArgument argument = step.Function.ParameterType.FirstOrDefault(item => item.Name.Equals(paramName));
             if (null == argument)
             {
-                return;
+                return ParameterType.NotAvailable;
             }
+            ParameterType parameterType;
             // 如果确认为变量，则直接写入参数
             if (setByFx)
             {
-                string variableName = value;
+                string paramValue = value;
                 ParameterType paramType = ParameterType.Expression;
                 if (!isExpression)
                 {
                     paramType = ParameterType.Variable;
                     // 检查变量是否存在
-                    IVariable variable = GetAvailableVariable(step, variableName, null);
+                    IVariable variable = GetAvailableVariable(step, paramValue, null);
                     SetVariableType(argument.Type, value, variable);
                 }
                 TestflowDesigntimeSession.SetParameterValue(paramName, value, paramType, step);
+                parameterType = isExpression ? ParameterType.Expression : ParameterType.Variable;
             }
             // 如果参数为类类型或者有ref或者out的参数且不是json字符串，则需要使用变量传递
             else if ((argument.VariableType == VariableType.Class || argument.VariableType == VariableType.Struct ||
@@ -1832,10 +1896,11 @@ namespace TestFlow.DevSoftware
                 IVariable variable = GetAvailableVariable(step, value, argument.Type);
                 TestflowDesigntimeSession.SetParameterValue(paramName, variable?.Name ?? string.Empty,
                     ParameterType.Value, step);
+                parameterType = ParameterType.Value;
                 SetVariableType(argument.Type, value, variable);
                 currentCell.Value = variable?.Name ?? string.Empty;
             }
-            else
+            else if (!string.IsNullOrWhiteSpace(value))
             {
                 // 如果是bool类型，且值既不是True也不是False，则判断后重新赋值
                 if (argument.Type.Name.Equals("Boolean") && !true.ToString().Equals(value) &&
@@ -1848,19 +1913,36 @@ namespace TestFlow.DevSoftware
                     }
                     value = boolValue.ToString();
                     currentCell.Value = value;
+                    parameterType = ParameterType.Value;
                 }
                 // 不是string类型，并且值为空，则修改为未配置状态
                 if (!argument.Type.Name.Equals("String") && string.IsNullOrWhiteSpace(value))
                 {
                     // 值类型直接写入参数
                     TestflowDesigntimeSession.SetParameterValue(paramName, string.Empty, ParameterType.NotAvailable, step);
+                    parameterType = ParameterType.NotAvailable;
                 }
                 else
                 {
                     // 值类型直接写入参数
                     TestflowDesigntimeSession.SetParameterValue(paramName, value, ParameterType.Value, step);
+                    parameterType = ParameterType.Value;
                 }
             }
+            else
+            {
+                parameterType = ParameterType.NotAvailable;
+                ITypeData stringType = this._interfaceManger.GetTypeByName("String", "System");
+                if (!isClearOperation && (stringType.Equals(argument.Type) ||
+                                          this._interfaceManger.IsDerivedFrom(stringType, argument.Type)))
+                {
+                    parameterType = ParameterType.Value;
+                }
+
+                TestflowDesigntimeSession.SetParameterValue(paramName,
+                    parameterType != ParameterType.NotAvailable ? value : string.Empty, parameterType, step);
+            }
+            return parameterType;
         }
 
         private IArgument GetStepArgument(int rowIndex)
@@ -2337,7 +2419,12 @@ namespace TestFlow.DevSoftware
             if (functionData.Type == FunctionType.Constructor || functionData.Type == FunctionType.StructConstructor)
             {
                 string instance = functionData.Instance;
-                _paramTable.Rows.Add(new object[] { null, "Return Value", $"Object({ functionData.ClassType.Namespace}.{functionData.ClassType.Name})", "Out", instance });
+                int rowIndex = this._paramTable.Rows.Add(new object[]
+                {
+                    null, "Return Value", $"Object({functionData.ClassType.Namespace}.{functionData.ClassType.Name})",
+                    "Out", instance
+                });
+                SetParamNameForeColor(!string.IsNullOrWhiteSpace(instance), rowIndex);
                 SetParamColumnForeColor(true, _paramTable.RowCount - 1);
             }
 
@@ -2347,8 +2434,10 @@ namespace TestFlow.DevSoftware
             if (functionData.ReturnType != null)
             {
                 string returnValue = functionData.Return;
-                _paramTable.Rows.Add(new object[] { null, "Return Value", functionData.ReturnType.Type.Name, "Out", returnValue });
-                SetParamColumnForeColor(true, _paramTable.RowCount - 1);
+                int rowIndex = this._paramTable.Rows.Add(new object[]
+                    {null, "Return Value", functionData.ReturnType.Type.Name, "Out", returnValue});
+                SetParamNameForeColor(true, rowIndex);
+                SetParamColumnForeColor(true, rowIndex);
             }
 
             #endregion
@@ -2421,7 +2510,8 @@ namespace TestFlow.DevSoftware
                 }
                 textCell.Value = parameterData.Value;
             }
-            SetParamColumnForeColor(setByFx, _paramTable.RowCount - 1);
+            SetParamNameForeColor(parameterData.ParameterType != ParameterType.NotAvailable, rowIndex);
+            SetParamColumnForeColor(setByFx, rowIndex);
         }
 
         private void UpdateTDGVParameter()
@@ -2442,9 +2532,10 @@ namespace TestFlow.DevSoftware
                 {
                     _paramTable.AddParent(ExistingObjParent, "Constructor");
                     string instanceValue = functionData.Instance;
-                    _paramTable.Rows.Add(new object[] { null, ExistingObjParent,
-                    $"{_currentClassDescription.ClassType.Namespace}.{_currentClassDescription.ClassType.Name}", "In",
-                                                        instanceValue});
+                    int rowIndex = this._paramTable.Rows.Add(new object[] { null, ExistingObjParent,
+                        $"{this._currentClassDescription.ClassType.Namespace}.{this._currentClassDescription.ClassType.Name}", "In",
+                        instanceValue});
+                    SetParamNameForeColor(!string.IsNullOrWhiteSpace(instanceValue), rowIndex);
                     SetParamColumnForeColor(true, _paramTable.RowCount - 1);
                 }
                 // 方法显示
@@ -2563,7 +2654,7 @@ namespace TestFlow.DevSoftware
         private void EditModeAction()
         {
             _paramTable.CellValueChanged += TdgvParamCellValueChanged;
-            _paramTable.CellContentClick += TdgvParamCellContentClick;
+            _paramTable.CellMouseClick += TdgvParamCellContentClick;
             treeView_sequenceTree.ContextMenuStrip = contextMenuStrip_sequence;
             treeView_stepView.ContextMenuStrip = cMS_DgvStep;
             // 隐藏运行时变量值窗体
@@ -2586,7 +2677,7 @@ namespace TestFlow.DevSoftware
         private void RunModeAction()
         {
             _paramTable.CellValueChanged -= TdgvParamCellValueChanged;
-            _paramTable.CellContentClick -= TdgvParamCellContentClick;
+            _paramTable.CellMouseClick -= TdgvParamCellContentClick;
             treeView_sequenceTree.ContextMenuStrip = null;
             treeView_stepView.ContextMenuStrip = null;
             // 显示运行时变量值窗体

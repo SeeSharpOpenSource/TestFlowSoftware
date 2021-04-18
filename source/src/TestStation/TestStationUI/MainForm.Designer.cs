@@ -1402,7 +1402,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(775, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(773, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1776,7 +1776,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(970, 212);
+            this.textBox_reportData.Size = new System.Drawing.Size(978, 216);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -2214,6 +2214,7 @@ namespace TestFlow.DevSoftware
             this.clearToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.clearToolStripMenuItem.Tag = "clear";
             this.clearToolStripMenuItem.Text = "Clear Value";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // nULLToolStripMenuItem
             // 
@@ -2221,6 +2222,7 @@ namespace TestFlow.DevSoftware
             this.nULLToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.nULLToolStripMenuItem.Tag = "null";
             this.nULLToolStripMenuItem.Text = "Set Null";
+            this.nULLToolStripMenuItem.Click += new System.EventHandler(this.nULLToolStripMenuItem_Click);
             // 
             // eMPTYToolStripMenuItem
             // 
@@ -2228,6 +2230,7 @@ namespace TestFlow.DevSoftware
             this.eMPTYToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.eMPTYToolStripMenuItem.Tag = "empty";
             this.eMPTYToolStripMenuItem.Text = "Set Empty";
+            this.eMPTYToolStripMenuItem.Click += new System.EventHandler(this.eMPTYToolStripMenuItem_Click);
             // 
             // MainForm
             // 
