@@ -853,8 +853,15 @@ namespace TestFlow.DevSoftware
             int rowIndex = this._paramTable.CurrentCell.RowIndex;
             int columnIndex = this._paramTable.CurrentCell.ColumnIndex;
             this._internalOperation = true;
-            this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = string.Empty;
-            SetParamValue(false, false, rowIndex, ParamTableValueCol, true);
+            try
+            {
+                this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = string.Empty;
+                SetParamValue(false, false, rowIndex, ParamTableValueCol, true);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
+            }
             this._internalOperation = false;
         }
 
@@ -867,8 +874,15 @@ namespace TestFlow.DevSoftware
             int rowIndex = this._paramTable.CurrentCell.RowIndex;
             int columnIndex = this._paramTable.CurrentCell.ColumnIndex;
             this._internalOperation = true;
-            this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = CommonConst.NullValue;
-            SetParamValue(false, false, rowIndex, ParamTableValueCol, false);
+            try
+            {
+                this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = CommonConst.NullValue;
+                SetParamValue(false, false, rowIndex, ParamTableValueCol, false);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
+            }
             this._internalOperation = false;
         }
 
@@ -881,8 +895,15 @@ namespace TestFlow.DevSoftware
             int rowIndex = this._paramTable.CurrentCell.RowIndex;
             int columnIndex = this._paramTable.CurrentCell.ColumnIndex;
             this._internalOperation = true;
-            this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = string.Empty;
-            SetParamValue(false, false, rowIndex, ParamTableValueCol, false);
+            try
+            {
+                this._paramTable.Rows[rowIndex].Cells[columnIndex].Value = string.Empty;
+                SetParamValue(false, false, rowIndex, ParamTableValueCol, false);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message, "Error", MessageBoxIcon.Error);
+            }
             this._internalOperation = false;
 
         }
@@ -1905,9 +1926,11 @@ namespace TestFlow.DevSoftware
                 TestflowDesigntimeSession.SetParameterValue(paramName, value, paramType, step);
                 parameterType = isExpression ? ParameterType.Expression : ParameterType.Variable;
             }
-            // 如果参数为类类型或者有ref或者out的参数且不是json字符串，则需要使用变量传递
+            // 如果参数为类类型或者有ref或者out的参数且不是json字符串或者空字符，则需要使用变量传递
             else if ((argument.VariableType == VariableType.Class || argument.VariableType == VariableType.Struct ||
-                      argument.Modifier != ArgumentModifier.None) && !(Utility.IsJsonValue(value) || isTypeCanBeSetString))
+                      argument.Modifier != ArgumentModifier.None) &&
+                     !(Utility.IsJsonValue(value) || isTypeCanBeSetString || isClearOperation ||
+                       string.IsNullOrWhiteSpace(value)))
             {
                 throw new ApplicationException(
                     "The value of current parameter should be assigned with a variable or structured value.");
@@ -1923,9 +1946,11 @@ namespace TestFlow.DevSoftware
                     {
                         throw new ApplicationException("Invalid bool value.");
                     }
+
                     value = boolValue.ToString();
                     currentCell.Value = value;
                 }
+
                 // 值类型直接写入参数
                 TestflowDesigntimeSession.SetParameterValue(paramName, value, ParameterType.Value, step);
                 parameterType = ParameterType.Value;
@@ -2320,11 +2345,18 @@ namespace TestFlow.DevSoftware
         // 比较function和FunctinDescription，判断当前function是不是从FunctionDescrition创建出来的
         private bool IsFunctionCreatedFromDescription(IFunctionData function, IFuncInterfaceDescription funcDescription)
         {
+            // 如果是field或者property的setter，如果当前的描述对象类型相同则认为是匹配的
+            if (funcDescription.FuncType == function.Type && (function.Type == FunctionType.InstanceFieldSetter ||
+                                                              function.Type == FunctionType.StaticFieldSetter ||
+                                                              function.Type == FunctionType.InstancePropertySetter ||
+                                                              function.Type == FunctionType.StaticPropertySetter))
+                return true;
             if (function == null || !function.MethodName.Equals(funcDescription.Name) ||
                 function.ParameterType.Count != funcDescription.Arguments.Count)
             {
                 return false;
             }
+            
             for (int n = 0; n < function.ParameterType.Count; n++)
             {
                 if (!function.ParameterType[n].Type.Equals(funcDescription.Arguments[n].Type) ||
@@ -2443,6 +2475,18 @@ namespace TestFlow.DevSoftware
 
             #region 参数
 
+            // 对于字段和属性的setter需要进行匹配，检查其是否存在接口不一致的情况，如果存在不匹配则弹出提醒让用户选择是否进行兼容处理
+            if (functionData.Type == FunctionType.InstanceFieldSetter || functionData.Type == FunctionType.StaticFieldSetter ||
+                functionData.Type == FunctionType.InstancePropertySetter ||
+                functionData.Type == FunctionType.StaticPropertySetter)
+            {
+                bool isParameterFit = CheckSetterFunctionCompatibility(functionData);
+                if (!isParameterFit)
+                {
+                    return;
+                }
+            }
+
             IParameterDataCollection parameters = functionData.Parameters;
             if (null != parameters)
             {
@@ -2464,6 +2508,46 @@ namespace TestFlow.DevSoftware
                 }
             }
             #endregion
+        }
+
+        private bool CheckSetterFunctionCompatibility(IFunctionData functionData)
+        {
+            
+            IFuncInterfaceDescription functionDescription = this._currentClassDescription.Functions.FirstOrDefault(
+                item => item.Name.Equals(functionData.MethodName));
+            if (functionDescription == null)
+            {
+                MessageBox.Show($"Method '{functionData.MethodName}' does not exist in assembly.", "Data Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            for (int i = functionData.ParameterType.Count - 1; i >= 0; i--)
+            {
+                // 如果在函数描述中参数不存在，则删除该参数
+                if (!functionDescription.Arguments.Any(item => item.Name.Equals(functionData.ParameterType[i].Name)))
+                {
+                    functionData.ParameterType.RemoveAt(i);
+                    functionData.Parameters.RemoveAt(i);
+                }
+            }
+            foreach (IArgumentDescription argumentDescription in functionDescription.Arguments)
+            {
+                // 如果当前的参数列表中缺失了某个属性配置，则需要添加进去
+                if (functionData.ParameterType.Any(item => item.Name.Equals(argumentDescription.Name)))
+                {
+                    continue;
+                }
+                IArgument argument = this._globalInfo.TestflowEntity.SequenceManager.CreateArugment();
+                argument.Name = argumentDescription.Name;
+                argument.Modifier = argumentDescription.Modifier;
+                argument.Type = argumentDescription.Type;
+                argument.VariableType = argumentDescription.ArgumentType;
+                IParameterData parameterData = this._globalInfo.TestflowEntity.SequenceManager.CreateParameterData(argument);
+                functionData.ParameterType.Add(argument);
+                functionData.Parameters.Add(parameterData);
+            }
+            return true;
         }
 
         private void ShowSingleParameter(IParameterData parameterData, IArgument parameterType, int rowIndex, bool setByFx)
