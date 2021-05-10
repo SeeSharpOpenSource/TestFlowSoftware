@@ -4125,6 +4125,11 @@
             OI配置界面的类
             </summary>
         </member>
+        <member name="E:Testflow.Runtime.OperationPanel.IOperationPanel.ConfigurationOver">
+            <summary>
+            OI面板确认可以开始运行的事件
+            </summary>
+        </member>
         <member name="E:Testflow.Runtime.OperationPanel.IOperationPanel.OiReady">
             <summary>
             OI面板确认可以开始运行的事件
