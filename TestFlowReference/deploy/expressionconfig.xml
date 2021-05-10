@@ -22,7 +22,7 @@
 	<ExpressionOperator Name="NegativeOperation" Description="Get the result of -1*Source.">
       <Symbol>-</Symbol>
       <FormatString>-{0}</FormatString>
-      <Priority>10</Priority>
+      <Priority>9</Priority>
       <ArgumentsCount>0</ArgumentsCount>
     </ExpressionOperator>
 	<ExpressionOperator Name="Addition" Description="Get the result of addition operation between two element.">
