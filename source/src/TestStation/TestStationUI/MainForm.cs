@@ -2345,18 +2345,23 @@ namespace TestFlow.DevSoftware
         // 比较function和FunctinDescription，判断当前function是不是从FunctionDescrition创建出来的
         private bool IsFunctionCreatedFromDescription(IFunctionData function, IFuncInterfaceDescription funcDescription)
         {
+            if (function == null)
+            {
+                return false;
+            }
             // 如果是field或者property的setter，如果当前的描述对象类型相同则认为是匹配的
             if (funcDescription.FuncType == function.Type && (function.Type == FunctionType.InstanceFieldSetter ||
                                                               function.Type == FunctionType.StaticFieldSetter ||
                                                               function.Type == FunctionType.InstancePropertySetter ||
                                                               function.Type == FunctionType.StaticPropertySetter))
+            {
                 return true;
-            if (function == null || !function.MethodName.Equals(funcDescription.Name) ||
+            }
+            if (!function.MethodName.Equals(funcDescription.Name) ||
                 function.ParameterType.Count != funcDescription.Arguments.Count)
             {
                 return false;
             }
-            
             for (int n = 0; n < function.ParameterType.Count; n++)
             {
                 if (!function.ParameterType[n].Type.Equals(funcDescription.Arguments[n].Type) ||
