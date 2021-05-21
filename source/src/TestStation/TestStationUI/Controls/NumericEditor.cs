@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Testflow.Data;
 using Testflow.Data.Sequence;
@@ -15,10 +16,28 @@ namespace TestFlow.DevSoftware
 {
     public partial class NumericEditor : ValueEditor
     {
+        /// <summary>
+        /// 十六进制正则表达式
+        /// </summary>
+        private readonly Regex _hexRegex;
+
+        /// <summary>
+        /// 十六进制正则表达式
+        /// </summary>
+        private readonly Regex _octRegex;
+
+        /// <summary>
+        /// 十六进制正则表达式
+        /// </summary>
+        private readonly Regex _binRegex;
+
         public NumericEditor(IVariable variable) : base(variable)
         {
             InitializeComponent();
             ValuetextBox.Text = string.IsNullOrWhiteSpace(Variable.Value) ? "0" : Variable.Value;
+            this._hexRegex = new Regex("^0[xX][0-9a-fA-F]+$", RegexOptions.Compiled);
+            this._octRegex = new Regex("^0[oO]([0-7]+)$", RegexOptions.Compiled);
+            this._binRegex = new Regex("^0[bB][01]+$", RegexOptions.Compiled);
         }
 
         private void ValuetextBox_TextChanged(object sender, EventArgs e)
@@ -82,7 +101,7 @@ namespace TestFlow.DevSoftware
                     isLegalValue = char.TryParse(text, out charValue);
                     break;
             }
-            if (!isLegalValue)
+            if (!isLegalValue && !this._hexRegex.IsMatch(text) && !this._octRegex.IsMatch(text) && !this._binRegex.IsMatch(text))
             {
                 throw new ApplicationException("Invalid variable value.");
             }

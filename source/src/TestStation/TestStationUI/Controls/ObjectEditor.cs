@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Testflow;
@@ -21,6 +22,21 @@ namespace TestFlow.DevSoftware.Controls
         private string _originalValue;
         private ITypeData _originalType;
         private HashSet<string> _supportedArray;
+
+        /// <summary>
+        /// 十六进制正则表达式
+        /// </summary>
+        private readonly Regex _hexRegex;
+
+        /// <summary>
+        /// 十六进制正则表达式
+        /// </summary>
+        private readonly Regex _octRegex;
+
+        /// <summary>
+        /// 十六进制正则表达式
+        /// </summary>
+        private readonly Regex _binRegex;
 
         public ObjectEditor(IVariable variable)
         {
@@ -53,6 +69,10 @@ namespace TestFlow.DevSoftware.Controls
             TestflowRunner testflowRunner = TestflowRunner.GetInstance();
             _interfaceManager = testflowRunner.ComInterfaceManager;
             _isCancelled = true;
+
+            this._hexRegex = new Regex("^0[xX][0-9a-fA-F]+$", RegexOptions.Compiled);
+            this._octRegex = new Regex("^0[oO]([0-7]+)$", RegexOptions.Compiled);
+            this._binRegex = new Regex("^0[bB][01]+$", RegexOptions.Compiled);
         }
 
         private void ValuecomboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -237,37 +257,44 @@ namespace TestFlow.DevSoftware.Controls
                 case "Array of Decimal(Double)":
                 case "Double[]":
                     double doubleValue;
-                    checkPassed = double.TryParse(value, out doubleValue);
+                    checkPassed = double.TryParse(value, out doubleValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
                 case "Array of Decimal(Float)":
                 case "Single[]":
                     float floatValue;
-                    checkPassed = float.TryParse(value, out floatValue);
+                    checkPassed = float.TryParse(value, out floatValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
                 case "Array of Decimal(Int)":
                 case "Int32[]":
                     int intValue;
-                    checkPassed = int.TryParse(value, out intValue);
+                    checkPassed = int.TryParse(value, out intValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
                 case "Array of Decimal(UInt)":
                 case "UInt32[]":
                     uint uintValue;
-                    checkPassed = uint.TryParse(value, out uintValue);
+                    checkPassed = uint.TryParse(value, out uintValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
                 case "Array of Decimal(Short)":
                 case "Int16[]":
                     short shortValue;
-                    checkPassed = short.TryParse(value, out shortValue);
+                    checkPassed = short.TryParse(value, out shortValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
                 case "Array of Decimal(UShort)":
                 case "UInt16[]":
                     ushort ushortValue;
-                    checkPassed = ushort.TryParse(value, out ushortValue);
+                    checkPassed = ushort.TryParse(value, out ushortValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
                 case "Array of Decimal(Byte)":
                 case "Byte[]":
                     byte byteValue;
-                    checkPassed = byte.TryParse(value, out byteValue);
+                    checkPassed = byte.TryParse(value, out byteValue) || this._hexRegex.IsMatch(value) ||
+                                  this._octRegex.IsMatch(value) || this._binRegex.IsMatch(value);
                     break;
             }
             if (!checkPassed)
