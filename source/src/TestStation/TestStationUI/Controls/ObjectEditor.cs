@@ -289,7 +289,7 @@ namespace TestFlow.DevSoftware.Controls
             {
                 string variableValue = GetVariableValue();
                 _variable.Value = variableValue;
-                _variable.AutoType = _variable.Type == null;
+                // _variable.AutoType = _variable.Type == null;
                 _isCancelled = false;
                 this.Close();
             }

@@ -1028,6 +1028,7 @@ namespace TestFlow.DevSoftware
             IVariable variable = TestflowDesigntimeSession.AddVariable(parent, variableName, "", VaraibleTable.RowCount - 1);
             variable.VariableType = (isObject) ? VariableType.Class : VariableType.Value;
             variable.Type = _interfaceManger.GetTypeByName("Double", "System");
+            variable.AutoType = false;
             // 判断Object
             if (isObject)
             {
