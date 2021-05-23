@@ -3673,6 +3673,10 @@ namespace TestFlow.DevSoftware
 
         private void addSequenceToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if (null == SequenceGroup)
+            {
+                return;
+            }
             ISequenceGroup sequenceGroup = SequenceGroup;
             ISequence sequence = TestflowDesigntimeSession.AddSequence("", "", sequenceGroup.Sequences.Count);
             TreeNode parentNode = FindTreeNode(sequenceGroup);
@@ -3730,6 +3734,10 @@ namespace TestFlow.DevSoftware
         private void contextMenuStrip_sequence_Opening(object sender, CancelEventArgs e)
         {
             TreeNode selectedNode = treeView_sequenceTree.SelectedNode;
+            if (null == selectedNode)
+            {
+                return;
+            }
             if (selectedNode.Level == 0)
             {
                 addSequenceToolStripMenuItem1.Visible = false;
