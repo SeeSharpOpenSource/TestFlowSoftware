@@ -105,8 +105,10 @@ namespace TestFlow.DevSoftware
                         {
                             ISequenceStep errorStep = SequenceUtils.GetStepFromStack(_sequenceData,
                                 sessionGenerationInfo.ErrorStack);
-                            _mainform.AppendOutput($"ErrorStep:{errorStep.Name} ErrorInfo:{sessionGenerationInfo.ErrorInfo}");
-                            
+                            if (null != errorStep)
+                            {
+                                _mainform.AppendOutput($"ErrorStep:{errorStep.Name} ErrorInfo:{sessionGenerationInfo.ErrorInfo}");
+                            }
                         }
                         if (!string.IsNullOrWhiteSpace(sessionGenerationInfo.ErrorInfo))
                         {
