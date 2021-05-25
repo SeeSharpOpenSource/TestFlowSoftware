@@ -1455,6 +1455,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BB702D238BDFD9C8FA1F21EC565396C1"
+        "OwnerKey" = "8:_AD697CA71C3941DD88A1640E9ADD8826"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BB702D238BDFD9C8FA1F21EC565396C1"
+        "OwnerKey" = "8:_E3F320AD6E094848AB8F466591365369"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BDAEAAB8009545D181745960ADDFDF51"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2807,7 +2819,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TestFlowSoftware, Version=1.3.0.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:TestFlowSoftware, Version=1.3.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_07A1817D152448C39581134D0A4B5A55"
@@ -3403,7 +3415,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.ThreadSafeQueue, Version=1.4.8.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.ThreadSafeQueue, Version=1.4.7.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_3565BF5527CA4E63B8B5D557DD5653F7"
@@ -3465,7 +3477,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.GUI, Version=1.4.8.1, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.GUI, Version=1.4.7.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_3BD96D31BFAD38E32646523AD5954C49"
@@ -3959,7 +3971,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TestFlowSoftware, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TestFlowSoftware, Version=1.3.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_4D04D8FF9E2A4EEFB8CC7C50D6888A46"
@@ -4154,7 +4166,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.File, Version=1.4.8.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.File, Version=1.4.7.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_58F347A128A843849ECFA969604F5DF2"
@@ -4958,7 +4970,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.GUI, Version=1.4.8.1, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.GUI, Version=1.4.7.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_881CF827096F44D0A4BBD3B9B99F331E"
@@ -5610,6 +5622,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BB702D238BDFD9C8FA1F21EC565396C1"
+            {
+            "SourcePath" = "8:libCommon.tlb"
+            "TargetName" = "8:libCommon.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_FC768054E270428B97B3B046D88AA007"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BDAEAAB8009545D181745960ADDFDF51"
@@ -6684,7 +6716,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.File, Version=1.4.8.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SeeSharpTools.JY.File, Version=1.4.7.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_FDE7459CFBBC9429A50C2C852A90C8B0"
@@ -6899,15 +6931,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TestFlow"
-        "ProductCode" = "8:{BE073802-71A8-462F-8006-DE9DF4694545}"
-        "PackageCode" = "8:{05CE9698-01DE-4AD5-8F13-7FA9087CD5D9}"
+        "ProductCode" = "8:{FAB7D012-26CD-41C0-923F-B9641A4E7883}"
+        "PackageCode" = "8:{8E53F6E3-F42B-4E50-B3F6-3BA0AE0ECF5A}"
         "UpgradeCode" = "8:{C6A990D4-200A-4495-98E6-3B8D4BA6920D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.3"
+        "ProductVersion" = "8:1.3.4"
         "Manufacturer" = "8:JYTEK"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -7449,7 +7481,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1E4660E854F44D0080DCF47C971615D0"
             {
-            "SourcePath" = "8:..\\..\\TestStation\\ExternalLib\\TestStationLimit\\obj\\Debug\\TestStationLimit.dll"
+            "SourcePath" = "8:..\\..\\TestStation\\ExternalLib\\TestStationLimit\\obj\\Release\\TestStationLimit.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FC5DA300C7B64442B61349F24F2BD910"
@@ -7477,7 +7509,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_453E0D5DBEA248258AEC20959F872392"
             {
-            "SourcePath" = "8:..\\..\\TestStation\\ExternalLib\\TestStationLimit\\obj\\Debug\\TestStationLimit.dll"
+            "SourcePath" = "8:..\\..\\TestStation\\ExternalLib\\TestStationLimit\\obj\\Release\\TestStationLimit.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D37892A29D754D57A5AAE022E8BA25A6"
