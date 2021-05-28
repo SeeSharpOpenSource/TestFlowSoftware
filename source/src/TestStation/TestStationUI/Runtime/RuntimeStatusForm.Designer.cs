@@ -31,12 +31,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView_status = new System.Windows.Forms.DataGridView();
-            this.groupBox_runstatus = new System.Windows.Forms.GroupBox();
-            this.groupBox_sequenceInfo = new System.Windows.Forms.GroupBox();
-            this.textBox_testInstanceName = new System.Windows.Forms.TextBox();
-            this.label_runtimeName = new System.Windows.Forms.Label();
-            this.label_nameValue = new System.Windows.Forms.Label();
-            this.label_name = new System.Windows.Forms.Label();
             this.Column_session = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_sequence = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_sequenceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,6 +39,12 @@
             this.Column_endTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_elapsedTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox_runstatus = new System.Windows.Forms.GroupBox();
+            this.groupBox_sequenceInfo = new System.Windows.Forms.GroupBox();
+            this.textBox_testInstanceName = new System.Windows.Forms.TextBox();
+            this.label_runtimeName = new System.Windows.Forms.Label();
+            this.label_nameValue = new System.Windows.Forms.Label();
+            this.label_name = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_status)).BeginInit();
             this.groupBox_runstatus.SuspendLayout();
             this.groupBox_sequenceInfo.SuspendLayout();
@@ -90,65 +90,6 @@
             this.dataGridView_status.RowTemplate.Height = 23;
             this.dataGridView_status.Size = new System.Drawing.Size(853, 414);
             this.dataGridView_status.TabIndex = 0;
-            // 
-            // groupBox_runstatus
-            // 
-            this.groupBox_runstatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox_runstatus.Controls.Add(this.dataGridView_status);
-            this.groupBox_runstatus.Location = new System.Drawing.Point(12, 77);
-            this.groupBox_runstatus.Name = "groupBox_runstatus";
-            this.groupBox_runstatus.Size = new System.Drawing.Size(859, 434);
-            this.groupBox_runstatus.TabIndex = 1;
-            this.groupBox_runstatus.TabStop = false;
-            this.groupBox_runstatus.Text = "运行时状态";
-            // 
-            // groupBox_sequenceInfo
-            // 
-            this.groupBox_sequenceInfo.Controls.Add(this.textBox_testInstanceName);
-            this.groupBox_sequenceInfo.Controls.Add(this.label_runtimeName);
-            this.groupBox_sequenceInfo.Controls.Add(this.label_nameValue);
-            this.groupBox_sequenceInfo.Controls.Add(this.label_name);
-            this.groupBox_sequenceInfo.Location = new System.Drawing.Point(12, 13);
-            this.groupBox_sequenceInfo.Name = "groupBox_sequenceInfo";
-            this.groupBox_sequenceInfo.Size = new System.Drawing.Size(892, 58);
-            this.groupBox_sequenceInfo.TabIndex = 3;
-            this.groupBox_sequenceInfo.TabStop = false;
-            this.groupBox_sequenceInfo.Text = "序列信息";
-            // 
-            // textBox_testInstanceName
-            // 
-            this.textBox_testInstanceName.Location = new System.Drawing.Point(416, 20);
-            this.textBox_testInstanceName.Name = "textBox_testInstanceName";
-            this.textBox_testInstanceName.Size = new System.Drawing.Size(283, 21);
-            this.textBox_testInstanceName.TabIndex = 3;
-            // 
-            // label_runtimeName
-            // 
-            this.label_runtimeName.Location = new System.Drawing.Point(306, 19);
-            this.label_runtimeName.Name = "label_runtimeName";
-            this.label_runtimeName.Size = new System.Drawing.Size(94, 23);
-            this.label_runtimeName.TabIndex = 2;
-            this.label_runtimeName.Text = "运行实例名称：";
-            this.label_runtimeName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label_nameValue
-            // 
-            this.label_nameValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label_nameValue.Location = new System.Drawing.Point(96, 22);
-            this.label_nameValue.Name = "label_nameValue";
-            this.label_nameValue.Size = new System.Drawing.Size(195, 23);
-            this.label_nameValue.TabIndex = 1;
-            this.label_nameValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label_name
-            // 
-            this.label_name.Location = new System.Drawing.Point(23, 22);
-            this.label_name.Name = "label_name";
-            this.label_name.Size = new System.Drawing.Size(76, 23);
-            this.label_name.TabIndex = 0;
-            this.label_name.Text = "序列名称：";
-            this.label_name.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Column_session
             // 
@@ -207,6 +148,68 @@
             this.Column_result.Name = "Column_result";
             this.Column_result.ReadOnly = true;
             this.Column_result.Width = 120;
+            // 
+            // groupBox_runstatus
+            // 
+            this.groupBox_runstatus.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox_runstatus.Controls.Add(this.dataGridView_status);
+            this.groupBox_runstatus.Location = new System.Drawing.Point(12, 77);
+            this.groupBox_runstatus.Name = "groupBox_runstatus";
+            this.groupBox_runstatus.Size = new System.Drawing.Size(859, 434);
+            this.groupBox_runstatus.TabIndex = 1;
+            this.groupBox_runstatus.TabStop = false;
+            this.groupBox_runstatus.Text = "运行时状态";
+            // 
+            // groupBox_sequenceInfo
+            // 
+            this.groupBox_sequenceInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox_sequenceInfo.Controls.Add(this.textBox_testInstanceName);
+            this.groupBox_sequenceInfo.Controls.Add(this.label_runtimeName);
+            this.groupBox_sequenceInfo.Controls.Add(this.label_nameValue);
+            this.groupBox_sequenceInfo.Controls.Add(this.label_name);
+            this.groupBox_sequenceInfo.Location = new System.Drawing.Point(12, 13);
+            this.groupBox_sequenceInfo.Name = "groupBox_sequenceInfo";
+            this.groupBox_sequenceInfo.Size = new System.Drawing.Size(859, 58);
+            this.groupBox_sequenceInfo.TabIndex = 3;
+            this.groupBox_sequenceInfo.TabStop = false;
+            this.groupBox_sequenceInfo.Text = "序列信息";
+            // 
+            // textBox_testInstanceName
+            // 
+            this.textBox_testInstanceName.Location = new System.Drawing.Point(416, 20);
+            this.textBox_testInstanceName.Name = "textBox_testInstanceName";
+            this.textBox_testInstanceName.Size = new System.Drawing.Size(283, 21);
+            this.textBox_testInstanceName.TabIndex = 3;
+            // 
+            // label_runtimeName
+            // 
+            this.label_runtimeName.Location = new System.Drawing.Point(306, 19);
+            this.label_runtimeName.Name = "label_runtimeName";
+            this.label_runtimeName.Size = new System.Drawing.Size(94, 23);
+            this.label_runtimeName.TabIndex = 2;
+            this.label_runtimeName.Text = "运行实例名称：";
+            this.label_runtimeName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_nameValue
+            // 
+            this.label_nameValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label_nameValue.Location = new System.Drawing.Point(96, 22);
+            this.label_nameValue.Name = "label_nameValue";
+            this.label_nameValue.Size = new System.Drawing.Size(195, 23);
+            this.label_nameValue.TabIndex = 1;
+            this.label_nameValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_name
+            // 
+            this.label_name.Location = new System.Drawing.Point(23, 22);
+            this.label_name.Name = "label_name";
+            this.label_name.Size = new System.Drawing.Size(76, 23);
+            this.label_name.TabIndex = 0;
+            this.label_name.Text = "序列名称：";
+            this.label_name.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // RuntimeStatusForm
             // 
