@@ -330,30 +330,35 @@ namespace TestFlow.DevSoftware
 
             #region Columns
             DataGridViewTextBoxColumn NameColumn = new DataGridViewTextBoxColumn();
+            NameColumn.DefaultCellStyle.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             NameColumn.Name = "ParameterName";
             NameColumn.ReadOnly = true;
             NameColumn.HeaderText = "Parameter Name";
             _paramTable.Columns.Add(NameColumn);
 
             DataGridViewTextBoxColumn TypeColumn = new DataGridViewTextBoxColumn();
+            TypeColumn.DefaultCellStyle.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             TypeColumn.Name = "ParameterType";
             TypeColumn.ReadOnly = true;
             TypeColumn.HeaderText = "Type";
             _paramTable.Columns.Add(TypeColumn);
 
             DataGridViewTextBoxColumn ModifierColumn = new DataGridViewTextBoxColumn();
+            ModifierColumn.DefaultCellStyle.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ModifierColumn.Name = "ParameterModifier";
             ModifierColumn.ReadOnly = true;
             ModifierColumn.HeaderText = "In/Out/Ref";
             _paramTable.Columns.Add(ModifierColumn);
 
             DataGridViewTextBoxColumn ValueColumn = new DataGridViewTextBoxColumn();
+            ValueColumn.DefaultCellStyle.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ValueColumn.Name = "ParameterValue";
             ValueColumn.ReadOnly = false;
             ValueColumn.HeaderText = "Value";
             _paramTable.Columns.Add(ValueColumn);
 
             DataGridViewButtonColumn FxColumn = new DataGridViewButtonColumn();
+            FxColumn.DefaultCellStyle.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             FxColumn.Name = "Parameterfx";
             FxColumn.ReadOnly = false;
             FxColumn.HeaderText = "f(x)";
@@ -362,6 +367,7 @@ namespace TestFlow.DevSoftware
             _paramTable.Columns.Add(FxColumn);
 
             DataGridViewButtonColumn CheckColumn = new DataGridViewButtonColumn();
+            CheckColumn.DefaultCellStyle.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             CheckColumn.Name = "ParameterCheck";
             CheckColumn.ReadOnly = false;
             CheckColumn.HeaderText = "";
@@ -2439,7 +2445,9 @@ namespace TestFlow.DevSoftware
 
         private void GetConstructAndFuncStep(ISequenceStep currentStep, out ISequenceStep constructorStep, out ISequenceStep functionStep)
         {
-            constructorStep = null != currentStep.Function && currentStep.Function.Type == FunctionType.Constructor
+            constructorStep = null != currentStep.Function && (currentStep.Function.Type == FunctionType.Constructor ||
+                                                               currentStep.Function.Type ==
+                                                               FunctionType.StructConstructor)
                 ? currentStep
                 : null;
             functionStep = null == constructorStep ? currentStep : null;
