@@ -3353,7 +3353,7 @@ namespace TestFlow.DevSoftware
 
         #region 状态更新
 
-        private readonly Dictionary<string, string> _watchVariables = new Dictionary<string, string>(10);
+        private readonly Dictionary<string, IVariable> _watchVariables = new Dictionary<string, IVariable>(10);
         private void button_addWatch_Click(object sender, EventArgs e)
         {
             int sequenceIndex;
@@ -3368,10 +3368,13 @@ namespace TestFlow.DevSoftware
             {
                 try
                 {
+                    ISequence sequence = SequenceUtils.GetSequence(SequenceGroup, 0, sequenceIndex);
+                    IVariable variable = SequenceUtils.GetVariable(variableShowName, sequence);
                     _globalInfo.TestflowEntity.EngineController.AddRuntimeObject("WatchData", 0, sequenceIndex,
                         runtimeVariableName);
-                    _watchVariables.Add(variableShowName, runtimeVariableName);
-                    dataGridView_variableValues.Rows.Add(variableShowName, "");
+                    _watchVariables.Add(variableShowName, variable);
+                    int index = dataGridView_variableValues.Rows.Add(variableShowName, sequence.Name, "");
+                    dataGridView_variableValues.Rows[index].Tag = variable;
                 }
                 catch (TestflowException ex)
                 {
@@ -3430,21 +3433,21 @@ namespace TestFlow.DevSoftware
         {
             textBoxReport.Text = string.Empty;
             dataGridView_variableValues.Rows.Clear();
-            AddVariableToTable(SequenceGroup.Variables);
-            AddVariableToTable(SequenceGroup.SetUp.Variables);
-            AddVariableToTable(SequenceGroup.TearDown.Variables);
+            AddVariableToTable(SequenceGroup.Variables, "");
+            AddVariableToTable(SequenceGroup.SetUp.Variables, SequenceGroup.SetUp.Name);
+            AddVariableToTable(SequenceGroup.TearDown.Variables, SequenceGroup.TearDown.Name);
             foreach (ISequence sequence in SequenceGroup.Sequences)
             {
-                AddVariableToTable(sequence.Variables);
+                AddVariableToTable(sequence.Variables, sequence.Name);
             }
         }
         
-        private void AddVariableToTable(IVariableCollection variables)
+        private void AddVariableToTable(IVariableCollection variables, string sequenceName)
         {
-            foreach (IVariable variable in variables.Where(variable => variable.ReportRecordLevel == RecordLevel.Trace ||
-                                                                                variable.ReportRecordLevel == RecordLevel.FinalResult))
+            foreach (IVariable variable in variables.Where(variable => variable.ReportRecordLevel != RecordLevel.None))
             {
-                dataGridView_variableValues.Rows.Add(variable.Name, "");
+                int index = dataGridView_variableValues.Rows.Add(variable.Name, sequenceName, variable.Value ?? string.Empty);
+                this.dataGridView_variableValues.Rows[index].Tag = variable;
             }
         }
 
@@ -3478,7 +3481,7 @@ namespace TestFlow.DevSoftware
             }
         }
 
-        public void UpdateVariableValues(IDictionary<string, string> values)
+        public void UpdateVariableValues(IDictionary<IVariable, string> values)
         {
             if (null == values)
             {
@@ -3486,20 +3489,20 @@ namespace TestFlow.DevSoftware
             }
             foreach (DataGridViewRow row in dataGridView_variableValues.Rows)
             {
-                string varName = row.Cells[0].Value.ToString();
-                if (values.ContainsKey(varName))
+                IVariable rowTag = row.Tag as IVariable;
+                if (null != rowTag && values.ContainsKey(rowTag))
                 {
-                    row.Cells[1].Value = values[varName];
+                    row.Cells[this.Column_VariableValue.Index].Value = values[rowTag];
                 }
             }
         }
 
-        public void ShowStepResults(ICallStack stepStack, StepResult stepResults, IDictionary<string, string> variables)
+        public void ShowStepResults(ICallStack stepStack, StepResult stepResults, IDictionary<IVariable, string> watchData)
         {
             ShowCurrentStep(stepStack, stepResults);
-            if (null != variables && variables.Count > 0)
+            if (null != watchData && watchData.Count > 0)
             {
-                UpdateVariableValues(variables);
+                UpdateVariableValues(watchData);
             }
         }
 
@@ -3537,14 +3540,14 @@ namespace TestFlow.DevSoftware
             stepNode.BackColor = currentColor;
         }
 
-        private void ShowVariableValues(IDictionary<string, string> variableValues)
+        private void ShowVariableValues(IDictionary<IVariable, string> variableValues)
         {
             foreach (DataGridViewRow rowData in dataGridView_variableValues.Rows)
             {
-                string variableName = rowData.Cells[0].Value.ToString();
-                if (variableValues.ContainsKey(variableName))
+                IVariable rowDataTag = rowData.Tag as IVariable;
+                if (variableValues.ContainsKey(rowDataTag))
                 {
-                    rowData.Cells[1].Value = variableValues[variableName];
+                    rowData.Cells[1].Value = variableValues[rowDataTag];
                 }
             }
         }
@@ -3645,7 +3648,7 @@ namespace TestFlow.DevSoftware
             textBoxReport.Text = uutResult;
         }
 
-        public void BreakPointHittedAction(ICallStack stepStack, StepResult stepResult, IDictionary<string, string> watchData)
+        public void BreakPointHittedAction(ICallStack stepStack, StepResult stepResult, IDictionary<IVariable, string> watchData)
         {
             viewController_Main.State = "RunBlock";
             ShowStepResults(stepStack, stepResult, watchData);
@@ -4255,5 +4258,14 @@ namespace TestFlow.DevSoftware
             }
         }
 
+        private void copyValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (null == this.dataGridView_variableValues.CurrentCell) return;
+            int cellRowIndex = this.dataGridView_variableValues.CurrentCell.RowIndex;
+            Clipboard.Clear();
+            string variableValue =
+                this.dataGridView_variableValues.Rows[cellRowIndex].Cells[this.Column_VariableValue.Index].Value?.ToString();
+            if (!string.IsNullOrEmpty(variableValue)) Clipboard.SetText(variableValue);
+        }
     }
 }

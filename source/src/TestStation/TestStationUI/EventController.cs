@@ -53,7 +53,7 @@ namespace TestFlow.DevSoftware
 
         private void BreakPointHitted(IDebuggerHandle debuggerhandle, IDebugInformation information)
         {
-            Dictionary<string, string> watchDatas = GetWatchData(information.WatchDatas);
+            IDictionary<IVariable, string> watchDatas = information.WatchDatas;
             ISequenceStep step = SequenceUtils.GetStepFromStack(_sequenceData, information.BreakPoint);
             if (null == step)
             {
@@ -63,20 +63,6 @@ namespace TestFlow.DevSoftware
             {
                 _mainform.BreakPointHittedAction(information.BreakPoint, StepResult.NotAvailable, watchDatas);
             }));
-        }
-
-        private static Dictionary<string, string> GetWatchData(IDictionary<IVariable, string> watchData)
-        {
-            Dictionary<string, string> watchDatas = null;
-            if (watchData?.Count > 0)
-            {
-                watchDatas = new Dictionary<string, string>(watchData.Count);
-                foreach (KeyValuePair<IVariable, string> keyValuePair in watchData)
-                {
-                    watchDatas.Add(keyValuePair.Key.Name, keyValuePair.Value);
-                }
-            }
-            return watchDatas;
         }
 
         private void TestGenStart(ITestGenerationInfo generationInfo)
@@ -147,7 +133,7 @@ namespace TestFlow.DevSoftware
             if (null != currentStack)
             {
                 StepResult result = statusinfo.StepResults[currentStack];
-                Dictionary<string, string> watchData = GetWatchData(statusinfo.WatchDatas);
+                IDictionary<IVariable, string> watchData = statusinfo.WatchDatas;
                 _mainform.Invoke(new Action(() =>
                 {
                     if (printInfos.Count > 0)

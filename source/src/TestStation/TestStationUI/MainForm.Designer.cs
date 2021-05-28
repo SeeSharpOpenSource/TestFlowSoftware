@@ -168,8 +168,8 @@ namespace TestFlow.DevSoftware
             this.button_deleteWatch = new System.Windows.Forms.Button();
             this.button_addWatch = new System.Windows.Forms.Button();
             this.dataGridView_variableValues = new System.Windows.Forms.DataGridView();
-            this.Column_VariableName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_VariableValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextMenuStrip_watchData = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label_variableValues = new System.Windows.Forms.Label();
             this.label_ouotput = new System.Windows.Forms.Label();
             this.button_clearOutput = new System.Windows.Forms.Button();
@@ -234,6 +234,9 @@ namespace TestFlow.DevSoftware
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nULLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eMPTYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Column_VariableName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_sequence = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_VariableValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip_ActionMenu.SuspendLayout();
             this.toolStrip_QuickMenu.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -253,6 +256,7 @@ namespace TestFlow.DevSoftware
             this.splitContainer_runtime.Panel2.SuspendLayout();
             this.splitContainer_runtime.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_variableValues)).BeginInit();
+            this.contextMenuStrip_watchData.SuspendLayout();
             this.tabCon_Step.SuspendLayout();
             this.tabPage_stepData.SuspendLayout();
             this.RuntimeStatusTab.SuspendLayout();
@@ -1402,7 +1406,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_assembly.FormattingEnabled = true;
             this.comboBox_assembly.Location = new System.Drawing.Point(86, 8);
             this.comboBox_assembly.Name = "comboBox_assembly";
-            this.comboBox_assembly.Size = new System.Drawing.Size(773, 20);
+            this.comboBox_assembly.Size = new System.Drawing.Size(777, 20);
             this.comboBox_assembly.TabIndex = 13;
             this.comboBox_assembly.TextChanged += new System.EventHandler(this.comboBox_assembly_TextChanged);
             // 
@@ -1413,7 +1417,7 @@ namespace TestFlow.DevSoftware
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_panel.Location = new System.Drawing.Point(86, 87);
             this.Parameter_panel.Name = "Parameter_panel";
-            this.Parameter_panel.Size = new System.Drawing.Size(816, 267);
+            this.Parameter_panel.Size = new System.Drawing.Size(816, 270);
             this.Parameter_panel.TabIndex = 10;
             // 
             // comboBox_Method
@@ -1473,7 +1477,7 @@ namespace TestFlow.DevSoftware
             this.tabPage_runtimeInfo.Location = new System.Drawing.Point(4, 22);
             this.tabPage_runtimeInfo.Name = "tabPage_runtimeInfo";
             this.tabPage_runtimeInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(904, 358);
+            this.tabPage_runtimeInfo.Size = new System.Drawing.Size(908, 360);
             this.tabPage_runtimeInfo.TabIndex = 4;
             this.tabPage_runtimeInfo.Text = "RuntimeInformation";
             this.tabPage_runtimeInfo.UseVisualStyleBackColor = true;
@@ -1498,30 +1502,32 @@ namespace TestFlow.DevSoftware
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_clearOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.button_copyOutput);
             this.splitContainer_runtime.Panel2.Controls.Add(this.textBox_output);
-            this.splitContainer_runtime.Size = new System.Drawing.Size(898, 352);
-            this.splitContainer_runtime.SplitterDistance = 416;
+            this.splitContainer_runtime.Size = new System.Drawing.Size(902, 354);
+            this.splitContainer_runtime.SplitterDistance = 417;
             this.splitContainer_runtime.TabIndex = 0;
             // 
             // button_deleteWatch
             // 
             this.button_deleteWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_deleteWatch.Location = new System.Drawing.Point(262, 317);
+            this.button_deleteWatch.Location = new System.Drawing.Point(263, 319);
             this.button_deleteWatch.Name = "button_deleteWatch";
             this.button_deleteWatch.Size = new System.Drawing.Size(100, 28);
             this.button_deleteWatch.TabIndex = 7;
             this.button_deleteWatch.Text = "Delete Watch";
             this.button_deleteWatch.UseVisualStyleBackColor = true;
+            this.button_deleteWatch.Visible = false;
             this.button_deleteWatch.Click += new System.EventHandler(this.button_deleteWatch_Click);
             // 
             // button_addWatch
             // 
             this.button_addWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_addWatch.Location = new System.Drawing.Point(47, 317);
+            this.button_addWatch.Location = new System.Drawing.Point(47, 319);
             this.button_addWatch.Name = "button_addWatch";
             this.button_addWatch.Size = new System.Drawing.Size(100, 28);
             this.button_addWatch.TabIndex = 6;
             this.button_addWatch.Text = "Add Watch";
             this.button_addWatch.UseVisualStyleBackColor = true;
+            this.button_addWatch.Visible = false;
             this.button_addWatch.Click += new System.EventHandler(this.button_addWatch_Click);
             // 
             // dataGridView_variableValues
@@ -1543,31 +1549,30 @@ namespace TestFlow.DevSoftware
             this.dataGridView_variableValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_variableValues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column_VariableName,
+            this.Column_sequence,
             this.Column_VariableValue});
+            this.dataGridView_variableValues.ContextMenuStrip = this.contextMenuStrip_watchData;
             this.dataGridView_variableValues.Location = new System.Drawing.Point(1, 22);
             this.dataGridView_variableValues.Name = "dataGridView_variableValues";
             this.dataGridView_variableValues.ReadOnly = true;
             this.dataGridView_variableValues.RowHeadersVisible = false;
             this.dataGridView_variableValues.RowTemplate.Height = 23;
-            this.dataGridView_variableValues.Size = new System.Drawing.Size(412, 289);
+            this.dataGridView_variableValues.Size = new System.Drawing.Size(413, 328);
             this.dataGridView_variableValues.TabIndex = 5;
             // 
-            // Column_VariableName
+            // contextMenuStrip_watchData
             // 
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
-            this.Column_VariableName.HeaderText = "VariableName";
-            this.Column_VariableName.Name = "Column_VariableName";
-            this.Column_VariableName.ReadOnly = true;
+            this.contextMenuStrip_watchData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyValueToolStripMenuItem});
+            this.contextMenuStrip_watchData.Name = "contextMenuStrip_watchData";
+            this.contextMenuStrip_watchData.Size = new System.Drawing.Size(143, 26);
             // 
-            // Column_VariableValue
+            // copyValueToolStripMenuItem
             // 
-            this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column_VariableValue.HeaderText = "Value";
-            this.Column_VariableValue.Name = "Column_VariableValue";
-            this.Column_VariableValue.ReadOnly = true;
+            this.copyValueToolStripMenuItem.Name = "copyValueToolStripMenuItem";
+            this.copyValueToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.copyValueToolStripMenuItem.Text = "Copy Value";
+            this.copyValueToolStripMenuItem.Click += new System.EventHandler(this.copyValueToolStripMenuItem_Click);
             // 
             // label_variableValues
             // 
@@ -1595,7 +1600,7 @@ namespace TestFlow.DevSoftware
             this.button_clearOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_clearOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_clearOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_clearOutput.Location = new System.Drawing.Point(429, -1);
+            this.button_clearOutput.Location = new System.Drawing.Point(432, -1);
             this.button_clearOutput.Name = "button_clearOutput";
             this.button_clearOutput.Size = new System.Drawing.Size(45, 22);
             this.button_clearOutput.TabIndex = 2;
@@ -1610,7 +1615,7 @@ namespace TestFlow.DevSoftware
             this.button_copyOutput.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.button_copyOutput.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_copyOutput.Font = new System.Drawing.Font("SimSun", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button_copyOutput.Location = new System.Drawing.Point(384, -1);
+            this.button_copyOutput.Location = new System.Drawing.Point(387, -1);
             this.button_copyOutput.Name = "button_copyOutput";
             this.button_copyOutput.Size = new System.Drawing.Size(45, 22);
             this.button_copyOutput.TabIndex = 1;
@@ -1630,7 +1635,7 @@ namespace TestFlow.DevSoftware
             this.textBox_output.Name = "textBox_output";
             this.textBox_output.ReadOnly = true;
             this.textBox_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_output.Size = new System.Drawing.Size(473, 329);
+            this.textBox_output.Size = new System.Drawing.Size(476, 331);
             this.textBox_output.TabIndex = 0;
             // 
             // tabCon_Step
@@ -1776,7 +1781,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(978, 216);
+            this.textBox_reportData.Size = new System.Drawing.Size(994, 224);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -2232,6 +2237,31 @@ namespace TestFlow.DevSoftware
             this.eMPTYToolStripMenuItem.Text = "Set Empty";
             this.eMPTYToolStripMenuItem.Click += new System.EventHandler(this.eMPTYToolStripMenuItem_Click);
             // 
+            // Column_VariableName
+            // 
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Column_VariableName.HeaderText = "VariableName";
+            this.Column_VariableName.Name = "Column_VariableName";
+            this.Column_VariableName.ReadOnly = true;
+            this.Column_VariableName.Width = 130;
+            // 
+            // Column_sequence
+            // 
+            this.Column_sequence.HeaderText = "Sequence";
+            this.Column_sequence.Name = "Column_sequence";
+            this.Column_sequence.ReadOnly = true;
+            this.Column_sequence.Width = 130;
+            // 
+            // Column_VariableValue
+            // 
+            this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column_VariableValue.HeaderText = "Value";
+            this.Column_VariableValue.Name = "Column_VariableValue";
+            this.Column_VariableValue.ReadOnly = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2275,6 +2305,7 @@ namespace TestFlow.DevSoftware
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_runtime)).EndInit();
             this.splitContainer_runtime.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_variableValues)).EndInit();
+            this.contextMenuStrip_watchData.ResumeLayout(false);
             this.tabCon_Step.ResumeLayout(false);
             this.tabPage_stepData.ResumeLayout(false);
             this.RuntimeStatusTab.ResumeLayout(false);
@@ -2425,8 +2456,6 @@ namespace TestFlow.DevSoftware
         private Label label_retryTime;
         private NumericUpDown numericUpDown_passTimes;
         private Label label_passTimes;
-        private DataGridViewTextBoxColumn Column_VariableName;
-        private DataGridViewTextBoxColumn Column_VariableValue;
         private ToolStripStatusLabel toolStripStatusLabel_userGroupLabel;
         private ToolStripStatusLabel toolStripStatusLabel_userGroup;
         private ToolStripMenuItem selectModelToolStripMenuItem;
@@ -2515,6 +2544,11 @@ namespace TestFlow.DevSoftware
         private ToolStripMenuItem clearToolStripMenuItem;
         private ToolStripMenuItem nULLToolStripMenuItem;
         private ToolStripMenuItem eMPTYToolStripMenuItem;
+        private ContextMenuStrip contextMenuStrip_watchData;
+        private ToolStripMenuItem copyValueToolStripMenuItem;
+        private DataGridViewTextBoxColumn Column_VariableName;
+        private DataGridViewTextBoxColumn Column_sequence;
+        private DataGridViewTextBoxColumn Column_VariableValue;
     }
 }
 
