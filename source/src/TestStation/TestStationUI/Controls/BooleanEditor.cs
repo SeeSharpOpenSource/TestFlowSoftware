@@ -30,6 +30,7 @@ namespace TestFlow.DevSoftware
                 Variable.Value = newValue;
             }
             Variable.ReportRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), comboBox_recordLevel.Text);
+            Variable.LogRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), this.comboBox_logRecordLevel.Text);
             base.OkButton_Click(sender, e);
         }
 
@@ -37,6 +38,8 @@ namespace TestFlow.DevSoftware
         {
             comboBox_recordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
             comboBox_recordLevel.Text = Variable.ReportRecordLevel.ToString();
+            comboBox_logRecordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
+            comboBox_logRecordLevel.Text = Variable.LogRecordLevel.ToString();
         }
     }
 }

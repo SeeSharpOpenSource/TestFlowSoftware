@@ -39,6 +39,10 @@
             this.Column_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStrip_delete = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label_logRecordLevel = new System.Windows.Forms.Label();
+            this.comboBox_logRecordLevel = new System.Windows.Forms.ComboBox();
+            this.label_recordLevel = new System.Windows.Forms.Label();
+            this.comboBox_recordLevel = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_element)).BeginInit();
             this.contextMenuStrip_delete.SuspendLayout();
             this.SuspendLayout();
@@ -66,7 +70,7 @@
             // 
             // label_typeValue
             // 
-            this.label_typeValue.Location = new System.Drawing.Point(50, 64);
+            this.label_typeValue.Location = new System.Drawing.Point(50, 59);
             this.label_typeValue.Name = "label_typeValue";
             this.label_typeValue.Size = new System.Drawing.Size(74, 20);
             this.label_typeValue.TabIndex = 24;
@@ -93,7 +97,7 @@
             // 
             // button_cancel
             // 
-            this.button_cancel.Location = new System.Drawing.Point(175, 321);
+            this.button_cancel.Location = new System.Drawing.Point(209, 322);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(75, 23);
             this.button_cancel.TabIndex = 29;
@@ -112,11 +116,11 @@
             this.Column_index,
             this.Column_value});
             this.dataGridView_element.ContextMenuStrip = this.contextMenuStrip_delete;
-            this.dataGridView_element.Location = new System.Drawing.Point(13, 35);
+            this.dataGridView_element.Location = new System.Drawing.Point(13, 82);
             this.dataGridView_element.Name = "dataGridView_element";
             this.dataGridView_element.RowHeadersVisible = false;
             this.dataGridView_element.RowTemplate.Height = 23;
-            this.dataGridView_element.Size = new System.Drawing.Size(258, 280);
+            this.dataGridView_element.Size = new System.Drawing.Size(296, 233);
             this.dataGridView_element.TabIndex = 30;
             this.dataGridView_element.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView_element_RowsAdded);
             // 
@@ -130,11 +134,9 @@
             // 
             // Column_value
             // 
-            this.Column_value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column_value.Frozen = true;
+            this.Column_value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Column_value.HeaderText = "Value";
             this.Column_value.Name = "Column_value";
-            this.Column_value.Width = 215;
             // 
             // contextMenuStrip_delete
             // 
@@ -150,9 +152,51 @@
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
+            // label_logRecordLevel
+            // 
+            this.label_logRecordLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_logRecordLevel.AutoSize = true;
+            this.label_logRecordLevel.Location = new System.Drawing.Point(197, 39);
+            this.label_logRecordLevel.Name = "label_logRecordLevel";
+            this.label_logRecordLevel.Size = new System.Drawing.Size(107, 12);
+            this.label_logRecordLevel.TabIndex = 43;
+            this.label_logRecordLevel.Text = "Log Record Level:";
+            // 
+            // comboBox_logRecordLevel
+            // 
+            this.comboBox_logRecordLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox_logRecordLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_logRecordLevel.FormattingEnabled = true;
+            this.comboBox_logRecordLevel.Location = new System.Drawing.Point(199, 56);
+            this.comboBox_logRecordLevel.Name = "comboBox_logRecordLevel";
+            this.comboBox_logRecordLevel.Size = new System.Drawing.Size(110, 20);
+            this.comboBox_logRecordLevel.TabIndex = 42;
+            // 
+            // label_recordLevel
+            // 
+            this.label_recordLevel.AutoSize = true;
+            this.label_recordLevel.Location = new System.Drawing.Point(16, 39);
+            this.label_recordLevel.Name = "label_recordLevel";
+            this.label_recordLevel.Size = new System.Drawing.Size(83, 12);
+            this.label_recordLevel.TabIndex = 41;
+            this.label_recordLevel.Text = "Record Level:";
+            // 
+            // comboBox_recordLevel
+            // 
+            this.comboBox_recordLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_recordLevel.FormattingEnabled = true;
+            this.comboBox_recordLevel.Location = new System.Drawing.Point(14, 56);
+            this.comboBox_recordLevel.Name = "comboBox_recordLevel";
+            this.comboBox_recordLevel.Size = new System.Drawing.Size(110, 20);
+            this.comboBox_recordLevel.TabIndex = 40;
+            // 
             // ObjectEditor
             // 
-            this.ClientSize = new System.Drawing.Size(283, 348);
+            this.ClientSize = new System.Drawing.Size(321, 348);
+            this.Controls.Add(this.label_logRecordLevel);
+            this.Controls.Add(this.comboBox_logRecordLevel);
+            this.Controls.Add(this.label_recordLevel);
+            this.Controls.Add(this.comboBox_recordLevel);
             this.Controls.Add(this.dataGridView_element);
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.button_OK);
@@ -181,6 +225,10 @@
         private System.Windows.Forms.DataGridView dataGridView_element;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip_delete;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.Label label_logRecordLevel;
+        private System.Windows.Forms.ComboBox comboBox_logRecordLevel;
+        private System.Windows.Forms.Label label_recordLevel;
+        private System.Windows.Forms.ComboBox comboBox_recordLevel;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_index;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_value;
     }

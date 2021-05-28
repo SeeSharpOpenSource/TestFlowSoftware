@@ -1781,7 +1781,7 @@ namespace TestFlow.DevSoftware
             this.textBox_reportData.Name = "textBox_reportData";
             this.textBox_reportData.ReadOnly = true;
             this.textBox_reportData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_reportData.Size = new System.Drawing.Size(994, 224);
+            this.textBox_reportData.Size = new System.Drawing.Size(998, 226);
             this.textBox_reportData.TabIndex = 0;
             // 
             // statusStripButton
@@ -2239,25 +2239,30 @@ namespace TestFlow.DevSoftware
             // 
             // Column_VariableName
             // 
+            this.Column_VariableName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Column_VariableName.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Column_VariableName.FillWeight = 109.6447F;
             this.Column_VariableName.HeaderText = "VariableName";
             this.Column_VariableName.Name = "Column_VariableName";
             this.Column_VariableName.ReadOnly = true;
-            this.Column_VariableName.Width = 130;
+            this.Column_VariableName.Width = 120;
             // 
             // Column_sequence
             // 
+            this.Column_sequence.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column_sequence.FillWeight = 58.54813F;
             this.Column_sequence.HeaderText = "Sequence";
             this.Column_sequence.Name = "Column_sequence";
             this.Column_sequence.ReadOnly = true;
-            this.Column_sequence.Width = 130;
+            this.Column_sequence.Width = 120;
             // 
             // Column_VariableValue
             // 
             this.Column_VariableValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Column_VariableValue.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column_VariableValue.FillWeight = 11.80721F;
             this.Column_VariableValue.HeaderText = "Value";
             this.Column_VariableValue.Name = "Column_VariableValue";
             this.Column_VariableValue.ReadOnly = true;

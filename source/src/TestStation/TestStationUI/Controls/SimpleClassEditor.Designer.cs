@@ -68,7 +68,7 @@
             // 
             this.splitContainer_main.Panel2.Controls.Add(this.label_fields);
             this.splitContainer_main.Panel2.Controls.Add(this.dataGridView_fields);
-            this.splitContainer_main.Size = new System.Drawing.Size(288, 295);
+            this.splitContainer_main.Size = new System.Drawing.Size(350, 295);
             this.splitContainer_main.SplitterDistance = 147;
             this.splitContainer_main.TabIndex = 0;
             // 
@@ -97,7 +97,7 @@
             this.dataGridView_properties.Name = "dataGridView_properties";
             this.dataGridView_properties.RowHeadersVisible = false;
             this.dataGridView_properties.RowTemplate.Height = 23;
-            this.dataGridView_properties.Size = new System.Drawing.Size(278, 118);
+            this.dataGridView_properties.Size = new System.Drawing.Size(340, 118);
             this.dataGridView_properties.TabIndex = 0;
             this.dataGridView_properties.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_properties_CellBeginEdit);
             this.dataGridView_properties.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_properties_CellValueChanged);
@@ -147,7 +147,7 @@
             this.dataGridView_fields.Name = "dataGridView_fields";
             this.dataGridView_fields.RowHeadersVisible = false;
             this.dataGridView_fields.RowTemplate.Height = 23;
-            this.dataGridView_fields.Size = new System.Drawing.Size(278, 118);
+            this.dataGridView_fields.Size = new System.Drawing.Size(340, 118);
             this.dataGridView_fields.TabIndex = 1;
             this.dataGridView_fields.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_fields_CellBeginEdit);
             this.dataGridView_fields.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_fields_CellValueChanged);
@@ -198,7 +198,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 347);
+            this.ClientSize = new System.Drawing.Size(374, 347);
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.button_confirm);
             this.Controls.Add(this.splitContainer_main);

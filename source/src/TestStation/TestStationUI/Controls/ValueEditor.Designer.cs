@@ -55,6 +55,7 @@
             // 
             // CancelButton
             // 
+            this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelButton.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -69,6 +70,7 @@
             // 
             // OkButton
             // 
+            this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.OkButton.BackColor = System.Drawing.SystemColors.Control;
             this.OkButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.OkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

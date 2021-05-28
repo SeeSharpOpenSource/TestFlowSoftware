@@ -31,17 +31,19 @@
             this.ValuetextBox = new System.Windows.Forms.TextBox();
             this.label_recordLevel = new System.Windows.Forms.Label();
             this.comboBox_recordLevel = new System.Windows.Forms.ComboBox();
+            this.label_logRecordLevel = new System.Windows.Forms.Label();
+            this.comboBox_logRecordLevel = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // CancelButton
             // 
             this.CancelButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.CancelButton.Location = new System.Drawing.Point(208, 101);
+            this.CancelButton.Location = new System.Drawing.Point(351, 101);
             // 
             // OkButton
             // 
             this.OkButton.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.OkButton.Location = new System.Drawing.Point(144, 101);
+            this.OkButton.Location = new System.Drawing.Point(287, 101);
             // 
             // TypeLabel
             // 
@@ -50,15 +52,18 @@
             // 
             // ValuetextBox
             // 
+            this.ValuetextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ValuetextBox.Location = new System.Drawing.Point(12, 34);
             this.ValuetextBox.Name = "ValuetextBox";
-            this.ValuetextBox.Size = new System.Drawing.Size(117, 21);
+            this.ValuetextBox.Size = new System.Drawing.Size(260, 21);
             this.ValuetextBox.TabIndex = 35;
             // 
             // label_recordLevel
             // 
+            this.label_recordLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_recordLevel.AutoSize = true;
-            this.label_recordLevel.Location = new System.Drawing.Point(147, 8);
+            this.label_recordLevel.Location = new System.Drawing.Point(290, 13);
             this.label_recordLevel.Name = "label_recordLevel";
             this.label_recordLevel.Size = new System.Drawing.Size(83, 12);
             this.label_recordLevel.TabIndex = 37;
@@ -66,17 +71,40 @@
             // 
             // comboBox_recordLevel
             // 
+            this.comboBox_recordLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_recordLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_recordLevel.FormattingEnabled = true;
-            this.comboBox_recordLevel.Location = new System.Drawing.Point(149, 34);
+            this.comboBox_recordLevel.Location = new System.Drawing.Point(292, 30);
             this.comboBox_recordLevel.Name = "comboBox_recordLevel";
             this.comboBox_recordLevel.Size = new System.Drawing.Size(117, 20);
             this.comboBox_recordLevel.TabIndex = 36;
             // 
+            // label_logRecordLevel
+            // 
+            this.label_logRecordLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_logRecordLevel.AutoSize = true;
+            this.label_logRecordLevel.Location = new System.Drawing.Point(290, 59);
+            this.label_logRecordLevel.Name = "label_logRecordLevel";
+            this.label_logRecordLevel.Size = new System.Drawing.Size(107, 12);
+            this.label_logRecordLevel.TabIndex = 39;
+            this.label_logRecordLevel.Text = "Log Record Level:";
+            // 
+            // comboBox_logRecordLevel
+            // 
+            this.comboBox_logRecordLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox_logRecordLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_logRecordLevel.FormattingEnabled = true;
+            this.comboBox_logRecordLevel.Location = new System.Drawing.Point(292, 75);
+            this.comboBox_logRecordLevel.Name = "comboBox_logRecordLevel";
+            this.comboBox_logRecordLevel.Size = new System.Drawing.Size(117, 20);
+            this.comboBox_logRecordLevel.TabIndex = 38;
+            // 
             // StringEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.ClientSize = new System.Drawing.Size(283, 144);
+            this.ClientSize = new System.Drawing.Size(426, 144);
+            this.Controls.Add(this.label_logRecordLevel);
+            this.Controls.Add(this.comboBox_logRecordLevel);
             this.Controls.Add(this.label_recordLevel);
             this.Controls.Add(this.comboBox_recordLevel);
             this.Controls.Add(this.ValuetextBox);
@@ -90,6 +118,8 @@
             this.Controls.SetChildIndex(this.CancelButton, 0);
             this.Controls.SetChildIndex(this.comboBox_recordLevel, 0);
             this.Controls.SetChildIndex(this.label_recordLevel, 0);
+            this.Controls.SetChildIndex(this.comboBox_logRecordLevel, 0);
+            this.Controls.SetChildIndex(this.label_logRecordLevel, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -100,5 +130,7 @@
         protected System.Windows.Forms.TextBox ValuetextBox;
         private System.Windows.Forms.Label label_recordLevel;
         private System.Windows.Forms.ComboBox comboBox_recordLevel;
+        private System.Windows.Forms.Label label_logRecordLevel;
+        private System.Windows.Forms.ComboBox comboBox_logRecordLevel;
     }
 }

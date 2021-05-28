@@ -73,6 +73,11 @@ namespace TestFlow.DevSoftware.Controls
             this._hexRegex = new Regex("^0[xX][0-9a-fA-F]+$", RegexOptions.Compiled);
             this._octRegex = new Regex("^0[oO]([0-7]+)$", RegexOptions.Compiled);
             this._binRegex = new Regex("^0[bB][01]+$", RegexOptions.Compiled);
+
+            comboBox_recordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
+            comboBox_recordLevel.Text = variable.ReportRecordLevel.ToString();
+            comboBox_logRecordLevel.Items.AddRange(Enum.GetNames(typeof(RecordLevel)));
+            comboBox_logRecordLevel.Text = variable.LogRecordLevel.ToString();
         }
 
         private void ValuecomboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -240,6 +245,11 @@ namespace TestFlow.DevSoftware.Controls
                 object value = convertFunc.Invoke(element.ToString());
                 array.SetValue(value, index++);
             }
+
+            if (array.Length == 0)
+            {
+                return null;
+            }
             return array;
         }
 
@@ -316,6 +326,8 @@ namespace TestFlow.DevSoftware.Controls
             {
                 string variableValue = GetVariableValue();
                 _variable.Value = variableValue;
+                _variable.ReportRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), comboBox_recordLevel.Text);
+                _variable.LogRecordLevel = (RecordLevel)Enum.Parse(typeof(RecordLevel), this.comboBox_logRecordLevel.Text);
                 // _variable.AutoType = _variable.Type == null;
                 _isCancelled = false;
                 this.Close();
