@@ -1136,6 +1136,7 @@ namespace TestFlow.DevSoftware
             this.comboBox_invokeFailedAction.Name = "comboBox_invokeFailedAction";
             this.comboBox_invokeFailedAction.Size = new System.Drawing.Size(148, 20);
             this.comboBox_invokeFailedAction.TabIndex = 6;
+            this.comboBox_invokeFailedAction.SelectedIndexChanged += new System.EventHandler(this.comboBox_conditionType_SelectedIndexChanged);
             // 
             // comboBox_runType
             // 
